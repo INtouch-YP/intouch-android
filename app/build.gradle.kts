@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.kotlin.symbol.processing)
     alias(libs.plugins.kotlin.annotation.processors)
     alias(libs.plugins.dagger.hilt.android)
+   // alias(libs.plugins.google.gms.google.services) TODO: добавить когда будет google-services.json
+    alias(libs.plugins.google.firebase.crashlytics)
+    alias(libs.plugins.google.firebase.appdistribution)
 }
 
 android {
@@ -66,7 +69,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
 
-
     //Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -99,6 +101,11 @@ dependencies {
     //ViewModel+Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
+
+    //Firebase
+    implementation (libs.google.firebase.bom)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
 }
 
 kapt {
