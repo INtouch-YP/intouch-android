@@ -65,7 +65,6 @@ dependencies {
     //Compose
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
 
     //Testing
@@ -93,6 +92,13 @@ dependencies {
 
     //Coil
     implementation(libs.coil.compose)
+
+    //Timber
+    implementation(libs.timber)
+
+    //ViewModel+Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 }
 
 kapt {
