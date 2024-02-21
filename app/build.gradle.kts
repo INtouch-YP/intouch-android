@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kotlin.symbol.processing)
-    alias(libs.plugins.kotlin.annotation.processors)
     alias(libs.plugins.dagger.hilt.android)
     // alias(libs.plugins.google.gms.google.services) TODO: добавить когда будет google-services.json
     alias(libs.plugins.google.firebase.crashlytics)
@@ -84,7 +83,7 @@ dependencies {
     //Hilt
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
 
     //Coroutines
     implementation(libs.kotlinx.coroutines.android)
@@ -119,8 +118,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-}
-
-kapt {
-    correctErrorTypes = true
 }
