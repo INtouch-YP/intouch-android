@@ -4,10 +4,11 @@ plugins {
     alias(libs.plugins.kotlin.symbol.processing)
     alias(libs.plugins.kotlin.annotation.processors)
     alias(libs.plugins.dagger.hilt.android)
-   // alias(libs.plugins.google.gms.google.services) TODO: добавить когда будет google-services.json
+    // alias(libs.plugins.google.gms.google.services) TODO: добавить когда будет google-services.json
     alias(libs.plugins.google.firebase.crashlytics)
     alias(libs.plugins.google.firebase.appdistribution)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 android {
@@ -69,15 +70,10 @@ dependencies {
     //Compose
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.constraintlayout.compose)
 
-    //Testing
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    //Navigation
+    implementation(libs.androidx.navigation.compose)
 
     //Room
     implementation(libs.androidx.room.runtime)
@@ -104,7 +100,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
 
     //Firebase
-    implementation (libs.google.firebase.bom)
+    implementation(platform(libs.google.firebase.bom))
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
 
@@ -114,6 +110,15 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
     implementation(libs.kotlinx.serialization.json)
+
+    //Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }
 
 kapt {

@@ -9,4 +9,5 @@ plugins {
     alias(libs.plugins.google.firebase.crashlytics) apply false
     alias(libs.plugins.google.firebase.appdistribution) apply false
     alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.kotlin.parcelize) apply false
 }

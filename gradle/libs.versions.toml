@@ -1,6 +1,7 @@
 [versions]
 agp = "8.4.0-alpha09"
 coilCompose = "2.5.0"
+constraintlayoutCompose = "1.0.1"
 firebaseBomVersion = "32.7.2"
 hiltAndroid = "2.50"
 hiltNavigationCompose = "1.1.0"
@@ -15,6 +16,7 @@ lifecycleRuntimeKtx = "2.7.0"
 activityCompose = "1.8.2"
 composeBom = "2024.02.00"
 ksp = "1.9.10-1.0.13"
+navigationCompose = "2.7.7"
 okhttpBom = "4.12.0"
 retrofit = "2.9.0"
 roomRuntime = "2.6.1"
@@ -28,10 +30,12 @@ kotlinx-serialization = "1.9.22"
 androidLibrary = "8.2.2"
 
 [libraries]
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
@@ -73,4 +77,5 @@ google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.
 google-firebase-appdistribution = { id = "com.google.firebase.appdistribution", version.ref = "googleFirebaseAppdistribution" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinx-serialization" }
 androidLibrary = { id = "com.android.library", version.ref = "androidLibrary" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 
