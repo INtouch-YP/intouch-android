@@ -3,4 +3,5 @@ plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
     alias(libs.plugins.kotlin.symbol.processing) apply false
+    alias(libs.plugins.kotlin.annotation.processors) apply false
 }
