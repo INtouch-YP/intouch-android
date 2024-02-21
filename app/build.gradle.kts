@@ -7,6 +7,7 @@ plugins {
    // alias(libs.plugins.google.gms.google.services) TODO: добавить когда будет google-services.json
     alias(libs.plugins.google.firebase.crashlytics)
     alias(libs.plugins.google.firebase.appdistribution)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -106,6 +107,13 @@ dependencies {
     implementation (libs.google.firebase.bom)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
+
+    //Network
+    implementation(libs.retrofit)
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+    implementation(libs.kotlinx.serialization.json)
 }
 
 kapt {

@@ -8,4 +8,5 @@ plugins {
     //alias(libs.plugins.google.gms.google.services) apply false TODO: добавить когда будет google-services.json
     alias(libs.plugins.google.firebase.crashlytics) apply false
     alias(libs.plugins.google.firebase.appdistribution) apply false
+    alias(libs.plugins.androidLibrary) apply false
 }
