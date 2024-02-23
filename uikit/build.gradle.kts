@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "care.intouch.uikil"
+    namespace = "care.intouch.uikit"
     compileSdk = 34
 
     defaultConfig {

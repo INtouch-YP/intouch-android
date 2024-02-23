@@ -1,4 +1,4 @@
-package care.intouch.app.ui.theme
+package care.intouch.uikit.theme
 
 import androidx.compose.ui.graphics.Color
 

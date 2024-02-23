@@ -1,4 +1,4 @@
-package care.intouch.uikil
+package care.intouch.uikit
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

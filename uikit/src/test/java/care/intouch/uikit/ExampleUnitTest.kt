@@ -1,4 +1,4 @@
-package care.intouch.uikil
+package care.intouch.uikit
 
 import org.junit.Test
 

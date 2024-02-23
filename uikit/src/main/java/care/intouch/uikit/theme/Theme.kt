@@ -1,4 +1,4 @@
-package care.intouch.app.ui.theme
+package care.intouch.uikit.theme
 
 import android.app.Activity
 import android.os.Build
@@ -64,7 +64,7 @@ fun InTouchTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+//        typography = Typography,
         content = content
     )
 }
