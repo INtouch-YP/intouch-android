@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kotlin.symbol.processing)
     alias(libs.plugins.dagger.hilt.android)
-    // alias(libs.plugins.google.gms.google.services) TODO: добавить когда будет google-services.json
+    alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
     alias(libs.plugins.google.firebase.appdistribution)
     alias(libs.plugins.kotlin.serialization)

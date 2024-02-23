@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "1090975949688",
+    "project_id": "intouch-test-61f2d",
+    "storage_bucket": "intouch-test-61f2d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090975949688:android:bc0baa8c40eafd53779e8d",
+        "android_client_info": {
+          "package_name": "care.intouch.app.debug"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHvWChK3vUkG19lrGsAqJibeebzsfy8iU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090975949688:android:f7c1e02aa19a01c5779e8d",
+        "android_client_info": {
+          "package_name": "care.intouch.app.qa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHvWChK3vUkG19lrGsAqJibeebzsfy8iU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090975949688:android:084c71b377cc1169779e8d",
+        "android_client_info": {
+          "package_name": "care.intouch.app.stage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHvWChK3vUkG19lrGsAqJibeebzsfy8iU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090975949688:android:06a1f2e06f0eb7a0779e8d",
+        "android_client_info": {
+          "package_name": "care.intouch.app.stage.debug"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHvWChK3vUkG19lrGsAqJibeebzsfy8iU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090975949688:android:e368c03f3599f56f779e8d",
+        "android_client_info": {
+          "package_name": "care.intouch.app.stage.qa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHvWChK3vUkG19lrGsAqJibeebzsfy8iU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
