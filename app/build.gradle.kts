@@ -21,14 +21,42 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            buildConfigField("String", "LOGGING_LEVEL", "\"RELEASE\"")
+        }
+
+        getByName("debug") {
+            isDebuggable = true
+            applicationIdSuffix = ".debug"
+            matchingFallbacks += listOf("release")
+            buildConfigField("String", "LOGGING_LEVEL", "\"DEBUG\"")
+        }
+
+        create("qa") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".qa"
+            matchingFallbacks += listOf("release")
+            buildConfigField("String", "LOGGING_LEVEL", "\"QA\"")
         }
     }
+
+    flavorDimensions += "env"
+
+    productFlavors {
+        create("stage") {
+            dimension = "env"
+            applicationIdSuffix = ".stage"
+        }
+
+        create("prod") {
+            dimension = "env"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -46,6 +74,10 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 
