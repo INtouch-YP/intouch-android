@@ -28,14 +28,39 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
+
+        getByName("debug") {
+            isDebuggable = true
+            applicationIdSuffix = ".debug"
+            matchingFallbacks += listOf("release")
+        }
+
+        create("qa") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".qa"
+            matchingFallbacks += listOf("release")
+        }
     }
+
+    flavorDimensions += "env"
+
+    productFlavors {
+        create("stage") {
+            dimension = "env"
+            applicationIdSuffix = ".stage"
+        }
+
+        create("prod") {
+            dimension = "env"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
