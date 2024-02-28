@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import care.intouch.app.ui.theme.UiKitSample
 import care.intouch.uikit.theme.InTouchTheme
 
 class MainActivity : ComponentActivity() {
@@ -37,25 +36,16 @@ class MainActivity : ComponentActivity() {
                     var movedUiKitSample by remember {
                         mutableStateOf(false)
                     }
-                    if(movedUiKitSample) {
-                        Column(
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            UiKitSample()
-                            UikitSampleButton(
-                                text = "MainScreen",
-                                onClick = { movedUiKitSample = !movedUiKitSample }
+                    Column(
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (BuildConfig.DEBUG) {
+                            MainScreenWithDebug(
+                                movedUiKitSample = movedUiKitSample,
+                                onChangeState = { movedUiKitSample = !movedUiKitSample }
                             )
-                        }
-                    } else {
-                        Column(
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
+                        } else {
                             Greeting("Android")
-                            UikitSampleButton(
-                                text = "UiKitSample",
-                                onClick = { movedUiKitSample = !movedUiKitSample }
-                            )
                         }
                     }
                 }
@@ -71,6 +61,23 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         style = InTouchTheme.typography.bodyRegularTypography,
         modifier = modifier
     )
+}
+
+@Composable
+fun MainScreenWithDebug(movedUiKitSample: Boolean, onChangeState: () -> Unit) {
+    if (movedUiKitSample) {
+        UiKitSample()
+        UikitSampleButton(
+            text = "MainScreen",
+            onClick = { onChangeState.invoke() }
+        )
+    } else {
+        Greeting("Android")
+        UikitSampleButton(
+            text = "UiKitSample",
+            onClick = { onChangeState.invoke() }
+        )
+    }
 }
 
 @Composable
@@ -110,7 +117,7 @@ fun GreetingPreview() {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Greeting("Android")
-            UikitSampleButton (
+            UikitSampleButton(
                 text = "UiKitSample",
                 onClick = {}
             )
