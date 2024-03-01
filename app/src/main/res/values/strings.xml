@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">InTouch</string>
+    //UiKitSample
+    <string name="uikit_sample_button">UiKitSample</string>
+    <string name="main_screen_button">MainScreen</string>
 </resources>
