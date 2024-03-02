@@ -9,9 +9,7 @@ sealed class StringVO {
     @Composable
     abstract fun value(): String
 
-    data class Plain(
-        val text: String
-    ) : StringVO() {
+    data class Plain(val text: String) : StringVO() {
 
         @Composable
         override fun value(): String {
