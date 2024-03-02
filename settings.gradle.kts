@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "InTouch"
 include(":app")
- 
+include(":uikit")

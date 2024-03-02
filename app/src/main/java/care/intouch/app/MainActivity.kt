@@ -3,14 +3,26 @@ package care.intouch.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import care.intouch.app.ui.theme.InTouchTheme
+import androidx.compose.ui.unit.dp
+import care.intouch.uikit.theme.InTouchTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,9 +32,23 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = InTouchTheme.colors.mainColorBlue
                 ) {
-                    Greeting("Android")
+                    var movedUiKitSample by remember {
+                        mutableStateOf(false)
+                    }
+                    Column(
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (BuildConfig.DEBUG) {
+                            MainScreenWithDebug(
+                                movedUiKitSample = movedUiKitSample,
+                                onChangeState = { movedUiKitSample = !movedUiKitSample }
+                            )
+                        } else {
+                            Greeting("Android")
+                        }
+                    }
                 }
             }
         }
@@ -33,14 +59,69 @@ class MainActivity : ComponentActivity() {
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
+        style = InTouchTheme.typography.bodyRegularTypography,
         modifier = modifier
     )
+}
+
+@Composable
+fun MainScreenWithDebug(movedUiKitSample: Boolean, onChangeState: () -> Unit) {
+    if (movedUiKitSample) {
+        UiKitSample()
+        UikitSampleButton(
+            text = stringResource(R.string.main_screen_button),
+            onClick = { onChangeState.invoke() }
+        )
+    } else {
+        Greeting("Android")
+        UikitSampleButton(
+            text = stringResource(R.string.uikit_sample_button),
+            onClick = { onChangeState.invoke() }
+        )
+    }
+}
+
+@Composable
+fun UikitSampleButton(
+    text: String,
+    onClick: () -> Unit,
+) {
+    Button(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = ButtonColors(
+            containerColor = InTouchTheme.colors.mainColorGreen,
+            contentColor = InTouchTheme.colors.inputColor,
+            disabledContainerColor = InTouchTheme.colors.mainColorGreen,
+            disabledContentColor = InTouchTheme.colors.mainColorGreen,
+        ),
+        onClick = { onClick.invoke() }
+    ) {
+        Text(
+            text = text,
+            style = InTouchTheme.typography.bodyRegularTypography,
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     InTouchTheme {
-        Greeting("Android")
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    color = InTouchTheme.colors.mainColorBlue,
+                ),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Greeting("Android")
+            UikitSampleButton(
+                text = "UiKitSample",
+                onClick = {}
+            )
+        }
     }
 }
