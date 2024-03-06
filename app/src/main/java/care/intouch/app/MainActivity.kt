@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -67,11 +68,18 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun MainScreenWithDebug(movedUiKitSample: Boolean, onChangeState: () -> Unit) {
     if (movedUiKitSample) {
-        UiKitSample()
-        UikitSampleButton(
-            text = stringResource(R.string.main_screen_button),
-            onClick = { onChangeState.invoke() }
-        )
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                UiKitSample()
+            }
+            UikitSampleButton(
+                text = stringResource(R.string.main_screen_button),
+                onClick = { onChangeState.invoke() }
+            )
+        }
+
     } else {
         Greeting("Android")
         UikitSampleButton(
