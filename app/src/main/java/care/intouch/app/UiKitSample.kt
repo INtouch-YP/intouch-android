@@ -18,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -76,8 +78,15 @@ fun UiKitSamplePreview() {
     UiKitSample()
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
 @Preview(showBackground = true)
+fun NavigationSamplePreview() {
+    InTouchTheme {
+        NavigationSample()
+    }
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NavigationSample() {
     Scaffold(
@@ -85,9 +94,28 @@ fun NavigationSample() {
         topBar = { CustomTopBar(
             onBackArrowClick = { /*TODO*/ },
             onCloseButtonClick = { /*TODO*/ },
-            title = "Title Large"
+            title = "Title Large",
+            enabledArcButton = false,
+            addBackArrowButton = true,
+            addCloseButton = true
         ) },
-        bottomBar = { CustomBottomNavBar() }
+        bottomBar = { CustomBottomNavBar(
+            onFocusTint = InTouchTheme.colors.mainColorGreen,
+            outFocusTint = InTouchTheme.colors.mainColorGreen40,
+            firstItemText = stringResource(id = R.string.home_bottom_nav_bar),
+            secondItemText = stringResource(id = R.string.my_progress_bottom_nav_bar),
+            thirdItemText = stringResource(id = R.string.my_plan_bottom_nav_bar),
+            fourthItemText = stringResource(id = R.string.additional_bottom_nav_bar),
+            firstItemImage = painterResource(id = care.intouch.uikit.R.drawable.icon_home),
+            secondItemImage = painterResource(id = care.intouch.uikit.R.drawable.icon_progress),
+            thirdItemImage = painterResource(id = care.intouch.uikit.R.drawable.icon_plan),
+            fourthItemImage = painterResource(id = care.intouch.uikit.R.drawable.icon_additional),
+            firstItemClick = {},
+            secondItemClick = {},
+            thirdItemClick = {},
+            fourthItemClick = {},
+            onPlusItemClick = {}
+        ) }
     ) {
         Box(
             modifier = Modifier
