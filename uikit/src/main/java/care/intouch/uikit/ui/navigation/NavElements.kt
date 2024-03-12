@@ -2,17 +2,23 @@ package care.intouch.uikit.ui.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +41,11 @@ fun NavBottomBarPlusButton(
             .size(70.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(InTouchTheme.colors.mainColorGreen)
-            .clickable { onClick.invoke() },
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = { onClick.invoke() }
+            ),
         contentAlignment = Alignment.Center
     ) {
         Icon(
@@ -68,35 +78,48 @@ fun TopBarArcButton(
 }
 
 @Composable
-fun NavBottomDefaultElementText(
+fun NavBottomComplexElement(
+    onClick: () -> Unit,
     text: String,
-    onFocusColor: Color,
-    outFocusColor: Color,
+    painter: Painter,
+    focusTint: Color,
     modifier: Modifier = Modifier
 ) {
-    Text(
+    Column(
         modifier = modifier
-            .width(64.dp)
-            .wrapContentWidth(align = Alignment.CenterHorizontally),
-        text = text,
-        color = onFocusColor,
-        style = InTouchTheme.typography.tabBarTypography
-    )
+            .width(75.dp)
+            .height(56.dp)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = { onClick.invoke() }
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        Icon(
+            painter = painter,
+            contentDescription = null,
+            tint = focusTint,
+            modifier = modifier
+        )
+        Text(
+            text = text,
+            color = focusTint,
+            style = InTouchTheme.typography.tabBarTypography,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+    }
 }
 
 @Composable
-fun NavBottomDefaultElement(
-    onClick: () -> Unit,
-    painter: Painter,
-    onFocusTint: Color,
-    outFocusTint: Color,
-    modifier: Modifier = Modifier,
-) {
-    Icon(
-        painter = painter,
-        contentDescription = null,
-        tint = onFocusTint,
-        modifier = modifier.wrapContentWidth().clickable { onClick.invoke() }
+@Preview(showBackground = true)
+fun NavBottomComplexElementPreview() {
+    NavBottomComplexElement(
+        onClick = { /*TODO*/ },
+        text = "Home",
+        painter = painterResource(id = R.drawable.icon_home),
+        focusTint = InTouchTheme.colors.mainColorGreen,
     )
 }
 
@@ -152,7 +175,10 @@ fun CustomTopBar(
 }
 
 @Composable
-fun CustomBottomNavBar() {
+fun CustomBottomNavBar(
+    onFocusTint: Color = InTouchTheme.colors.mainColorGreen,
+    outFocusTint: Color = InTouchTheme.colors.mainColorGreen40
+) {
     ConstraintLayout(
         modifier = Modifier
             .height(70.dp)
@@ -160,8 +186,11 @@ fun CustomBottomNavBar() {
             .background(Color.Transparent)
     ) {
 
-        val (homeTag, progressTag, plusTag, myPlanTag, additionalTag, box,
-            homeTextTag, progressTextTag, myPlanTextTag, additionalTextTag) = createRefs()
+        val selectedIconIndex = rememberSaveable {
+            mutableIntStateOf(0)
+        }
+
+        val (homeTag, progressTag, plusTag, myPlanTag, additionalTag, box) = createRefs()
 
         Box(
             modifier = Modifier
@@ -176,121 +205,72 @@ fun CustomBottomNavBar() {
                 }
         )
 
-        NavBottomDefaultElement(
-            onClick = { /*TODO*/ },
+        NavBottomComplexElement(
+            onClick = { selectedIconIndex.intValue = ElementId.HOME_ID.id },
+            text = "Home",
             painter = painterResource(id = R.drawable.icon_home),
-            onFocusTint = InTouchTheme.colors.mainColorGreen,
-            outFocusTint = InTouchTheme.colors.mainColorGreen40,
+            focusTint = if (selectedIconIndex.intValue == ElementId.HOME_ID.id) onFocusTint
+            else outFocusTint,
             modifier = Modifier
                 .constrainAs(homeTag) {
-                    bottom.linkTo(box.bottom)
-                    top.linkTo(box.top)
+                    bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
                 }
-                .padding(start = 23.dp)
         )
-
-        NavBottomDefaultElement(
-            onClick = { /*TODO*/ },
+        
+        NavBottomComplexElement(
+            onClick = { selectedIconIndex.intValue = ElementId.ADDITIONAL_ID.id },
+            text = "Additional",
             painter = painterResource(id = R.drawable.icon_additional),
-            onFocusTint = InTouchTheme.colors.mainColorGreen,
-            outFocusTint = InTouchTheme.colors.mainColorGreen40,
+            focusTint = if (selectedIconIndex.intValue == ElementId.ADDITIONAL_ID.id) onFocusTint
+            else outFocusTint,
             modifier = Modifier
                 .constrainAs(additionalTag) {
-                    bottom.linkTo(box.bottom)
-                    top.linkTo(box.top)
-                    end.linkTo(box.end)
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end)
                 }
-                .padding(end = 23.dp)
         )
 
         NavBottomBarPlusButton(
             modifier = Modifier.constrainAs(plusTag) {
-                start.linkTo(box.start)
-                end.linkTo(box.end)
-                bottom.linkTo(box.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(parent.bottom)
                 top.linkTo(parent.top)
-            },
-            onClick = {}
-        )
+            }
+        ) { selectedIconIndex.intValue = ElementId.PLUS_ID.id }
 
-        NavBottomDefaultElement(
-            onClick = { /*TODO*/ },
+        NavBottomComplexElement(
+            onClick = { selectedIconIndex.intValue = ElementId.MY_PROGRESS_ID.id },
+            text = "My progress",
             painter = painterResource(id = R.drawable.icon_progress),
-            onFocusTint = InTouchTheme.colors.mainColorGreen,
-            outFocusTint = InTouchTheme.colors.mainColorGreen40,
+            focusTint = if (selectedIconIndex.intValue == ElementId.MY_PROGRESS_ID.id) onFocusTint
+            else outFocusTint,
             modifier = Modifier
                 .constrainAs(progressTag) {
-                    bottom.linkTo(box.bottom)
-                    top.linkTo(box.top)
-                    end.linkTo(plusTag.start)
+                    bottom.linkTo(parent.bottom)
                     start.linkTo(homeTag.end)
+                    end.linkTo(plusTag.start)
                 }
         )
-
-        NavBottomDefaultElement(
-            onClick = { /*TODO*/ },
+        
+        NavBottomComplexElement(
+            onClick = { selectedIconIndex.intValue = ElementId.MY_PLAN_ID.id },
+            text = "My Plan",
             painter = painterResource(id = R.drawable.icon_plan),
-            onFocusTint = InTouchTheme.colors.mainColorGreen,
-            outFocusTint = InTouchTheme.colors.mainColorGreen40,
-            modifier = Modifier.constrainAs(myPlanTag) {
-                bottom.linkTo(box.bottom)
-                top.linkTo(box.top)
-                start.linkTo(plusTag.end)
-                end.linkTo(additionalTag.start)
-            }
-        )
-
-        NavBottomDefaultElementText(
-            text = "Home",
+            focusTint = if (selectedIconIndex.intValue == ElementId.MY_PLAN_ID.id) onFocusTint
+            else outFocusTint,
             modifier = Modifier
-                .constrainAs(homeTextTag) {
-                    top.linkTo(homeTag.bottom)
-                    start.linkTo(homeTag.start)
-                    end.linkTo(homeTag.end)
+                .constrainAs(myPlanTag) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(plusTag.end)
+                    end.linkTo(additionalTag.start)
                 }
-                .padding(start = 23.dp, top = 2.dp),
-            onFocusColor = InTouchTheme.colors.mainColorGreen,
-            outFocusColor = InTouchTheme.colors.mainColorGreen40
-        )
-
-        NavBottomDefaultElementText(
-            text = "Additional",
-            modifier = Modifier
-                .constrainAs(additionalTextTag) {
-                    top.linkTo(additionalTag.bottom)
-                    start.linkTo(additionalTag.start)
-                    end.linkTo(additionalTag.end)
-                }
-                .padding(end = 23.dp, top = 2.dp),
-            onFocusColor = InTouchTheme.colors.mainColorGreen,
-            outFocusColor = InTouchTheme.colors.mainColorGreen40
-        )
-
-        NavBottomDefaultElementText(
-            text = "My progress",
-            modifier = Modifier
-                .constrainAs(progressTextTag) {
-                    top.linkTo(progressTag.bottom)
-                    start.linkTo(progressTag.start)
-                    end.linkTo(progressTag.end)
-                }
-                .padding(top = 2.dp),
-            onFocusColor = InTouchTheme.colors.mainColorGreen,
-            outFocusColor = InTouchTheme.colors.mainColorGreen40
-        )
-
-        NavBottomDefaultElementText(
-            text = "My plan",
-            modifier = Modifier
-                .constrainAs(myPlanTextTag) {
-                    top.linkTo(myPlanTag.bottom)
-                    start.linkTo(myPlanTag.start)
-                    end.linkTo(myPlanTag.end)
-                }
-                .padding(top = 2.dp),
-            onFocusColor = InTouchTheme.colors.mainColorGreen,
-            outFocusColor = InTouchTheme.colors.mainColorGreen40
         )
     }
 }
+
+enum class ElementId(val id: Int) {
+    HOME_ID(0), MY_PROGRESS_ID(1), PLUS_ID(2), MY_PLAN_ID(3), ADDITIONAL_ID(4);
+}
+
