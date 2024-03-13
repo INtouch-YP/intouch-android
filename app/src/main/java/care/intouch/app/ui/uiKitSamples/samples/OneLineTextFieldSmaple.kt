@@ -52,7 +52,7 @@ fun OneLineTextFieldSampleScreen() {
                 readOnly = isReadOnly,
                 modifier = Modifier
                     .padding(56.dp)
-                    .width(100.dp)
+                    .width(334.dp)
             )
 
             Button(
