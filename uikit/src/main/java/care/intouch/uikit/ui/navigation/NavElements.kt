@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -171,30 +172,36 @@ fun CustomTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(98.dp)
+            .wrapContentHeight()
             .background(InTouchTheme.colors.inputColor),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
 
         if (addBackArrowButton) {
-            Icon(
-                painter = painterResource(id = R.drawable.icon_arrow_left),
-                contentDescription = null,
-                tint = InTouchTheme.colors.mainColorGreen,
+            Box(
                 modifier = Modifier
-                    .padding(start = 24.dp, top = 30.dp)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                        onClick = { onBackArrowClick.invoke() }
-                    ),
-            )
+                    .padding(start = 28.dp)
+                    .size(44.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_arrow_left),
+                    contentDescription = null,
+                    tint = InTouchTheme.colors.mainColorGreen,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = { onBackArrowClick.invoke() }
+                        ),
+                )
+            }
         } else {
             Box(
                 modifier = Modifier
-                    .padding(start = 24.dp, top = 30.dp)
-                    .size(24.dp)
+                    .padding(start = 28.dp)
+                    .size(44.dp)
                     .background(Color.Transparent)
             )
         }
@@ -205,8 +212,7 @@ fun CustomTopBar(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
-                .weight(1f)
-                .padding(top = 25.dp),
+                .weight(1f),
             textAlign = TextAlign.Center
         )
 
@@ -214,12 +220,12 @@ fun CustomTopBar(
             TopBarArcButton(
                 onClick = onCloseButtonClick,
                 enabled = enabledArcButton,
-                modifier = Modifier.padding(end = 24.dp, top = 20.dp)
+                modifier = Modifier.padding(end = 28.dp)
             )
         } else {
             Box(
                 modifier = Modifier
-                    .padding(end = 24.dp, top = 20.dp)
+                    .padding(end = 28.dp)
                     .size(47.dp)
                     .background(Color.Transparent)
             )
