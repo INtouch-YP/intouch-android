@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import care.intouch.uikit.R
@@ -70,10 +72,11 @@ fun NavBottomBarPlusButtonPreview() {
 @Composable
 fun TopBarArcButton(
     onClick: () -> Unit,
-    enabled: Boolean
+    enabled: Boolean,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
@@ -135,7 +138,9 @@ fun NavBottomComplexElement(
             text = text,
             color = focusTint,
             style = InTouchTheme.typography.tabBarTypography,
-            modifier = Modifier.padding(bottom = 4.dp)
+            modifier = Modifier.padding(bottom = 4.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
@@ -163,55 +168,61 @@ fun CustomTopBar(
     addBackArrowButton: Boolean,
     addCloseButton: Boolean
 ) {
-    Box(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(98.dp)
             .background(InTouchTheme.colors.inputColor),
-        contentAlignment = Alignment.Center
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.Center
     ) {
+
         if (addBackArrowButton) {
+            Icon(
+                painter = painterResource(id = R.drawable.icon_arrow_left),
+                contentDescription = null,
+                tint = InTouchTheme.colors.mainColorGreen,
+                modifier = Modifier
+                    .padding(start = 24.dp, top = 30.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = { onBackArrowClick.invoke() }
+                    ),
+            )
+        } else {
             Box(
                 modifier = Modifier
-                    .align(Alignment.TopStart)
                     .padding(start = 24.dp, top = 30.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_arrow_left),
-                    contentDescription = null,
-                    tint = InTouchTheme.colors.mainColorGreen,
-                    modifier = Modifier
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
-                            onClick = { onBackArrowClick.invoke() }
-                        ),
-                )
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 25.dp)
-        ) {
-            Text(
-                text = title,
-                style = InTouchTheme.typography.titleLargeTypography
+                    .size(24.dp)
+                    .background(Color.Transparent)
             )
         }
 
+        Text(
+            text = title,
+            style = InTouchTheme.typography.titleLargeTypography,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = 25.dp),
+            textAlign = TextAlign.Center
+        )
+
         if (addCloseButton) {
+            TopBarArcButton(
+                onClick = onCloseButtonClick,
+                enabled = enabledArcButton,
+                modifier = Modifier.padding(end = 24.dp, top = 20.dp)
+            )
+        } else {
             Box(
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
                     .padding(end = 24.dp, top = 20.dp)
-            ) {
-                TopBarArcButton(
-                    onClick = onCloseButtonClick,
-                    enabled = enabledArcButton
-                )
-            }
+                    .size(47.dp)
+                    .background(Color.Transparent)
+            )
         }
     }
 }
