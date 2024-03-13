@@ -50,7 +50,6 @@ dependencies {
     //Compose
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.constraintlayout.compose)
 
     //Coil
     implementation(libs.coil.compose)
