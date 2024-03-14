@@ -4,4 +4,6 @@ sealed class ScreenSample {
 
     data object MainSampleMenu : ScreenSample()
     data object OneLineTexFieldSample : ScreenSample()
+    data object MultilineTexFieldSample : ScreenSample()
+
 }

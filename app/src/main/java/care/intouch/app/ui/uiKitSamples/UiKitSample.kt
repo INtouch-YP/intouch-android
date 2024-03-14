@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import care.intouch.app.UikitSampleButton
 import care.intouch.app.ui.uiKitSamples.ScreenSample
+import care.intouch.app.ui.uiKitSamples.samples.MultilineTextFieldSampleScreen
 import care.intouch.app.ui.uiKitSamples.samples.OneLineTextFieldSampleScreen
 import care.intouch.uikit.theme.InTouchTheme
 
@@ -54,11 +55,20 @@ fun UiKitSample() {
                     text = "Go to one line text field sample",
                     onClick = { screenSample = ScreenSample.OneLineTexFieldSample }
                 )
+
+                UikitSampleButton(
+                    text = "Go to multiline text field sample",
+                    onClick = { screenSample = ScreenSample.MultilineTexFieldSample }
+                )
             }
         }
 
         ScreenSample.OneLineTexFieldSample -> {
             OneLineTextFieldSampleScreen()
+        }
+
+        ScreenSample.MultilineTexFieldSample -> {
+            MultilineTextFieldSampleScreen()
         }
     }
 }

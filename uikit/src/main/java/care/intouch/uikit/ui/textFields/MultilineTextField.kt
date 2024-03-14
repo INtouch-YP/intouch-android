@@ -30,17 +30,20 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import care.intouch.uikit.theme.InTouchTheme
-import care.intouch.uikit.ui.textFields.OneLineTextFieldDefaults.BLANC_STRING
+import care.intouch.uikit.ui.textFields.MultilineTextFieldDefaults.BLANC_STRING
+import care.intouch.uikit.ui.textFields.MultilineTextFieldDefaults.DEFAULT_LINE_AMOUNT
 import care.intouch.uikit.ui.util.StringVO
 
 /**
-One line text field with the title.
+Multiline text field with the title, subtitle and caption.
 
  * Width by default is 280dp, but you can override it by applying Modifier.width().
- * Height based on text size and padding 16dp from both sides of the text.
+ * Height based on text size and padding 12dp from both sides of the text.
+ * 5 lines of text by default, but you can change it by setting [linesAmount].
 
- * @param modifier the [Modifier] to be applied to this text field.
- * @param titleText the title text above text field.
+ * @param titleText the title text above [subtitleText], [captionText] and text field.
+ * @param subtitleText the subtitle text above [captionText], text field and below [titleText].
+ * @param captionText the caption text above text field, below [titleText] and [subtitleText].
  * @param value the input text to be shown in the text field.
  * @param onValueChange the callback that is triggered when the input service updates the text. An
  * updated text comes as a parameter of the callback.
@@ -49,17 +52,18 @@ One line text field with the title.
  * border color will be red. If [enabled] set false - [isError] is false (whatever it set here).
  * @param enabled controls the enabled state of this text field. When `false`, this component will
  * not respond to user input, and it will appear visually disabled and disabled to accessibility
- * services, [titleText] change color as well.
+ * services, [titleText], [subtitleText] and [captionText] change color as well.
  * @param readOnly controls the editable state of the text field. When `true`, the text field cannot
  * be modified. However, a user can focus it and copy text from it. Read-only text fields are
  * usually used to display pre-filled forms that a user cannot edit.
  * !Do not change [readOnly] when text is selected, as this cause crash.
  * Known issue by compose developers, may fix in future versions.
+ * @param linesAmount the number of lines to be shown in the text field. By default, 5 lines.
  * @param visualTransformation transforms the visual representation of the input [value]
  * For example, you can use
  * [PasswordVisualTransformation][androidx.compose.ui.text.input.PasswordVisualTransformation] to
  * create a password text field. By default, no visual transformation is applied.
- * @param keyboardOptions software keyboard options that cosntains configuration such as
+ * @param keyboardOptions software keyboard options that contains configuration such as
  * [KeyboardType] and [ImeAction].
  * @param keyboardActions when the input service emits an IME action, the corresponding callback
  * is called. Note that this IME action may be different from what you specified in
@@ -69,15 +73,18 @@ One line text field with the title.
  */
 
 @Composable
-fun OneLineTextField(
+fun MultilineTextField(
     modifier: Modifier = Modifier,
-    titleText: StringVO,
+    titleText: StringVO = StringVO.Plain(BLANC_STRING),
+    subtitleText: StringVO = StringVO.Plain(BLANC_STRING),
+    captionText: StringVO = StringVO.Plain(BLANC_STRING),
     value: String,
     onValueChange: (String) -> Unit,
     hint: String = BLANC_STRING,
     isError: Boolean,
     enabled: Boolean,
     readOnly: Boolean = false,
+    linesAmount: Int = DEFAULT_LINE_AMOUNT,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -87,21 +94,55 @@ fun OneLineTextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
 
     Column(
-        modifier = modifier.width(OneLineTextFieldDefaults.MinWidth)
+        modifier = modifier.width(MultilineTextFieldDefaults.MinWidth)
     ) {
-        Text(
-            text = titleText.value(),
-            modifier = Modifier
-                .padding(bottom = 8.dp),
-            style = InTouchTheme.typography.titleSmallTypography,
-            color = if (enabled) {
-                InTouchTheme.colors.textColorGreen
-            } else {
-                InTouchTheme.colors.textColorGreen40
-            },
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        if (titleText.value().isNotBlank()
+            || subtitleText.value().isNotBlank()
+            || captionText.value().isNotBlank()
+        ) {
+            Column(modifier = Modifier.padding(bottom = 8.dp)) {
+                if (titleText.value().isNotBlank()) {
+                    Text(
+                        text = titleText.value(),
+                        style = InTouchTheme.typography.titleSmallTypography,
+                        color = if (enabled) {
+                            InTouchTheme.colors.textColorBlue
+                        } else {
+                            InTouchTheme.colors.textColorBlue50
+                        },
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                if (subtitleText.value().isNotBlank()) {
+                    Text(
+                        text = subtitleText.value(),
+                        modifier = if (titleText.value().isNotBlank()) Modifier
+                            .padding(top = 8.dp) else Modifier,
+                        style = InTouchTheme.typography.bodySemiBoldTypography,
+                        color = if (enabled) {
+                            InTouchTheme.colors.textColorGreen
+                        } else {
+                            InTouchTheme.colors.textColorGreen40
+                        },
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                if (captionText.value().isNotBlank()) {
+                    Text(
+                        text = captionText.value(),
+                        modifier = if (subtitleText.value().isNotBlank())
+                            Modifier.padding(top = 2.dp) else Modifier,
+                        style = InTouchTheme.typography.caption1RegularTypography,
+                        color = if (enabled) {
+                            InTouchTheme.colors.textColorGreen
+                        } else {
+                            InTouchTheme.colors.textColorGreen40
+                        },
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
         Box(
             modifier = Modifier
                 .background(color = backgroundColor, shape = RoundedCornerShape(12.dp))
@@ -116,6 +157,8 @@ fun OneLineTextField(
                 ),
         ) {
             BasicTextField(
+                minLines = linesAmount,
+                maxLines = linesAmount,
                 value = value,
                 onValueChange = onValueChange,
                 interactionSource = interactionSource,
@@ -127,7 +170,6 @@ fun OneLineTextField(
                     if (value.isEmpty()) {
                         Text(
                             text = hint,
-                            maxLines = 1,
                             style = InTouchTheme.typography.bodyRegularTypography.copy(
                                 color = InTouchTheme.colors.textColorBlue50
                             )
@@ -143,12 +185,11 @@ fun OneLineTextField(
                         color = InTouchTheme.colors.textColorBlue50
                     )
                 },
-                singleLine = true,
                 keyboardOptions = keyboardOptions,
                 keyboardActions = keyboardActions,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
             )
         }
     }
@@ -156,7 +197,7 @@ fun OneLineTextField(
 
 @Preview
 @Composable
-fun TextInputPreview() {
+fun MultilineTextFieldPreview() {
     InTouchTheme {
         Box(
             modifier = Modifier
@@ -166,13 +207,15 @@ fun TextInputPreview() {
                 .fillMaxSize()
         ) {
             var text by remember { mutableStateOf("") }
-            OneLineTextField(
-                titleText = StringVO.Plain("Title text may be very looooong"),
+            MultilineTextField(
+                titleText = StringVO.Plain("Title small "),
+                subtitleText = StringVO.Plain("Body semi bold "),
+                captionText = StringVO.Plain("Caption "),
                 value = text,
                 onValueChange = {
                     text = it
                 },
-                hint = "Hint text",
+                hint = "Write your answer here...",
                 isError = false,
                 enabled = true,
                 modifier = Modifier.padding(45.dp)
@@ -181,11 +224,17 @@ fun TextInputPreview() {
     }
 }
 
-object OneLineTextFieldDefaults {
+object MultilineTextFieldDefaults {
     /**
-     * The default min width applied to a [OneLineTextField].
-     * Note that you can override it by applying Modifier.width directly on [OneLineTextField].
+     * The default min width applied to a [MultilineTextField].
+     * Note that you can override it by applying Modifier.width directly on [MultilineTextField].
      */
     val MinWidth = 280.dp
+
+    /**
+     * The default line amount applied to a [MultilineTextField].
+     * Note that you can override it by setting linesAmount on [MultilineTextField].
+     */
+    const val DEFAULT_LINE_AMOUNT = 5
     const val BLANC_STRING = ""
 }
