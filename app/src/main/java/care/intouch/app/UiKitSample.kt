@@ -25,7 +25,7 @@ fun UiKitSample() {
                 .padding(16.dp)
                 .clickable { /*TODO moved to Custom Title*/ },
             text = "Custom Title",
-            style = InTouchTheme.typography.bodyRegularTypography,
+            style = InTouchTheme.typography.bodyRegular,
             textAlign = TextAlign.Center
         )
         Text(
@@ -34,7 +34,7 @@ fun UiKitSample() {
                 .padding(16.dp)
                 .clickable { /*TODO moved to Custom Button*/ },
             text = "Custom Button",
-            style = InTouchTheme.typography.bodyRegularTypography,
+            style = InTouchTheme.typography.bodyRegular,
             textAlign = TextAlign.Center
         )
     }
