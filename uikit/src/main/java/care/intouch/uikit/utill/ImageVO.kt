@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import coil.compose.rememberAsyncImagePainter
 
 sealed class ImageVO {
 
@@ -23,7 +24,6 @@ sealed class ImageVO {
     }
 
     data class Url(
-        val painterProvider: PainterProvider,
         val url: String,
         val placeholder: Resource? = null,
         val fallback: Resource? = null,
@@ -31,21 +31,11 @@ sealed class ImageVO {
 
         @Composable
         override fun painter(): Painter {
-            return painterProvider.providePainter(
-                url = url,
-                placeholder = placeholder,
-                fallback = fallback
-            )
+            return rememberAsyncImagePainter(
+                model = url,
+                placeholder = placeholder?.let { painterResource(id = it.res) },
+                fallback = fallback?.let { painterResource(id = it.res) })
         }
-    }
-
-    interface PainterProvider {
-        @Composable
-        fun providePainter(
-            url: String,
-            placeholder: Resource?,
-            fallback: Resource?,
-        ): Painter
     }
 
 }
