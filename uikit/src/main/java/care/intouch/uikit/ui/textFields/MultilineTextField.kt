@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.textFields.MultilineTextFieldDefaults.BLANC_STRING
 import care.intouch.uikit.ui.textFields.MultilineTextFieldDefaults.DEFAULT_LINE_AMOUNT
-import care.intouch.uikit.ui.util.StringVO
+import care.intouch.uikit.ui.utill.StringVO
 
 /**
 Multiline text field with the title, subtitle and caption.

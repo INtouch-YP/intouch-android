@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.textFields.OneLineTextField
-import care.intouch.uikit.ui.util.StringVO
+import care.intouch.uikit.ui.utill.StringVO
 
 @Composable
 fun OneLineTextFieldSampleScreen() {

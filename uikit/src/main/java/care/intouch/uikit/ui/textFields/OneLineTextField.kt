@@ -6,7 +6,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -31,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.textFields.OneLineTextFieldDefaults.BLANC_STRING
-import care.intouch.uikit.ui.util.StringVO
+import care.intouch.uikit.ui.utill.StringVO
 
 /**
 One line text field with the title.
@@ -89,19 +88,22 @@ fun OneLineTextField(
     Column(
         modifier = modifier.width(OneLineTextFieldDefaults.MinWidth)
     ) {
-        Text(
-            text = titleText.value(),
-            modifier = Modifier
-                .padding(bottom = 8.dp),
-            style = InTouchTheme.typography.titleSmallTypography,
-            color = if (enabled) {
-                InTouchTheme.colors.textColorGreen
-            } else {
-                InTouchTheme.colors.textColorGreen40
-            },
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+
+        if (titleText.value().isNotBlank()) {
+            Text(
+                text = titleText.value(),
+                style = InTouchTheme.typography.titleSmallTypography,
+                color = if (enabled) {
+                    InTouchTheme.colors.textColorGreen
+                } else {
+                    InTouchTheme.colors.textColorGreen40
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+            )
+        }
         Box(
             modifier = Modifier
                 .background(color = backgroundColor, shape = RoundedCornerShape(12.dp))
@@ -135,8 +137,7 @@ fun OneLineTextField(
                     }
                     innerTextField()
                 },
-                textStyle =
-                if (enabled) {
+                textStyle = if (enabled) {
                     InTouchTheme.typography.bodyRegularTypography
                 } else {
                     InTouchTheme.typography.bodyRegularTypography.copy(
@@ -158,26 +159,18 @@ fun OneLineTextField(
 @Composable
 fun TextInputPreview() {
     InTouchTheme {
-        Box(
-            modifier = Modifier
-                .background(
-                    InTouchTheme.colors.mainColorBlue,
-                )
-                .fillMaxSize()
-        ) {
-            var text by remember { mutableStateOf("") }
-            OneLineTextField(
-                titleText = StringVO.Plain("Title text may be very looooong"),
-                value = text,
-                onValueChange = {
-                    text = it
-                },
-                hint = "Hint text",
-                isError = false,
-                enabled = true,
-                modifier = Modifier.padding(45.dp)
-            )
-        }
+        var text by remember { mutableStateOf("") }
+        OneLineTextField(
+            titleText = StringVO.Plain("Title text may be very looooong"),
+            value = text,
+            onValueChange = {
+                text = it
+            },
+            hint = "Hint text",
+            isError = false,
+            enabled = true,
+            modifier = Modifier.padding(45.dp)
+        )
     }
 }
 
