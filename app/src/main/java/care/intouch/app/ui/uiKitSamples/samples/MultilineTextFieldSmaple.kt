@@ -2,7 +2,9 @@ package care.intouch.app.ui.uiKitSamples.samples
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
@@ -42,9 +44,9 @@ fun MultilineTextFieldSampleScreen() {
             modifier = Modifier.fillMaxSize()
         ) {
             MultilineTextField(
-                titleText = StringVO.Plain("Multiline text field. \nTitle text"),
-                subtitleText = StringVO.Plain("Subtitle text"),
-                captionText = StringVO.Plain("Caption text"),
+                titleText = StringVO.Plain("Text small"),
+                subtitleText = StringVO.Plain("Lorem ipsum dolor sit amet consectetur. Pellentesque eget non ipsum libero et. Parturient imperdiet."),
+                hint = StringVO.Plain("Write your answer here..."),
                 value = text,
                 onValueChange = {
                     text = it
@@ -52,46 +54,88 @@ fun MultilineTextFieldSampleScreen() {
                 isError = isError,
                 enabled = isEnable,
                 readOnly = isReadOnly,
-                linesAmount = 8,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(8.dp)
                     .width(334.dp)
             )
 
-            Button(
-                onClick = {
-                    focusManager.clearFocus()
+            MultilineTextField(
+                subtitleText = StringVO.Plain("Text small. Lorem ipsum sit amet consectetur. Pellentesque eget non ipsum et."),
+                textPadding = 2.dp,
+                value = text,
+                onValueChange = {
+                    text = it
                 },
-                modifier = Modifier.padding(top = 16.dp)
+                hint = StringVO.Plain("Write your answer here..."),
+                isError = isError,
+                enabled = isEnable,
+                readOnly = isReadOnly,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .width(334.dp)
+            )
+
+            MultilineTextField(
+                subtitleText = StringVO.Plain("What motivates you to pursue your current career path?"),
+                captionText = StringVO.Plain("Please share insights into the motivations and factors that inspire your choice of the current professional journey."),
+                value = text,
+                onValueChange = {
+                    text = it
+                },
+                hint = StringVO.Plain("Write your answer here..."),
+                isError = isError,
+                enabled = isEnable,
+                readOnly = isReadOnly,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .width(334.dp)
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                Text("Submit (Clear focus)")
+                Button(
+                    onClick = {
+                        focusManager.clearFocus()
+                    },
+                ) {
+                    Text("Submit (Clear focus)")
+                }
+
+                Button(
+                    onClick = {
+                        isError = !isError
+                    },
+                ) {
+                    Text("Error change")
+                }
             }
 
-            Button(
-                onClick = {
-                    isError = !isError
-                },
-                modifier = Modifier.padding(top = 16.dp)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                Text("Error change")
-            }
 
-            Button(
-                onClick = {
-                    isEnable = !isEnable
-                },
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                Text("Enable change")
-            }
+                Button(
+                    onClick = {
+                        isEnable = !isEnable
+                    },
+                ) {
+                    Text("Enable change")
+                }
 
-            Button(
-                onClick = {
-                    isReadOnly = !isReadOnly
-                },
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                Text("Read only change")
+                Button(
+                    onClick = {
+                        isReadOnly = !isReadOnly
+                    },
+                ) {
+                    Text("Read only change")
+                }
             }
         }
     }

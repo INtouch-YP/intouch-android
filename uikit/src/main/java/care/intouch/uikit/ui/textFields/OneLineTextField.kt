@@ -52,7 +52,7 @@ One line text field with the title.
  * @param readOnly controls the editable state of the text field. When `true`, the text field cannot
  * be modified. However, a user can focus it and copy text from it. Read-only text fields are
  * usually used to display pre-filled forms that a user cannot edit.
- * !Do not change [readOnly] when text is selected, as this cause crash.
+ * !Do not change [readOnly] when text is selected (or text field focused), as this cause crash.
  * Known issue by compose developers, may fix in future versions.
  * @param visualTransformation transforms the visual representation of the input [value]
  * For example, you can use
@@ -73,7 +73,7 @@ fun OneLineTextField(
     titleText: StringVO,
     value: String,
     onValueChange: (String) -> Unit,
-    hint: String = BLANC_STRING,
+    hint: StringVO = StringVO.Plain(BLANC_STRING),
     isError: Boolean,
     enabled: Boolean,
     readOnly: Boolean = false,
@@ -128,7 +128,7 @@ fun OneLineTextField(
                 decorationBox = { innerTextField ->
                     if (value.isEmpty()) {
                         Text(
-                            text = hint,
+                            text = hint.value(),
                             maxLines = 1,
                             style = InTouchTheme.typography.bodyRegularTypography.copy(
                                 color = InTouchTheme.colors.textColorBlue50
@@ -166,7 +166,7 @@ fun TextInputPreview() {
             onValueChange = {
                 text = it
             },
-            hint = "Hint text",
+            hint = StringVO.Plain("Hint text"),
             isError = false,
             enabled = true,
             modifier = Modifier.padding(45.dp)
