@@ -17,10 +17,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import care.intouch.uikit.R
@@ -211,6 +213,7 @@ fun CustomTopBar(
             style = InTouchTheme.typography.titleLargeTypography,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
+            color = InTouchTheme.colors.textColorBlue,
             modifier = Modifier
                 .weight(1f),
             textAlign = TextAlign.Center
@@ -273,9 +276,10 @@ fun CustomBottomNavBar(
             .background(Color.Transparent)
     ) {
 
-        val selectedIconIndex = rememberSaveable {
-            mutableIntStateOf(0)
+        var selectedElementId: ElementId by rememberSaveable {
+            mutableStateOf(ElementId.HOME_ID)
         }
+
 
         val (homeTag, progressTag, plusTag, myPlanTag, additionalTag, box) = createRefs()
 
@@ -294,12 +298,12 @@ fun CustomBottomNavBar(
 
         NavBottomComplexElement(
             onClick = {
-                selectedIconIndex.intValue = ElementId.HOME_ID.id
+                selectedElementId = ElementId.HOME_ID
                 firstItemClick.invoke()
             },
             text = firstItemText,
             painter = firstItemImage,
-            focusTint = if (selectedIconIndex.intValue == ElementId.HOME_ID.id) onFocusTint
+            focusTint = if (selectedElementId == ElementId.HOME_ID) onFocusTint
             else outFocusTint,
             modifier = Modifier
                 .constrainAs(homeTag) {
@@ -310,12 +314,12 @@ fun CustomBottomNavBar(
         
         NavBottomComplexElement(
             onClick = {
-                selectedIconIndex.intValue = ElementId.ADDITIONAL_ID.id
+                selectedElementId = ElementId.ADDITIONAL_ID
                 fourthItemClick.invoke()
             },
             text = fourthItemText,
             painter = fourthItemImage,
-            focusTint = if (selectedIconIndex.intValue == ElementId.ADDITIONAL_ID.id) onFocusTint
+            focusTint = if (selectedElementId == ElementId.ADDITIONAL_ID) onFocusTint
             else outFocusTint,
             modifier = Modifier
                 .constrainAs(additionalTag) {
@@ -332,18 +336,18 @@ fun CustomBottomNavBar(
                 top.linkTo(parent.top)
             }
         ) {
-            selectedIconIndex.intValue = ElementId.PLUS_ID.id
+            selectedElementId = ElementId.PLUS_ID
             onPlusItemClick.invoke()
         }
 
         NavBottomComplexElement(
             onClick = {
-                selectedIconIndex.intValue = ElementId.MY_PROGRESS_ID.id
+                selectedElementId = ElementId.MY_PROGRESS_ID
                 secondItemClick.invoke()
             },
             text = secondItemText,
             painter = secondItemImage,
-            focusTint = if (selectedIconIndex.intValue == ElementId.MY_PROGRESS_ID.id) onFocusTint
+            focusTint = if (selectedElementId == ElementId.MY_PROGRESS_ID) onFocusTint
             else outFocusTint,
             modifier = Modifier
                 .constrainAs(progressTag) {
@@ -355,12 +359,12 @@ fun CustomBottomNavBar(
         
         NavBottomComplexElement(
             onClick = {
-                selectedIconIndex.intValue = ElementId.MY_PLAN_ID.id
+                selectedElementId = ElementId.MY_PLAN_ID
                 thirdItemClick.invoke()
             },
             text = thirdItemText,
             painter = thirdItemImage,
-            focusTint = if (selectedIconIndex.intValue == ElementId.MY_PLAN_ID.id) onFocusTint
+            focusTint = if (selectedElementId == ElementId.MY_PLAN_ID) onFocusTint
             else outFocusTint,
             modifier = Modifier
                 .constrainAs(myPlanTag) {
@@ -396,7 +400,7 @@ fun CustomBottomNavBarPreview() {
     }
 }
 
-enum class ElementId(val id: Int) {
-    HOME_ID(0), MY_PROGRESS_ID(1), PLUS_ID(2), MY_PLAN_ID(3), ADDITIONAL_ID(4);
+enum class ElementId {
+    HOME_ID, MY_PROGRESS_ID, PLUS_ID, MY_PLAN_ID, ADDITIONAL_ID;
 }
 
