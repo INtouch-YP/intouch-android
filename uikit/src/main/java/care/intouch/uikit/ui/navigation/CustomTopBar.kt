@@ -71,7 +71,7 @@ fun TopBarArcButtonPreview() {
 fun CustomTopBar(
     onBackArrowClick: () -> Unit,
     onCloseButtonClick: () -> Unit,
-    title: String,
+    title: String = "",
     enabledArcButton: Boolean,
     addBackArrowButton: Boolean,
     addCloseButton: Boolean
