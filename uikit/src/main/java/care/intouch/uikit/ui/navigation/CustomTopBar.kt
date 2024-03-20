@@ -43,12 +43,12 @@ fun TopBarArcButton(
        Icon(
            painter = painterResource(id = R.drawable.arc_rectangle),
            contentDescription = null,
-           tint = if (enabled) InTouchTheme.colors.accentColorGreen else InTouchTheme.colors.accentColorGreen50
+           tint = if (enabled) InTouchTheme.colors.accentGreen else InTouchTheme.colors.accentGreen50
        )
         Icon(
             painter = painterResource(id = R.drawable.icon_close),
             contentDescription = null,
-            tint = InTouchTheme.colors.inputColor
+            tint = InTouchTheme.colors.input
         )
     }
 }
@@ -80,7 +80,7 @@ fun CustomTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(InTouchTheme.colors.inputColor),
+            .background(InTouchTheme.colors.input),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -94,7 +94,7 @@ fun CustomTopBar(
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow_left),
                     contentDescription = null,
-                    tint = InTouchTheme.colors.mainColorGreen,
+                    tint = InTouchTheme.colors.mainGreen,
                     modifier = Modifier
                         .align(Alignment.CenterStart)
                         .clickable(
@@ -115,10 +115,10 @@ fun CustomTopBar(
 
         Text(
             text = title,
-            style = InTouchTheme.typography.titleLargeTypography,
+            style = InTouchTheme.typography.titleLarge,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            color = InTouchTheme.colors.textColorBlue,
+            color = InTouchTheme.colors.textBlue,
             modifier = Modifier
                 .weight(1f),
             textAlign = TextAlign.Center

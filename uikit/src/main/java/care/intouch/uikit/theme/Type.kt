@@ -123,7 +123,7 @@ data class InTouchTypography(
         fontSize = 15.sp,
         lineHeight = 20.sp,
     ),
-    val topBar: TextStyle = TextStyle(
+    val tabBar: TextStyle = TextStyle(
         fontFamily = ralewayRegular,
         fontWeight = FontWeight.Normal,
         fontSize = 10.sp,

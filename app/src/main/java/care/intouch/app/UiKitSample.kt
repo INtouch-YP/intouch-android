@@ -100,8 +100,8 @@ fun NavigationSample() {
             addCloseButton = true
         ) },
         bottomBar = { CustomBottomNavBar(
-            onFocusTint = InTouchTheme.colors.mainColorGreen,
-            outFocusTint = InTouchTheme.colors.mainColorGreen40,
+            onFocusTint = InTouchTheme.colors.mainGreen,
+            outFocusTint = InTouchTheme.colors.mainGreen40,
             firstItemText = stringResource(id = R.string.home_bottom_nav_bar),
             secondItemText = stringResource(id = R.string.my_progress_bottom_nav_bar),
             thirdItemText = stringResource(id = R.string.my_plan_bottom_nav_bar),
