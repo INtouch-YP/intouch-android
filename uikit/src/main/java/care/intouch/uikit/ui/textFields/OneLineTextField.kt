@@ -110,7 +110,7 @@ fun OneLineTextField(
                 .border(
                     width = 1.dp,
                     color = when {
-                        isError && enabled -> InTouchTheme.colors.errorStrokeRed
+                        isError && enabled -> InTouchTheme.colors.errorRed
                         isFocused && enabled -> InTouchTheme.colors.accentGreen
                         else -> backgroundColor
                     },
