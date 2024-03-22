@@ -40,11 +40,11 @@ fun TopBarArcButton(
             ),
         contentAlignment = Alignment.Center
     ) {
-       Icon(
-           painter = painterResource(id = R.drawable.arc_rectangle),
-           contentDescription = null,
-           tint = if (enabled) InTouchTheme.colors.accentGreen else InTouchTheme.colors.accentGreen50
-       )
+        Icon(
+            painter = painterResource(id = R.drawable.arc_rectangle),
+            contentDescription = null,
+            tint = if (enabled) InTouchTheme.colors.accentGreen else InTouchTheme.colors.accentGreen50
+        )
         Icon(
             painter = painterResource(id = R.drawable.icon_close),
             contentDescription = null,
@@ -63,7 +63,6 @@ fun TopBarArcButtonPreview() {
         )
     }
 }
-
 
 
 // Navigation UI

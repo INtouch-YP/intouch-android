@@ -1,5 +1,6 @@
 package care.intouch.app
 
+import UiKitSample
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -71,7 +72,9 @@ fun MainScreenWithDebug(movedUiKitSample: Boolean, onChangeState: () -> Unit) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)) {
                 UiKitSample()
             }
             UikitSampleButton(
