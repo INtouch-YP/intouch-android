@@ -3,4 +3,9 @@
     //UiKitSample
     <string name="uikit_sample_button">UiKitSample</string>
     <string name="main_screen_button">MainScreen</string>
+
+    <string name="home_bottom_nav_bar">Home</string>
+    <string name="my_progress_bottom_nav_bar">My progress</string>
+    <string name="my_plan_bottom_nav_bar">My plan</string>
+    <string name="additional_bottom_nav_bar">Additional</string>
 </resources>

@@ -34,6 +34,12 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            firebaseAppDistribution {
+                serviceCredentialsFile = "app/serviceCredentialsFile.json"
+                artifactType = "APK"
+                releaseNotesFile = "app/src/stage/qa/releaseNotes.txt"
+                testers = "QA"
+            }
         }
 
         getByName("debug") {
@@ -81,6 +87,15 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+task("appDistributionToQaStageQa") {
+    dependsOn("assembleStageQa")
+    dependsOn("appDistributionUploadStageQa")
+}
+
+task("appDistributionToQaProdQa") {
+    dependsOn("assembleProdQa")
+    dependsOn("appDistributionUploadProdQa")
 }
 
 dependencies {
