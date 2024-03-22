@@ -48,7 +48,7 @@ fun UiKitSample() {
                         .padding(16.dp)
                         .clickable { /*TODO moved to Custom Title*/ },
                     text = "Custom Title",
-                    style = InTouchTheme.typography.bodyRegularTypography,
+                    style = InTouchTheme.typography.bodyRegular,
                     textAlign = TextAlign.Center
                 )
                 Text(
@@ -57,7 +57,7 @@ fun UiKitSample() {
                         .padding(16.dp)
                         .clickable { /*TODO moved to Custom Button*/ },
                     text = "Custom Button",
-                    style = InTouchTheme.typography.bodyRegularTypography,
+                    style = InTouchTheme.typography.bodyRegular,
                     textAlign = TextAlign.Center
                 )
                 UikitSampleButton(
@@ -100,8 +100,8 @@ fun NavigationSample() {
             addCloseButton = true
         ) },
         bottomBar = { CustomBottomNavBar(
-            onFocusTint = InTouchTheme.colors.mainColorGreen,
-            outFocusTint = InTouchTheme.colors.mainColorGreen40,
+            onFocusTint = InTouchTheme.colors.mainGreen,
+            outFocusTint = InTouchTheme.colors.mainGreen40,
             firstItemText = stringResource(id = R.string.home_bottom_nav_bar),
             secondItemText = stringResource(id = R.string.my_progress_bottom_nav_bar),
             thirdItemText = stringResource(id = R.string.my_plan_bottom_nav_bar),
@@ -120,7 +120,7 @@ fun NavigationSample() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(InTouchTheme.colors.mainColorBlue),
+                .background(InTouchTheme.colors.mainBlue),
             contentAlignment = Alignment.Center
         ) {
             Text(text = "Work space")
