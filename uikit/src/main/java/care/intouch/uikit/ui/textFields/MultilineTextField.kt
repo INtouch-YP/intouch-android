@@ -157,7 +157,7 @@ fun MultilineTextField(
                 .border(
                     width = 1.dp,
                     color = when {
-                        isError && enabled -> Color.Red
+                        isError && enabled -> InTouchTheme.colors.errorStrokeRed
                         isFocused && enabled -> InTouchTheme.colors.accentGreen
                         else -> backgroundColor
                     },
