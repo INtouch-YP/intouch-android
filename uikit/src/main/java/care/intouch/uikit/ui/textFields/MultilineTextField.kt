@@ -29,11 +29,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.textFields.MultilineTextFieldDefaults.BLANC_STRING
 import care.intouch.uikit.ui.textFields.MultilineTextFieldDefaults.DEFAULT_LINE_AMOUNT
 import care.intouch.uikit.ui.textFields.MultilineTextFieldDefaults.TextPadding
-import care.intouch.uikit.ui.util.StringVO
 
 /**
 Multiline text field with the title, subtitle and caption.
@@ -94,7 +94,7 @@ fun MultilineTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    backgroundColor: Color = InTouchTheme.colors.inputColor85,
+    backgroundColor: Color = InTouchTheme.colors.input85,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -110,11 +110,11 @@ fun MultilineTextField(
                 if (titleText.value().isNotBlank()) {
                     Text(
                         text = titleText.value(),
-                        style = InTouchTheme.typography.titleSmallTypography,
+                        style = InTouchTheme.typography.titleSmall,
                         color = if (enabled) {
-                            InTouchTheme.colors.textColorBlue
+                            InTouchTheme.colors.textBlue
                         } else {
-                            InTouchTheme.colors.textColorBlue50
+                            InTouchTheme.colors.textBlue50
                         },
                         overflow = TextOverflow.Ellipsis
                     )
@@ -124,11 +124,11 @@ fun MultilineTextField(
                         text = subtitleText.value(),
                         modifier = if (titleText.value().isNotBlank()) Modifier
                             .padding(top = 8.dp) else Modifier,
-                        style = InTouchTheme.typography.bodySemiBoldTypography,
+                        style = InTouchTheme.typography.bodySemibold,
                         color = if (enabled) {
-                            InTouchTheme.colors.textColorGreen
+                            InTouchTheme.colors.textGreen
                         } else {
-                            InTouchTheme.colors.textColorGreen40
+                            InTouchTheme.colors.textGreen40
                         },
                         overflow = TextOverflow.Ellipsis
                     )
@@ -140,11 +140,11 @@ fun MultilineTextField(
                                 .isNotBlank()
                         )
                             Modifier.padding(top = 2.dp) else Modifier,
-                        style = InTouchTheme.typography.caption1RegularTypography,
+                        style = InTouchTheme.typography.caption1Regular,
                         color = if (enabled) {
-                            InTouchTheme.colors.textColorGreen
+                            InTouchTheme.colors.textGreen
                         } else {
-                            InTouchTheme.colors.textColorGreen40
+                            InTouchTheme.colors.textGreen40
                         },
                         overflow = TextOverflow.Ellipsis
                     )
@@ -158,7 +158,7 @@ fun MultilineTextField(
                     width = 1.dp,
                     color = when {
                         isError && enabled -> Color.Red
-                        isFocused && enabled -> InTouchTheme.colors.accentColorGreen
+                        isFocused && enabled -> InTouchTheme.colors.accentGreen
                         else -> backgroundColor
                     },
                     shape = RoundedCornerShape(12.dp),
@@ -173,13 +173,13 @@ fun MultilineTextField(
                 enabled = enabled,
                 readOnly = readOnly,
                 visualTransformation = visualTransformation,
-                cursorBrush = SolidColor(InTouchTheme.colors.textColorGreen),
+                cursorBrush = SolidColor(InTouchTheme.colors.textGreen),
                 decorationBox = { innerTextField ->
                     if (value.isEmpty()) {
                         Text(
                             text = hint.value(),
-                            style = InTouchTheme.typography.bodyRegularTypography.copy(
-                                color = InTouchTheme.colors.textColorBlue50
+                            style = InTouchTheme.typography.bodyRegular.copy(
+                                color = InTouchTheme.colors.textBlue50
                             )
                         )
                     }
@@ -187,10 +187,10 @@ fun MultilineTextField(
                 },
                 textStyle =
                 if (enabled) {
-                    InTouchTheme.typography.bodyRegularTypography
+                    InTouchTheme.typography.bodyRegular
                 } else {
-                    InTouchTheme.typography.bodyRegularTypography.copy(
-                        color = InTouchTheme.colors.textColorBlue50
+                    InTouchTheme.typography.bodyRegular.copy(
+                        color = InTouchTheme.colors.textBlue50
                     )
                 },
                 keyboardOptions = keyboardOptions,

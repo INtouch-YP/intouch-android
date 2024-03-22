@@ -28,9 +28,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.textFields.OneLineTextFieldDefaults.BLANC_STRING
-import care.intouch.uikit.ui.util.StringVO
 
 /**
 One line text field with the title.
@@ -80,7 +80,7 @@ fun OneLineTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    backgroundColor: Color = InTouchTheme.colors.inputColor85,
+    backgroundColor: Color = InTouchTheme.colors.input85,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -92,11 +92,11 @@ fun OneLineTextField(
         if (titleText.value().isNotBlank()) {
             Text(
                 text = titleText.value(),
-                style = InTouchTheme.typography.titleSmallTypography,
+                style = InTouchTheme.typography.titleSmall,
                 color = if (enabled) {
-                    InTouchTheme.colors.textColorGreen
+                    InTouchTheme.colors.textGreen
                 } else {
-                    InTouchTheme.colors.textColorGreen40
+                    InTouchTheme.colors.textGreen40
                 },
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -111,7 +111,7 @@ fun OneLineTextField(
                     width = 1.dp,
                     color = when {
                         isError && enabled -> Color.Red
-                        isFocused && enabled -> InTouchTheme.colors.accentColorGreen
+                        isFocused && enabled -> InTouchTheme.colors.accentGreen
                         else -> backgroundColor
                     },
                     shape = RoundedCornerShape(12.dp),
@@ -124,24 +124,24 @@ fun OneLineTextField(
                 enabled = enabled,
                 readOnly = readOnly,
                 visualTransformation = visualTransformation,
-                cursorBrush = SolidColor(InTouchTheme.colors.textColorGreen),
+                cursorBrush = SolidColor(InTouchTheme.colors.textGreen),
                 decorationBox = { innerTextField ->
                     if (value.isEmpty()) {
                         Text(
                             text = hint.value(),
                             maxLines = 1,
-                            style = InTouchTheme.typography.bodyRegularTypography.copy(
-                                color = InTouchTheme.colors.textColorBlue50
+                            style = InTouchTheme.typography.bodyRegular.copy(
+                                color = InTouchTheme.colors.textBlue50
                             )
                         )
                     }
                     innerTextField()
                 },
                 textStyle = if (enabled) {
-                    InTouchTheme.typography.bodyRegularTypography
+                    InTouchTheme.typography.bodyRegular
                 } else {
-                    InTouchTheme.typography.bodyRegularTypography.copy(
-                        color = InTouchTheme.colors.textColorBlue50
+                    InTouchTheme.typography.bodyRegular.copy(
+                        color = InTouchTheme.colors.textBlue50
                     )
                 },
                 singleLine = true,
