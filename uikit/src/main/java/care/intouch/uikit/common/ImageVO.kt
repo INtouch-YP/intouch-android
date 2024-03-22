@@ -1,4 +1,4 @@
-package care.intouch.uikit.ui.utill
+package care.intouch.uikit.common
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable

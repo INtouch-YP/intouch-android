@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.textFields.MultilineTextField
-import care.intouch.uikit.ui.utill.StringVO
+import care.intouch.uikit.ui.util.StringVO
 
 @Composable
 fun MultilineTextFieldSampleScreen() {

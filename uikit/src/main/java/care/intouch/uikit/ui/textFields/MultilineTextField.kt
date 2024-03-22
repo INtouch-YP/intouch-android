@@ -33,7 +33,7 @@ import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.textFields.MultilineTextFieldDefaults.BLANC_STRING
 import care.intouch.uikit.ui.textFields.MultilineTextFieldDefaults.DEFAULT_LINE_AMOUNT
 import care.intouch.uikit.ui.textFields.MultilineTextFieldDefaults.TextPadding
-import care.intouch.uikit.ui.utill.StringVO
+import care.intouch.uikit.ui.util.StringVO
 
 /**
 Multiline text field with the title, subtitle and caption.

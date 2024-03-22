@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,7 +34,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = InTouchTheme.colors.mainColorBlue
+                    color = InTouchTheme.colors.mainBlue
                 ) {
                     var movedUiKitSample by remember {
                         mutableStateOf(false)
@@ -60,7 +61,7 @@ class MainActivity : ComponentActivity() {
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
-        style = InTouchTheme.typography.bodyRegularTypography,
+        style = InTouchTheme.typography.titleMedium,
         modifier = modifier
     )
 }
@@ -68,11 +69,20 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun MainScreenWithDebug(movedUiKitSample: Boolean, onChangeState: () -> Unit) {
     if (movedUiKitSample) {
-        UiKitSample()
-        UikitSampleButton(
-            text = stringResource(R.string.main_screen_button),
-            onClick = { onChangeState.invoke() }
-        )
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)) {
+                UiKitSample()
+            }
+            UikitSampleButton(
+                text = stringResource(R.string.main_screen_button),
+                onClick = { onChangeState.invoke() }
+            )
+        }
+
     } else {
         Greeting("Android")
         UikitSampleButton(
@@ -92,16 +102,16 @@ fun UikitSampleButton(
             .fillMaxWidth()
             .padding(16.dp),
         colors = ButtonColors(
-            containerColor = InTouchTheme.colors.mainColorGreen,
-            contentColor = InTouchTheme.colors.inputColor,
-            disabledContainerColor = InTouchTheme.colors.mainColorGreen,
-            disabledContentColor = InTouchTheme.colors.mainColorGreen,
+            containerColor = InTouchTheme.colors.mainGreen,
+            contentColor = InTouchTheme.colors.input,
+            disabledContainerColor = InTouchTheme.colors.mainGreen,
+            disabledContentColor = InTouchTheme.colors.mainGreen,
         ),
         onClick = { onClick.invoke() }
     ) {
         Text(
             text = text,
-            style = InTouchTheme.typography.bodyRegularTypography,
+            style = InTouchTheme.typography.bodyRegular,
         )
     }
 }
@@ -114,7 +124,7 @@ fun GreetingPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = InTouchTheme.colors.mainColorBlue,
+                    color = InTouchTheme.colors.mainBlue,
                 ),
             verticalArrangement = Arrangement.SpaceBetween
         ) {

@@ -18,9 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.textFields.OneLineTextField
-import care.intouch.uikit.ui.utill.StringVO
 
 @Composable
 fun OneLineTextFieldSampleScreen() {
@@ -33,7 +33,7 @@ fun OneLineTextFieldSampleScreen() {
     var text by rememberSaveable { mutableStateOf("") }
 
     Surface(
-        color = InTouchTheme.colors.mainColorBlue,
+        color = InTouchTheme.colors.mainBlue,
         modifier = Modifier.fillMaxSize()
     ) {
         Column(
