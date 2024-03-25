@@ -1,12 +1,10 @@
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,14 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import care.intouch.app.R
 import care.intouch.app.UikitSampleButton
 import care.intouch.app.ui.uiKitSamples.ScreenSample
 import care.intouch.app.ui.uiKitSamples.samples.MultilineTextFieldSampleScreen
 import care.intouch.app.ui.uiKitSamples.samples.OneLineTextFieldSampleScreen
+import care.intouch.app.ui.uiKitSamples.samples.ToggleSampleScreen
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.navigation.CustomBottomNavBar
 import care.intouch.uikit.ui.navigation.CustomTopBar
@@ -44,24 +41,6 @@ fun UiKitSample() {
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .clickable { /*TODO moved to Custom Title*/ },
-                    text = "Custom Title",
-                    style = InTouchTheme.typography.bodyRegular,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .clickable { /*TODO moved to Custom Button*/ },
-                    text = "Custom Button",
-                    style = InTouchTheme.typography.bodyRegular,
-                    textAlign = TextAlign.Center
-                )
                 UikitSampleButton(
                     text = "Go to one line text field sample",
                     onClick = { screenSample = ScreenSample.OneLineTexFieldSample }
@@ -76,6 +55,11 @@ fun UiKitSample() {
                     text = "Go to navigation sample",
                     onClick = { screenSample = ScreenSample.NavigationSample }
                 )
+
+                UikitSampleButton(
+                    text = "Go to toggle sample",
+                    onClick = { screenSample = ScreenSample.ToggleSample }
+                )
             }
         }
 
@@ -89,6 +73,10 @@ fun UiKitSample() {
 
         ScreenSample.NavigationSample -> {
             NavigationSample()
+        }
+
+        ScreenSample.ToggleSample -> {
+            ToggleSampleScreen()
         }
     }
 }
