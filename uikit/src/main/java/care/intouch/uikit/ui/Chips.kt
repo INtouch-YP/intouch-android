@@ -3,6 +3,7 @@ package care.intouch.uikit.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
@@ -23,25 +24,26 @@ import care.intouch.uikit.theme.InTouchTheme
 
 @Composable
 fun RegularChips(
-    modifier: Modifier = Modifier,
     text: StringVO,
-    initialColor: Color = InTouchTheme.colors.mainBlue,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    selected: Boolean = false,
+    unselectedColor: Color = InTouchTheme.colors.mainBlue,
     selectedColor: Color = InTouchTheme.colors.mainGreen40,
+    unselectedColorText: Color = InTouchTheme.colors.input,
     selectedColorText: Color = InTouchTheme.colors.textGreen,
-    onClick: () -> Unit = {}
 ) {
-    var isSelected by rememberSaveable { mutableStateOf(false) }
+    var isSelected by rememberSaveable { mutableStateOf(selected) }
 
     Surface(
         shape = RoundedCornerShape(100.dp),
-        color = if (isSelected) selectedColor else initialColor,
+        color = if (isSelected) selectedColor else unselectedColor,
         modifier = modifier
-            .padding(8.dp)
     ) {
         Text(
             text = text.value(),
             style = InTouchTheme.typography.bodySemibold,
-            color = if (isSelected) InTouchTheme.colors.input else selectedColorText,
+            color = if (isSelected) unselectedColorText else selectedColorText,
             modifier = modifier
                 .clickable {
                     isSelected = !isSelected
@@ -54,29 +56,48 @@ fun RegularChips(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun PreviewRegularChips() {
+    InTouchTheme {
+        Column {
+            RegularChips(
+                text = StringVO.Plain("Caption"),
+                onClick = {},
+                unselectedColor = Color.White,
+                unselectedColorText = InTouchTheme.colors.accentGreen
+            )
+            Spacer(modifier = Modifier.padding(8.dp))
+            RegularChips(text = StringVO.Plain("Caption"), onClick = {}, selected = true)
+            Spacer(modifier = Modifier.padding(8.dp))
+            RegularChips(text = StringVO.Plain("Caption"), onClick = {})
+        }
+    }
+}
+
 @Composable
 fun AccentChips(
-    modifier: Modifier = Modifier,
     text: StringVO,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    selected: Boolean = false,
     alpha: Float = 0.85f,
-    initialColor: Color = InTouchTheme.colors.textBlue,
+    unselectedColor: Color = InTouchTheme.colors.textBlue,
     selectedColor: Color = InTouchTheme.colors.mainGreen40,
-    initialColorText: Color = InTouchTheme.colors.input,
+    unselectedColorText: Color = InTouchTheme.colors.input,
     selectedColorText: Color = InTouchTheme.colors.input,
-    onClick: () -> Unit = {}
 ) {
-    var isSelected by rememberSaveable { mutableStateOf(false) }
+    var isSelected by rememberSaveable { mutableStateOf(selected) }
 
     Surface(
         shape = RoundedCornerShape(20.dp),
-        color = if (isSelected) selectedColor else initialColor,
+        color = if (isSelected) selectedColor else unselectedColor,
         modifier = modifier
-            .padding(8.dp)
     ) {
         Text(
             text = text.value(),
             style = InTouchTheme.typography.titleSmall,
-            color = if (isSelected) initialColorText else selectedColorText,
+            color = if (isSelected) unselectedColorText else selectedColorText,
             modifier = modifier
                 .clickable {
                     isSelected = !isSelected
@@ -90,31 +111,46 @@ fun AccentChips(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun PreviewAccentChips() {
+    InTouchTheme {
+        Column {
+            AccentChips(text = StringVO.Plain("In progress"), onClick = {})
+            Spacer(modifier = Modifier.padding(8.dp))
+            AccentChips(
+                text = StringVO.Plain("Done"),
+                onClick = {},
+                unselectedColor = InTouchTheme.colors.accentGreen50
+            )
+        }
+    }
+}
+
 @Composable
 fun EmotionalChips(
-    modifier: Modifier = Modifier,
     text: StringVO,
-    initialColor: Color = InTouchTheme.colors.input,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    selected: Boolean = false,
+    unselectedColor: Color = InTouchTheme.colors.input,
     selectedColor: Color = InTouchTheme.colors.accentYellow,
-    initialColorText: Color = InTouchTheme.colors.textBlue,
+    unselectedColorText: Color = InTouchTheme.colors.textBlue,
     selectedColorText: Color = InTouchTheme.colors.textBlue,
     borderStroke: BorderStroke = BorderStroke(1.dp, InTouchTheme.colors.unableElementLight),
-    onClick: () -> Unit = {}
 ) {
-    var isSelected by rememberSaveable { mutableStateOf(false) }
+    var isSelected by rememberSaveable { mutableStateOf(selected) }
 
     Surface(
         shape = RoundedCornerShape(15.dp),
         border = borderStroke,
-        color = if (isSelected) selectedColor else initialColor,
+        color = if (isSelected) selectedColor else unselectedColor,
         modifier = modifier
-            .padding(8.dp)
-
     ) {
         Text(
             text = text.value(),
             style = InTouchTheme.typography.bodyRegular,
-            color = if (isSelected) initialColorText else selectedColorText,
+            color = if (isSelected) unselectedColorText else selectedColorText,
             modifier = modifier
                 .clickable {
                     isSelected = !isSelected
@@ -129,38 +165,12 @@ fun EmotionalChips(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewChips() {
+fun PreviewEmotionalChips() {
     InTouchTheme {
         Column {
-            RegularChips(text = StringVO.Plain("Caption"))
-            RegularChips(text = StringVO.Plain("Caption"))
-            AccentChips(text = StringVO.Plain("To do"))
-            AccentChips(text = StringVO.Plain("In progress"))
-            AccentChips(text = StringVO.Plain("Done"))
-            EmotionalChips(text = StringVO.Plain("Loss"))
+            EmotionalChips(text = StringVO.Plain("Loss"), onClick = {})
+            Spacer(modifier = Modifier.padding(8.dp))
+            EmotionalChips(text = StringVO.Plain("Loss"), onClick = {}, selected = true)
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewRowChips() {
-//    InTouchTheme {
-//        LazyHorizontalGrid(
-//            rows = GridCells.Fixed(2),
-//            horizontalArrangement = Arrangement.spacedBy(16.dp),
-//            verticalArrangement = Arrangement.spacedBy(16.dp)
-//        ) {
-//            item {
-//                EmotionalChips(text = StringVO.Plain("Loss"))
-//                EmotionalChips(text = StringVO.Plain("Loss"))
-////                repeat(6){
-////                    EmotionalChips(text = StringVO.Plain("Loss"))
-////                }
-////                repeat(6){
-////                    EmotionalChips(text = StringVO.Plain("Loss"))
-////                }
-//            }
-//        }
-//    }
-//}
