@@ -49,26 +49,3 @@ fun PrimaryButton(
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun PreviewPrimaryButton() {
-    val modifier = Modifier
-        .width(262.dp)
-        .height(69.dp)
-        .padding(5.dp)
-    InTouchTheme {
-        PrimaryButton(
-            onClick = { },
-            modifier = modifier,
-            text = "Call to action",
-            textStyle = InTouchTheme.typography.titleMediumTypography,
-            isEnabled = true,
-            isHasStroke = false,
-            enableBackgroundColor = InTouchTheme.colors.mainColorGreen,
-            disableBackgroundColor = InTouchTheme.colors.unableElementsColorLight,
-            enableTextColor = InTouchTheme.colors.inputColor,
-            disableTextColor = InTouchTheme.colors.textColorGreen40,
-            borderStrokeColor = InTouchTheme.colors.textColorGreen40
-        )
-    }
-}
