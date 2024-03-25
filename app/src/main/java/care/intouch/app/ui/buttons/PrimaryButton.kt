@@ -9,6 +9,8 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import care.intouch.uikit.theme.InTouchTheme
@@ -16,64 +18,61 @@ import care.intouch.uikit.theme.InTouchTheme
 @Composable
 fun PrimaryButton(
     onClick: () -> Unit,
-    mode: ButtonModeEnum,
+    modifier: Modifier,
+    text: String,
+    textStyle: TextStyle,
+    isEnabled: Boolean,
+    isHasStroke: Boolean,
+    enableBackgroundColor: Color,
+    disableBackgroundColor: Color,
+    enableTextColor: Color,
+    disableTextColor: Color,
+    borderStrokeColor: Color,
 ) {
     Button(
-        modifier = Modifier
-            .width(262.dp)
-            .height(69.dp)
-            .padding(5.dp),
-        border = if (mode == ButtonModeEnum.ABLESTROKE) {
-            BorderStroke(1.dp, InTouchTheme.colors.textColorGreen40)
+        modifier = modifier,
+        border = if (isHasStroke) {
+            BorderStroke(1.dp, borderStrokeColor)
         } else {
             BorderStroke(0.dp, InTouchTheme.colors.inputColor)
         },
-        colors = when (mode) {
-            ButtonModeEnum.ABLEWHITE -> ButtonColors(
-                containerColor = InTouchTheme.colors.inputColor,
-                contentColor = InTouchTheme.colors.textColorGreen,
-                disabledContainerColor = InTouchTheme.colors.mainColorGreen,
-                disabledContentColor = InTouchTheme.colors.mainColorGreen,
-            )
-
-            ButtonModeEnum.UNABLE -> ButtonColors(
-                containerColor = InTouchTheme.colors.unableElementsColorLight,
-                contentColor = InTouchTheme.colors.textColorGreen40,
-                disabledContainerColor = InTouchTheme.colors.mainColorGreen,
-                disabledContentColor = InTouchTheme.colors.mainColorGreen,
-            )
-
-            ButtonModeEnum.ABLE -> ButtonColors(
-                containerColor = InTouchTheme.colors.mainColorGreen,
-                contentColor = InTouchTheme.colors.inputColor,
-                disabledContainerColor = InTouchTheme.colors.mainColorGreen,
-                disabledContentColor = InTouchTheme.colors.mainColorGreen,
-            )
-
-            ButtonModeEnum.ABLESTROKE -> ButtonColors(
-                containerColor = InTouchTheme.colors.inputColor,
-                contentColor = InTouchTheme.colors.textColorGreen,
-                disabledContainerColor = InTouchTheme.colors.mainColorGreen,
-                disabledContentColor = InTouchTheme.colors.mainColorGreen,
-            )
-
-            ButtonModeEnum.DEFAULTNOSTROKE -> ButtonColors(
-                containerColor = InTouchTheme.colors.inputColor,
-                contentColor = InTouchTheme.colors.inputColor,
-                disabledContainerColor = InTouchTheme.colors.mainColorGreen,
-                disabledContentColor = InTouchTheme.colors.mainColorGreen,
-            )
-        }, onClick = { onClick.invoke() }
+        enabled = isEnabled,
+        colors = ButtonColors(
+            containerColor = enableBackgroundColor,
+            contentColor = enableTextColor,
+            disabledContainerColor = disableBackgroundColor,
+            disabledContentColor = disableTextColor,
+        ), onClick = if (isEnabled) {
+            { onClick.invoke() }
+        } else {
+            {}
+        }
     )
     {
-        Text(text = "Call to action", style = InTouchTheme.typography.titleMediumTypography)
+        Text(text = text, style = textStyle)
     }
 }
 
 @Composable
 @Preview(showBackground = true)
 fun PreviewPrimaryButton() {
+    val modifier = Modifier
+        .width(262.dp)
+        .height(69.dp)
+        .padding(5.dp)
     InTouchTheme {
-        PrimaryButton(onClick = { }, mode = ButtonModeEnum.ABLESTROKE)
+        PrimaryButton(
+            onClick = { },
+            modifier = modifier,
+            text = "Call to action",
+            textStyle = InTouchTheme.typography.titleMediumTypography,
+            isEnabled = true,
+            isHasStroke = false,
+            enableBackgroundColor = InTouchTheme.colors.mainColorGreen,
+            disableBackgroundColor = InTouchTheme.colors.unableElementsColorLight,
+            enableTextColor = InTouchTheme.colors.inputColor,
+            disableTextColor = InTouchTheme.colors.textColorGreen40,
+            borderStrokeColor = InTouchTheme.colors.textColorGreen40
+        )
     }
 }
