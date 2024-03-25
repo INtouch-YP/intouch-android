@@ -42,7 +42,7 @@ fun NavBottomBarPlusButton(
         modifier = modifier
             .size(70.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(InTouchTheme.colors.mainColorGreen)
+            .background(InTouchTheme.colors.mainGreen)
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
@@ -53,7 +53,7 @@ fun NavBottomBarPlusButton(
         Icon(
             painter = painterResource(id = R.drawable.icon_plus_large),
             contentDescription = null,
-            tint = InTouchTheme.colors.inputColor
+            tint = InTouchTheme.colors.input
         )
     }
 }
@@ -97,7 +97,7 @@ fun NavBottomComplexElement(
         Text(
             text = text,
             color = focusTint,
-            style = InTouchTheme.typography.tabBarTypography,
+            style = InTouchTheme.typography.tabBar,
             modifier = Modifier.padding(bottom = 4.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -113,7 +113,7 @@ fun NavBottomComplexElementPreview() {
             onClick = { /*TODO*/ },
             text = "Home",
             painter = painterResource(id = R.drawable.icon_home),
-            focusTint = InTouchTheme.colors.mainColorGreen,
+            focusTint = InTouchTheme.colors.mainGreen,
         )
     }
 }
@@ -248,8 +248,8 @@ fun CustomBottomNavBar(
 fun CustomBottomNavBarPreview() {
     InTouchTheme {
         CustomBottomNavBar(
-            onFocusTint = InTouchTheme.colors.mainColorGreen,
-            outFocusTint = InTouchTheme.colors.mainColorGreen40,
+            onFocusTint = InTouchTheme.colors.mainGreen,
+            outFocusTint = InTouchTheme.colors.mainGreen40,
             firstItemText = "Home",
             secondItemText = "My progress",
             thirdItemText = "My plan",

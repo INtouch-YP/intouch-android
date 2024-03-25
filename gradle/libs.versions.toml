@@ -29,7 +29,6 @@ firebaseAnalytics = "21.5.1"
 kotlinx-serialization = "1.9.22"
 androidLibrary = "8.2.2"
 constraintlayout = "1.0.1"
-uiToolingPreviewAndroid = "1.6.3"
 uiTooling = "1.6.3"
 
 [libraries]
@@ -69,7 +68,6 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout" }
-androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 
 [plugins]
@@ -83,4 +81,3 @@ google-firebase-appdistribution = { id = "com.google.firebase.appdistribution", 
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinx-serialization" }
 androidLibrary = { id = "com.android.library", version.ref = "androidLibrary" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
-

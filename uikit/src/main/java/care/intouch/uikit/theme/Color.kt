@@ -1,5 +1,6 @@
 package care.intouch.uikit.theme
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
 val mainColorBlue = Color(0xFFE1F4F8)
@@ -23,3 +24,26 @@ val unableElementsColorDark = Color(0xFFD9D9D9)
 val inputColor = Color(0xFFFFFFFF)
 val inputColor40 = Color(0x66FFFFFF)
 val inputColor85 = Color(0xD9FFFFFF)
+
+val errorStrokeRedColor = Color(0xFFE22749)
+
+@Immutable
+data class InTouchColors(
+    val mainBlue: Color = mainColorBlue,
+    val mainGreen: Color = mainColorGreen,
+    val mainGreen40: Color = mainColorGreen40,
+    val accentYellow: Color = accentColorYellow,
+    val accentGreen: Color = accentColorGreen,
+    val accentGreen30: Color = accentColorGreen30,
+    val accentGreen50: Color = accentColorGreen50,
+    val textBlue: Color = textColorBlue,
+    val textBlue50: Color = textColorBlue50,
+    val textGreen: Color = textColorGreen,
+    val textGreen40: Color = textColorGreen40,
+    val unableElementLight: Color = unableElementsColorLight,
+    val unableElementDark: Color = unableElementsColorDark,
+    val input: Color = inputColor,
+    val input40: Color = inputColor40,
+    val input85: Color = inputColor85,
+    val errorStrokeRed: Color = errorStrokeRedColor,
+)
