@@ -23,18 +23,18 @@ fun PrimaryButton(
     textStyle: TextStyle,
     isEnabled: Boolean,
     isHasStroke: Boolean,
-    enableBackgroundColor: Color = InTouchTheme.colors.mainColorGreen,
-    disableBackgroundColor: Color = InTouchTheme.colors.mainColorGreen,
-    enableTextColor: Color = InTouchTheme.colors.mainColorGreen,
-    disableTextColor: Color = InTouchTheme.colors.mainColorGreen,
-    borderStrokeColor: Color = InTouchTheme.colors.mainColorGreen,
+    enableBackgroundColor: Color,
+    disableBackgroundColor: Color,
+    enableTextColor: Color,
+    disableTextColor: Color,
+    borderStrokeColor: Color,
 ) {
     Button(
         modifier = modifier,
         border = if (isHasStroke) {
             BorderStroke(1.dp, borderStrokeColor)
         } else {
-            BorderStroke(0.dp, InTouchTheme.colors.inputColor)
+            BorderStroke(0.dp, borderStrokeColor)
         },
         enabled = isEnabled,
         colors = ButtonColors(
@@ -42,7 +42,12 @@ fun PrimaryButton(
             contentColor = enableTextColor,
             disabledContainerColor = disableBackgroundColor,
             disabledContentColor = disableTextColor,
-        ), onClick = { onClick.invoke() }
+        )
+        , onClick = if (isEnabled) {
+            { onClick.invoke() }
+        } else {
+            {}
+        }
     )
     {
         Text(text = text, style = textStyle)
