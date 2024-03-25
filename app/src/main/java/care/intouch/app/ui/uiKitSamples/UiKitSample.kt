@@ -20,7 +20,6 @@ import care.intouch.app.ui.uiKitSamples.samples.NavigationSample
 import care.intouch.app.ui.uiKitSamples.samples.OneLineTextFieldSampleScreen
 import care.intouch.app.ui.uiKitSamples.samples.SliderSample
 import care.intouch.uikit.theme.InTouchTheme
-import care.intouch.uikit.ui.slider.SliderWidgetWithDigits
 
 @Composable
 fun UiKitSample() {
