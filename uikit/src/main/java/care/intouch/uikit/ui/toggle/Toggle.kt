@@ -29,9 +29,8 @@ fun Toggle(
     handleHeight: Dp = 27.dp,
     trackWidth: Dp = 51.dp,
     trackHeight: Dp = 31.dp,
-    isActive: Boolean,
     isChecked: Boolean,
-    onChecked: (Boolean) -> Unit,
+    onChange: (Boolean) -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -39,10 +38,10 @@ fun Toggle(
             .height(trackHeight)
             .clip(CircleShape)
             .background(
-                if(isActive) InTouchTheme.colors.mainGreen
+                if (isChecked) InTouchTheme.colors.mainGreen
                 else InTouchTheme.colors.unableElementDark
             ),
-        horizontalArrangement = if(isChecked) Arrangement.End else Arrangement.Start
+        horizontalArrangement = if (isChecked) Arrangement.End else Arrangement.Start
     ) {
         Box(
             modifier = modifier
@@ -51,12 +50,12 @@ fun Toggle(
                 .height(handleHeight)
                 .clip(CircleShape)
                 .background(
-                    if(isActive) InTouchTheme.colors.mainBlue
+                    if (isChecked) InTouchTheme.colors.mainBlue
                     else InTouchTheme.colors.unableElementLight
                 )
                 .align(Alignment.CenterVertically)
                 .clickable {
-                    onChecked.invoke(!isChecked)
+                    onChange.invoke(!isChecked)
                 }
         )
     }
@@ -69,7 +68,6 @@ fun TogglePreview() {
 
     InTouchTheme {
         Toggle(
-            isActive = isChecked,
             isChecked = isChecked
         ) {
             isChecked = it

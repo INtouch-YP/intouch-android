@@ -27,7 +27,6 @@ fun ToggleSampleScreen() {
             contentAlignment = Alignment.Center
         ) {
             Toggle(
-                isActive = isChecked,
                 isChecked = isChecked
             ) {
                 isChecked = it
