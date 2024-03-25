@@ -42,11 +42,7 @@ fun PrimaryButton(
             contentColor = enableTextColor,
             disabledContainerColor = disableBackgroundColor,
             disabledContentColor = disableTextColor,
-        ), onClick = if (isEnabled) {
-            { onClick.invoke() }
-        } else {
-            {}
-        }
+        ), onClick = { onClick.invoke() }
     )
     {
         Text(text = text, style = textStyle)
