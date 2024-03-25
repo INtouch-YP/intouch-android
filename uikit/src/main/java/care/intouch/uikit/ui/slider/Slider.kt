@@ -2,8 +2,10 @@ package care.intouch.uikit.ui.slider
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -19,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -28,51 +31,133 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import care.intouch.uikit.theme.InTouchTheme
-import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomSlider(
+fun SliderWidgetWithDigits(
+    modifier: Modifier = Modifier,
     inactiveTrackColor: Color,
     activeTrackColor: Color,
     internalRadiusThumbColor: Color,
     externalRadiusThumbColor: Color,
+    addTopDigitPanel: Boolean = true,
+    addBottomConditionsPanel: Boolean = true,
+    onValueChange: (Float) -> Unit
 ) {
-    var sliderPosition by remember { mutableFloatStateOf(0.0f) }
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
 
-    Column {
-        Slider(
-            value = sliderPosition,
-            onValueChange = { sliderPosition = it },
-            thumb = {
-                CustomThumb(
-                    internalRadiusThumbColor = internalRadiusThumbColor,
-                    externalRadiusThumbColor = externalRadiusThumbColor
-                )
-            },
-            track = { sliderState ->
-                CustomTrack(
-                    sliderState = sliderState,
-                    trackColor = inactiveTrackColor,
-                    progressColor = activeTrackColor,
-                    height = 8.dp,
-                )
+        if (addTopDigitPanel) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end= 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Absolute.SpaceBetween
+            ) {
+                (1..10).forEach { value ->
+                    Text(
+                        modifier = Modifier.padding(start = if (value in 2..<10) 4.dp else 0.dp),
+                        text = value.toString(),
+                        style = InTouchTheme.typography.subTitle,
+                        color = InTouchTheme.colors.textBlue
+                    )
+                }
             }
+        }
+
+
+        CustomSliderWithSteps(
+            inactiveTrackColor = inactiveTrackColor,
+            activeTrackColor = activeTrackColor,
+            internalRadiusThumbColor = internalRadiusThumbColor,
+            externalRadiusThumbColor = externalRadiusThumbColor,
+            onValueChange = onValueChange
         )
 
-        Text(text = sliderPosition.toString())
+        if (addBottomConditionsPanel) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Dissatisfied",
+                    modifier = Modifier.weight(1f),
+                    style = InTouchTheme.typography.bodyRegular,
+                    color = InTouchTheme.colors.textBlue
+                )
+                Text(
+                    text = "Satisfied",
+                    style = InTouchTheme.typography.bodyRegular,
+                    color = InTouchTheme.colors.textBlue
+                )
+            }
+        }
     }
 }
 
 @Composable
 @Preview(showBackground = true)
-fun CustomSliderPreview() {
+fun SliderWidgetWithDigitsPreview() {
+    SliderWidgetWithDigits(
+        inactiveTrackColor = InTouchTheme.colors.mainBlue,
+        activeTrackColor = InTouchTheme.colors.mainGreen,
+        internalRadiusThumbColor = InTouchTheme.colors.mainGreen,
+        externalRadiusThumbColor = InTouchTheme.colors.input,
+        onValueChange = {},
+        addTopDigitPanel = true,
+        addBottomConditionsPanel = true
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SimpleSlider(
+    inactiveTrackColor: Color,
+    activeTrackColor: Color,
+    internalRadiusThumbColor: Color,
+    externalRadiusThumbColor: Color,
+    onValueChange: (Float) -> Unit
+) {
+    var sliderPosition by remember { mutableFloatStateOf(0.0f) }
+
+    Slider(
+        value = sliderPosition,
+        onValueChange = { value ->
+            sliderPosition = value
+            onValueChange.invoke(value)
+        },
+        thumb = {
+            CustomThumb(
+                internalRadiusThumbColor = internalRadiusThumbColor,
+                externalRadiusThumbColor = externalRadiusThumbColor
+            )
+        },
+        track = { sliderState ->
+            CustomTrack(
+                sliderState = sliderState,
+                trackColor = inactiveTrackColor,
+                progressColor = activeTrackColor,
+                height = 8.dp,
+                withSteps = false
+            )
+        }
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+fun SimpleSliderPreview() {
     InTouchTheme {
-        CustomSlider(
+        SimpleSlider(
             inactiveTrackColor = InTouchTheme.colors.mainBlue,
             activeTrackColor = InTouchTheme.colors.mainGreen,
             internalRadiusThumbColor = InTouchTheme.colors.mainGreen,
             externalRadiusThumbColor = InTouchTheme.colors.input,
+            onValueChange = {}
         )
     }
 }
@@ -84,34 +169,34 @@ fun CustomSliderWithSteps(
     activeTrackColor: Color,
     internalRadiusThumbColor: Color,
     externalRadiusThumbColor: Color,
-    maxValue: Int
+    onValueChange: (Float) -> Unit
 ) {
     var sliderPosition by remember { mutableFloatStateOf(1.0f) }
 
-    Column {
-        Slider(
-            value = sliderPosition,
-            onValueChange = { sliderPosition = it },
-            thumb = {
-                CustomThumb(
-                    internalRadiusThumbColor = internalRadiusThumbColor,
-                    externalRadiusThumbColor = externalRadiusThumbColor
-                )
-            },
-            track = { sliderState ->
-                CustomTrack(
-                    sliderState = sliderState,
-                    trackColor = inactiveTrackColor,
-                    progressColor = activeTrackColor,
-                    height = 8.dp,
-                    maxValue = maxValue
-                )
-            },
-            steps = maxValue - 2,
-            valueRange = 1.0f..maxValue.toFloat(),
-        )
-        Text(text = sliderPosition.roundToInt().toString())
-    }
+    Slider(
+        value = sliderPosition,
+        onValueChange = { value ->
+            sliderPosition = value
+            onValueChange.invoke(value)
+        },
+        thumb = {
+            CustomThumb(
+                internalRadiusThumbColor = internalRadiusThumbColor,
+                externalRadiusThumbColor = externalRadiusThumbColor
+            )
+        },
+        track = { sliderState ->
+            CustomTrack(
+                sliderState = sliderState,
+                trackColor = inactiveTrackColor,
+                progressColor = activeTrackColor,
+                height = 8.dp,
+                withSteps = true
+            )
+        },
+        steps = 8,
+        valueRange = 1.0f..10.0f,
+    )
 }
 
 @Composable
@@ -123,7 +208,7 @@ fun CustomSliderWithStepsPreview() {
             activeTrackColor = InTouchTheme.colors.mainGreen,
             internalRadiusThumbColor = InTouchTheme.colors.mainGreen,
             externalRadiusThumbColor = InTouchTheme.colors.input,
-            maxValue = 10
+            onValueChange = {}
         )
     }
 }
@@ -135,7 +220,6 @@ fun CustomThumb(
 ) {
     Canvas(
         modifier = Modifier
-            .padding(horizontal = 4.dp)
             .size(24.dp)
     ) {
         drawCircle(
@@ -174,7 +258,7 @@ fun CustomTrack(
     trackColor: Color,
     progressColor: Color,
     height: Dp,
-    maxValue: Int? = null,
+    withSteps: Boolean,
     shape: Shape = CircleShape
 ) {
     Box(
@@ -187,8 +271,8 @@ fun CustomTrack(
         Box(
             modifier = Modifier
                 .fillMaxWidth(
-                    fraction = if (maxValue != null)
-                        ((sliderState.value - 1) * (1.0 / (maxValue - 1))).toFloat()
+                    fraction = if (withSteps)
+                        ((sliderState.value - 1) * (1.0 / (10 - 1))).toFloat()
                     else
                         sliderState.value
                 )
@@ -210,7 +294,7 @@ fun CustomTrackPreview() {
             trackColor = InTouchTheme.colors.mainBlue,
             progressColor = InTouchTheme.colors.mainGreen,
             height = 8.dp,
-            maxValue = 10
+            withSteps = true
         )
     }
 }

@@ -18,9 +18,9 @@ import care.intouch.app.ui.uiKitSamples.ScreenSample
 import care.intouch.app.ui.uiKitSamples.samples.MultilineTextFieldSampleScreen
 import care.intouch.app.ui.uiKitSamples.samples.NavigationSample
 import care.intouch.app.ui.uiKitSamples.samples.OneLineTextFieldSampleScreen
+import care.intouch.app.ui.uiKitSamples.samples.SliderSample
 import care.intouch.uikit.theme.InTouchTheme
-import care.intouch.uikit.ui.slider.CustomSlider
-import care.intouch.uikit.ui.slider.CustomSliderWithSteps
+import care.intouch.uikit.ui.slider.SliderWidgetWithDigits
 
 @Composable
 fun UiKitSample() {
@@ -89,12 +89,7 @@ fun UiKitSample() {
         }
 
         ScreenSample.SliderSample -> {
-            CustomSlider(
-                inactiveTrackColor = InTouchTheme.colors.mainBlue,
-                activeTrackColor = InTouchTheme.colors.mainGreen,
-                internalRadiusThumbColor = InTouchTheme.colors.mainGreen,
-                externalRadiusThumbColor = InTouchTheme.colors.input,
-            )
+           SliderSample()
         }
     }
 }
