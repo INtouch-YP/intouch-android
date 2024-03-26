@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -26,6 +28,34 @@ android {
             useSupportLibrary = true
         }
         signingConfig = signingConfigs.getByName("debug")
+    }
+
+    signingConfigs {
+        create("release") {
+            val localProperties = gradleLocalProperties(rootDir, providers)
+
+            val storePasswordLocal: String =
+                System.getenv("STORE_PASSWORD") ?: localProperties.getProperty("storePassword")
+                ?: "storePasswordEmpty"
+            val keyAliasLocal: String =
+                System.getenv("KEY_ALIAS") ?: localProperties.getProperty("keyAlias")
+                ?: "keyAliasEmpty"
+            val keyPasswordLocal: String =
+                System.getenv("KEY_PASSWORD") ?: localProperties.getProperty("keyPassword")
+                ?: "keyPasswordEmpty"
+
+            storeFile = file("keyStore/intouch.jks")
+            storePassword = storePasswordLocal
+            keyAlias = keyAliasLocal
+            keyPassword = keyPasswordLocal
+        }
+
+        getByName("debug") {
+            storeFile = file("keyStore/debug.keystore")
+            storePassword = "android"
+            keyAlias ="androiddebugkey"
+            keyPassword = "android"
+        }
     }
 
     buildTypes {
