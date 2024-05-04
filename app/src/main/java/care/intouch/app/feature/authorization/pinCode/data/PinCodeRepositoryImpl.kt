@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class PinCodeRepositoryImpl @Inject constructor(private val encryptedPrefs: SharedPreferences) :
     PinCodeRepository {
-    override fun installationPinCode(pinCode: String): Result<Boolean>  {
+    override fun installPinCode(pinCode: String): Result<Boolean>  {
         return try {
             resetPinCode()
             encryptedPrefs.edit().putString(PIN_CODE, pinCode).apply()
@@ -16,7 +16,7 @@ class PinCodeRepositoryImpl @Inject constructor(private val encryptedPrefs: Shar
         }
     }
 
-    override fun verificationPinCode(pinCode: String): Result<Boolean>  {
+    override fun verifyPinCode(pinCode: String): Result<Boolean>  {
         return try {
             Result.Success(encryptedPrefs.getString(PIN_CODE, null) == pinCode)
         } catch (e: Exception){
