@@ -1,7 +1,6 @@
 package care.intouch.app.feature.authorization.pinCode.domain.impl
 
 import care.intouch.app.feature.authorization.pinCode.data.Result
-import care.intouch.app.feature.authorization.pinCode.domain.InstallationPinCodeUseCase
 import care.intouch.app.feature.authorization.pinCode.domain.PinCodeRepository
 import care.intouch.app.feature.authorization.pinCode.domain.ResetPinCodeUseCase
 import javax.inject.Inject
