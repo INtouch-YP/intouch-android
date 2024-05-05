@@ -2,19 +2,16 @@ package care.intouch.app.feature.authorization.pinCode.data
 
 import android.content.SharedPreferences
 import care.intouch.app.feature.authorization.pinCode.domain.PinCodeRepository
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PinCodeRepositoryImpl @Inject constructor(
-    private val encryptedPrefs: SharedPreferences,
-    private val coroutineScope: CoroutineScope,
+    private val encryptedPrefs: SharedPreferences
 ) :
     PinCodeRepository {
     override suspend fun installPinCode(pinCode: String): Result<Boolean> {
-        return withContext(coroutineScope.coroutineContext) {
+        return withContext(Dispatchers.IO) {
             try {
                 encryptedPrefs.edit().putString(PIN_CODE, pinCode).apply()
                 Result.Success(true)
