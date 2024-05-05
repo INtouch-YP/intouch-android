@@ -9,5 +9,4 @@ class InstallPinCodeUseCaseImpl @Inject constructor(private val repository: PinC
     InstallPinCodeUseCase {
     override suspend fun invoke(pinCode: String): Result<Boolean> =
         repository.installPinCode(pinCode)
-
 }

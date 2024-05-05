@@ -1,9 +1,11 @@
 package care.intouch.app.feature.authorization.pinCode.di
 
 import care.intouch.app.feature.authorization.pinCode.domain.InstallPinCodeUseCase
+import care.intouch.app.feature.authorization.pinCode.domain.IsSetPinCodeUseCase
 import care.intouch.app.feature.authorization.pinCode.domain.ResetPinCodeUseCase
 import care.intouch.app.feature.authorization.pinCode.domain.VerifyPinCodeUseCase
 import care.intouch.app.feature.authorization.pinCode.domain.impl.InstallPinCodeUseCaseImpl
+import care.intouch.app.feature.authorization.pinCode.domain.impl.IsSetPinCodeUseCaseImpl
 import care.intouch.app.feature.authorization.pinCode.domain.impl.ResetPinCodeUseCaseImpl
 import care.intouch.app.feature.authorization.pinCode.domain.impl.VerifyPinCodeUseCaseImpl
 import dagger.Binds
@@ -23,4 +25,7 @@ abstract class PinCodeDomainModule {
 
     @Binds
     abstract fun bindResetPinCodeUseCase(resetPinCodeUseCaseImpl: ResetPinCodeUseCaseImpl): ResetPinCodeUseCase
+
+    @Binds
+    abstract fun bindIsSetPinCodeUseCase(isSetPinCodeUseCase: IsSetPinCodeUseCaseImpl): IsSetPinCodeUseCase
 }

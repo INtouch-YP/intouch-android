@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import care.intouch.app.feature.authorization.pinCode.data.Result
 import care.intouch.app.feature.authorization.pinCode.domain.InstallPinCodeUseCase
+import care.intouch.app.feature.authorization.pinCode.domain.IsSetPinCodeUseCase
 import care.intouch.app.feature.authorization.pinCode.domain.ResetPinCodeUseCase
 import care.intouch.app.feature.authorization.pinCode.domain.VerifyPinCodeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,12 +17,33 @@ import javax.inject.Inject
 class PinCodeViewModel @Inject constructor(
     private val installPinCodeUseCase: InstallPinCodeUseCase,
     private val verifyPinCodeUseCase: VerifyPinCodeUseCase,
+    private val isSetPinCodeUseCase: IsSetPinCodeUseCase,
     val resetPinCodeUseCase: ResetPinCodeUseCase
 ): ViewModel() {
 
     fun init(){
         viewModelScope.launch(Dispatchers.IO) {
+
+
+            when(val w = isSetPinCodeUseCase.invoke()){
+                is Result.Success -> {
+                    Log.d("TAG","Проверка установлен ли пин код до " +  w.data.toString())
+                }
+                is Result.Error -> {
+                    Log.d("TAG","Проверка установлен ли пин код до " + w.exception.toString())
+                }
+            }
+
             installPinCodeUseCase.invoke("1234")
+
+            when(val w = isSetPinCodeUseCase.invoke()){
+                is Result.Success -> {
+                    Log.d("TAG","Проверка установлен ли пин код после " +  w.data.toString())
+                }
+                is Result.Error -> {
+                    Log.d("TAG","Проверка установлен ли пин код после " + w.exception.toString())
+                }
+            }
 
             when(val w = verifyPinCodeUseCase.invoke("1234")){
                 is Result.Success -> {
