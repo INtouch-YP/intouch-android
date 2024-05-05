@@ -7,6 +7,7 @@ import javax.inject.Inject
 
 class InstallPinCodeUseCaseImpl @Inject constructor(private val repository: PinCodeRepository) :
     InstallPinCodeUseCase {
-    override fun invoke(pinCode: String): Result<Boolean> = repository.installPinCode(pinCode)
+    override suspend fun invoke(pinCode: String): Result<Boolean> =
+        repository.installPinCode(pinCode)
 
 }
