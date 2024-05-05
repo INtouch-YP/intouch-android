@@ -5,8 +5,9 @@ import care.intouch.app.feature.authorization.pinCode.domain.PinCodeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Named
 
-class PinCodeRepositoryImpl @Inject constructor(
+class PinCodeRepositoryImpl @Inject constructor(@Named("EncryptedSharedPreferences")
     private val encryptedPrefs: SharedPreferences
 ) :
     PinCodeRepository {
