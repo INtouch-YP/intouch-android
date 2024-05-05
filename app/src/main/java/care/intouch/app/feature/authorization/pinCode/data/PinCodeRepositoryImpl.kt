@@ -8,7 +8,6 @@ class PinCodeRepositoryImpl @Inject constructor(private val encryptedPrefs: Shar
     PinCodeRepository {
     override suspend fun installPinCode(pinCode: String): Result<Boolean> {
         return try {
-            resetPinCode()
             encryptedPrefs.edit().putString(PIN_CODE, pinCode).apply()
             Result.Success(true)
         } catch (e: Exception) {
