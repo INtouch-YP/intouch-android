@@ -5,8 +5,8 @@ import care.intouch.app.feature.authorization.pinCode.domain.PinCodeRepository
 import care.intouch.app.feature.authorization.pinCode.domain.ResetPinCodeUseCase
 import javax.inject.Inject
 
-class ResetPinCodeUseCaseImpl  @Inject constructor(private val repository: PinCodeRepository) :
+class ResetPinCodeUseCaseImpl @Inject constructor(private val repository: PinCodeRepository) :
     ResetPinCodeUseCase {
-    override fun invoke(): Result<Boolean> = repository.resetPinCode()
+    override suspend fun invoke(): Result<Boolean> = repository.resetPinCode()
 
 }
