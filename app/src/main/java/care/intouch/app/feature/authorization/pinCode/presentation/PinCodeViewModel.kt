@@ -1,9 +1,10 @@
 package care.intouch.app.feature.authorization.pinCode.presentation
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import care.intouch.app.feature.authorization.pinCode.data.Result
+import care.intouch.app.feature.authorization.pinCode.data.PinCodeState
 import care.intouch.app.feature.authorization.pinCode.domain.InstallPinCodeUseCase
 import care.intouch.app.feature.authorization.pinCode.domain.IsSetPinCodeUseCase
 import care.intouch.app.feature.authorization.pinCode.domain.ResetPinCodeUseCase
@@ -18,61 +19,50 @@ class PinCodeViewModel @Inject constructor(
     private val installPinCodeUseCase: InstallPinCodeUseCase,
     private val verifyPinCodeUseCase: VerifyPinCodeUseCase,
     private val isSetPinCodeUseCase: IsSetPinCodeUseCase,
-    val resetPinCodeUseCase: ResetPinCodeUseCase
-): ViewModel() {
+    private val resetPinCodeUseCase: ResetPinCodeUseCase
+) : ViewModel() {
 
-    fun init(){
+    @SuppressLint("LogNotTimber")
+    fun init() {
         viewModelScope.launch(Dispatchers.IO) {
 
-
-            when(val w = isSetPinCodeUseCase.invoke()){
-                is Result.Success -> {
-                    Log.d("TAG","Проверка установлен ли пин код до " +  w.data.toString())
-                }
-                is Result.Error -> {
-                    Log.d("TAG","Проверка установлен ли пин код до " + w.exception.toString())
-                }
-            }
+            Log.d("TAG", "Проверка установлен ли пин код до ")
+            testLog(isSetPinCodeUseCase.invoke())
 
             installPinCodeUseCase.invoke("1234")
 
-            when(val w = isSetPinCodeUseCase.invoke()){
-                is Result.Success -> {
-                    Log.d("TAG","Проверка установлен ли пин код после " +  w.data.toString())
-                }
-                is Result.Error -> {
-                    Log.d("TAG","Проверка установлен ли пин код после " + w.exception.toString())
-                }
-            }
+            Log.d("TAG", "До Подтверждения Проверка установлен ли пин код после ")
+            testLog(isSetPinCodeUseCase.invoke())
 
-            when(val w = verifyPinCodeUseCase.invoke("1234")){
-                is Result.Success -> {
-                    Log.d("TAG","Правильный " +  w.data.toString())
-                }
-                is Result.Error -> {
-                    Log.d("TAG","Правильный " + w.exception.toString())
-                }
-            }
+            Log.d("TAG", "Подтверждение")
+            testLog(installPinCodeUseCase.invoke("1234"))
 
-            when(val w = verifyPinCodeUseCase.invoke("1214")){
-                is Result.Success -> {
-                    Log.d("TAG","НеПравильный " +  w.data.toString())
-                }
-                is Result.Error -> {
-                    Log.d("TAG","НеПравильный " + w.exception.toString())
-                }
-            }
 
-            installPinCodeUseCase.invoke("1134")
+            Log.d("TAG", "После Подтверждения Проверка установлен ли пин код после ")
+            testLog(isSetPinCodeUseCase.invoke())
 
-            when(val w = verifyPinCodeUseCase.invoke("1234")){
-                is Result.Success -> {
-                    Log.d("TAG","Правильный второй " +  w.data.toString())
-                }
-                is Result.Error -> {
-                    Log.d("TAG","Правильный второй " + w.exception.toString())
-                }
-            }
+            Log.d("TAG", "Проверка подтверждения: Правильный ")
+            testLog(verifyPinCodeUseCase.invoke("1234"))
+
+
+            Log.d("TAG", "Проверка подтверждения: Неправильный ")
+            testLog(verifyPinCodeUseCase.invoke("1214"))
+            resetPinCodeUseCase.invoke()
+        }
+
+    }
+
+    @SuppressLint("LogNotTimber")
+    private fun testLog(value: PinCodeState) {
+        when (value) {
+            PinCodeState.Confirmed -> Log.d("TAG", "Confirmed")
+            is PinCodeState.Error -> Log.d("TAG", "Error")
+            PinCodeState.IncorrectPinCode -> Log.d("TAG", "IncorrectPinCode")
+            PinCodeState.Installed -> Log.d("TAG", "Installed")
+            PinCodeState.NotInstalled -> Log.d("TAG", "NotInstalled")
+            PinCodeState.Removed -> Log.d("TAG", "Removed")
+            PinCodeState.Skipped -> Log.d("TAG", "Skipped")
+            PinCodeState.AlmostInstalled -> Log.d("TAG", "AlmostInstalled")
         }
 
     }

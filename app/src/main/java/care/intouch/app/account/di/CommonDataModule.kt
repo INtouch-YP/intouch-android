@@ -11,6 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -22,6 +23,7 @@ class CommonDataModule {
 
     @Provides
     @Singleton
+    @Named("DefaultSharedPreferences")
     fun provideSharedPreferences(@ApplicationContext appContext: Context): SharedPreferences =
         appContext.getSharedPreferences("KEY", Context.MODE_PRIVATE)
 

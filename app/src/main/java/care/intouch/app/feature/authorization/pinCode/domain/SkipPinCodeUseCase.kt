@@ -2,6 +2,6 @@ package care.intouch.app.feature.authorization.pinCode.domain
 
 import care.intouch.app.feature.authorization.pinCode.data.PinCodeState
 
-interface ResetPinCodeUseCase {
+interface SkipPinCodeUseCase {
     suspend operator fun invoke(): PinCodeState
 }

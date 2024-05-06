@@ -7,55 +7,82 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
-class PinCodeRepositoryImpl @Inject constructor(@Named("EncryptedSharedPreferences")
-    private val encryptedPrefs: SharedPreferences
-) :
-    PinCodeRepository {
-    override suspend fun installPinCode(pinCode: String): Result<Boolean> {
-        return withContext(Dispatchers.IO) {
-            try {
-                encryptedPrefs.edit().putString(PIN_CODE, pinCode).apply()
-                Result.Success(true)
-            } catch (e: Exception) {
-                Result.Error(e)
+class PinCodeRepositoryImpl @Inject constructor(
+    @Named("EncryptedSharedPreferences") private val encryptedPrefs: SharedPreferences,
+    @Named("DefaultSharedPreferences") private val defaultPrefs: SharedPreferences
+) : PinCodeRepository {
+
+    private var tempPass: String? = null
+
+    override suspend fun installPinCode(pinCode: String): PinCodeState {
+        if (tempPass == null) {
+            tempPass = pinCode
+            return PinCodeState.AlmostInstalled
+        } else {
+            return withContext(Dispatchers.IO) {
+                try {
+                    encryptedPrefs.edit().putString(PIN_CODE, pinCode).apply()
+                    defaultPrefs.edit().putBoolean(SKIPPED, false).apply()
+                    PinCodeState.Installed
+                } catch (e: Exception) {
+                    PinCodeState.Error(e)
+                }
             }
         }
     }
 
-    override suspend fun verifyPinCode(pinCode: String): Result<Boolean> {
+    override suspend fun verifyPinCode(pinCode: String): PinCodeState {
         return withContext(Dispatchers.IO) {
             try {
-                Result.Success(encryptedPrefs.getString(PIN_CODE, null) == pinCode)
+                if (encryptedPrefs.getString(PIN_CODE, null) == pinCode) {
+                    PinCodeState.Confirmed
+                } else PinCodeState.IncorrectPinCode
+
             } catch (e: Exception) {
-                Result.Error(e)
+                PinCodeState.Error(e)
             }
         }
     }
 
-    override suspend fun resetPinCode(): Result<Boolean> {
+    override suspend fun resetPinCode(): PinCodeState {
         return withContext(Dispatchers.IO) {
             try {
                 encryptedPrefs.edit().remove(PIN_CODE).apply()
-                Result.Success(true)
+                PinCodeState.Removed
             } catch (e: Exception) {
-                Result.Error(e)
+                PinCodeState.Error(e)
             }
         }
     }
 
-    override suspend fun isSetPinCode(): Result<Boolean> {
+    override suspend fun isSetPinCode(): PinCodeState {
         return withContext(Dispatchers.IO) {
             try {
+                if (defaultPrefs.getBoolean(SKIPPED, false)) {
+                    return@withContext PinCodeState.Skipped
+                }
                 if (encryptedPrefs.getString(PIN_CODE, null).isNullOrBlank()) {
-                    Result.Success(false)
-                } else Result.Success(true)
+                    PinCodeState.NotInstalled
+                } else PinCodeState.Installed
             } catch (e: Exception) {
-                Result.Error(e)
+                PinCodeState.Error(e)
+            }
+        }
+    }
+
+    override suspend fun skipPinCode(): PinCodeState {
+        return withContext(Dispatchers.IO) {
+            try {
+                defaultPrefs.edit().putBoolean(SKIPPED, true).apply()
+                PinCodeState.Skipped
+            } catch (e: Exception) {
+                PinCodeState.Error(e)
             }
         }
     }
 
     companion object {
         private const val PIN_CODE = "pin_code"
+        private const val SKIPPED = "skipped"
     }
 }

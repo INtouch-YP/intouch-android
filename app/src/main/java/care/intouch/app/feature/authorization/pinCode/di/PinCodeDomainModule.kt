@@ -3,6 +3,7 @@ package care.intouch.app.feature.authorization.pinCode.di
 import care.intouch.app.feature.authorization.pinCode.domain.InstallPinCodeUseCase
 import care.intouch.app.feature.authorization.pinCode.domain.IsSetPinCodeUseCase
 import care.intouch.app.feature.authorization.pinCode.domain.ResetPinCodeUseCase
+import care.intouch.app.feature.authorization.pinCode.domain.SkipPinCodeUseCase
 import care.intouch.app.feature.authorization.pinCode.domain.VerifyPinCodeUseCase
 import care.intouch.app.feature.authorization.pinCode.domain.impl.InstallPinCodeUseCaseImpl
 import care.intouch.app.feature.authorization.pinCode.domain.impl.IsSetPinCodeUseCaseImpl
@@ -28,4 +29,7 @@ abstract class PinCodeDomainModule {
 
     @Binds
     abstract fun bindIsSetPinCodeUseCase(isSetPinCodeUseCase: IsSetPinCodeUseCaseImpl): IsSetPinCodeUseCase
+
+    @Binds
+    abstract fun bindSkipPinCodeUseCase(skipPinCodeUseCase: SkipPinCodeUseCase): SkipPinCodeUseCase
 }
