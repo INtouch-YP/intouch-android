@@ -18,6 +18,8 @@ class PinCodeRepositoryImpl @Inject constructor(
         if (tempPass == null) {
             tempPass = pinCode
             return PinCodeState.AlmostInstalled
+        } else if (tempPass != pinCode) {
+            return PinCodeState.IncorrectPinCode
         } else {
             return withContext(Dispatchers.IO) {
                 try {
