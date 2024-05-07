@@ -19,11 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import care.intouch.uikit.R
+import care.intouch.uikit.common.ImageVO
 import care.intouch.uikit.theme.InTouchTheme
 
 @Composable
@@ -31,7 +31,7 @@ fun ProfileInfoTextField(
     modifier: Modifier = Modifier,
     naming: String,
     value: String,
-    icon: Int = R.drawable.icon_edit,
+    icon: ImageVO = ImageVO.Resource(R.drawable.icon_edit),
     onValueChange: (String) -> Unit,
     enabled: Boolean,
     readOnly: Boolean = false,
@@ -72,7 +72,7 @@ fun ProfileInfoTextField(
                 .padding(bottom = 3.dp, start = 107.dp, end = 30.dp)
         )
         Icon(
-            painter = painterResource(id = icon),
+            painter = icon.painter(),
             contentDescription = null,
             tint = InTouchTheme.colors.mainGreen,
             modifier = Modifier.align(Alignment.CenterEnd),

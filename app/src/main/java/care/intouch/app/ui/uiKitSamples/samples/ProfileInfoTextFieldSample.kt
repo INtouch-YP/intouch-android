@@ -19,6 +19,8 @@ import care.intouch.uikit.ui.textFields.ProfileInfoTextField
 
 @Composable
 fun ProfileInfoTextFieldScreen() {
+    var text by remember { mutableStateOf("Same info") }
+
     Surface(
         color = InTouchTheme.colors.mainBlue,
         modifier = Modifier.fillMaxSize()
@@ -28,8 +30,6 @@ fun ProfileInfoTextFieldScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
-            InTouchTheme {
-                var text by remember { mutableStateOf("Benjamin") }
                 ProfileInfoTextField(
                     value = text,
                     onValueChange = {
@@ -39,9 +39,6 @@ fun ProfileInfoTextFieldScreen() {
                     naming = "Name",
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
-            }
-            InTouchTheme {
-                var text by remember { mutableStateOf("Cooper") }
                 ProfileInfoTextField(
                     value = text,
                     onValueChange = {
@@ -51,9 +48,6 @@ fun ProfileInfoTextFieldScreen() {
                     naming = "Last name",
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
-            }
-            InTouchTheme {
-                var text by remember { mutableStateOf("benbut@gmail.com") }
                 ProfileInfoTextField(
                     value = text,
                     onValueChange = {
@@ -62,7 +56,7 @@ fun ProfileInfoTextFieldScreen() {
                     enabled = false,
                     naming = "E-mail",
                 )
-            }
+
         }
     }
 }
@@ -73,5 +67,4 @@ fun ProfileInfoTextFieldScreenPreview() {
     InTouchTheme {
         ProfileInfoTextFieldScreen()
     }
-
 }
