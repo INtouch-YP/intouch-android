@@ -21,6 +21,7 @@ import care.intouch.app.ui.uiKitSamples.samples.NavigationSample
 import care.intouch.app.ui.uiKitSamples.samples.OneLineTextFieldSampleScreen
 import care.intouch.app.ui.uiKitSamples.samples.PasswordTextFieldSampleScreen
 import care.intouch.app.ui.uiKitSamples.samples.PinCodeInputFieldSample
+import care.intouch.app.ui.uiKitSamples.samples.ProfileInfoTextFieldScreen
 import care.intouch.app.ui.uiKitSamples.samples.ProgressBarSample
 import care.intouch.app.ui.uiKitSamples.samples.RegularChipsSample
 import care.intouch.app.ui.uiKitSamples.samples.SliderSample
@@ -42,8 +43,12 @@ fun UiKitSample() {
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
+                UikitSampleButton(
+                    text = "Go to custom profile info text field sample",
+                    onClick = { screenSample = ScreenSample.ProfileInfoTextField }
+                )
 
-               UikitSampleButton(
+                UikitSampleButton(
                     text = "Go to custom buttons sample",
                     onClick = { screenSample = ScreenSample.ButtonsSample }
                 )
@@ -108,6 +113,10 @@ fun UiKitSample() {
                     onClick = { screenSample = ScreenSample.PinCodeInputFieldSample }
                 )
             }
+        }
+
+        ScreenSample.ProfileInfoTextField -> {
+            ProfileInfoTextFieldScreen()
         }
 
         ScreenSample.ButtonsSample -> {
