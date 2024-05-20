@@ -1,7 +1,6 @@
 package care.intouch.app.feature.authorization.pinCode.data
 
 import android.content.SharedPreferences
-import care.intouch.app.feature.authorization.pinCode.domain.PinCodeRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,73 +13,61 @@ class PinCodeRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PinCodeRepository {
 
-    private var tempPass: String? = null
-
-    override suspend fun installPinCode(pinCode: String): PinCodeState {
-        if (tempPass == null) {
-            tempPass = pinCode
-            return PinCodeState.AlmostInstalled
-        } else if (tempPass != pinCode) {
-            return PinCodeState.IncorrectPinCode
-        } else {
-            return withContext(ioDispatcher) {
-                try {
-                    encryptedPrefs.edit().putString(PIN_CODE, pinCode).apply()
-                    defaultPrefs.edit().putBoolean(SKIPPED, false).apply()
-                    PinCodeState.Installed
-                } catch (e: Exception) {
-                    PinCodeState.Error(e)
-                }
+    override suspend fun installPinCode(pinCode: String): Result<Boolean> {
+        return withContext(ioDispatcher) {
+            try {
+                encryptedPrefs.edit().putString(PIN_CODE, pinCode).apply()
+                defaultPrefs.edit().putBoolean(SKIPPED, false).apply()
+                Result.success(true)
+            } catch (e: Exception) {
+                Result.failure(e)
             }
         }
     }
 
-    override suspend fun verifyPinCode(pinCode: String): PinCodeState {
+    override suspend fun verifyPinCode(pinCode: String): Result<Boolean> {
         return withContext(ioDispatcher) {
             try {
                 if (encryptedPrefs.getString(PIN_CODE, null) == pinCode) {
-                    PinCodeState.Confirmed
-                } else PinCodeState.IncorrectPinCode
+                    Result.success(true)
+                } else Result.success(false)
 
             } catch (e: Exception) {
-                PinCodeState.Error(e)
+                Result.failure(e)
             }
         }
     }
 
-    override suspend fun resetPinCode(): PinCodeState {
+    override suspend fun resetPinCode(): Result<Boolean> {
         return withContext(ioDispatcher) {
             try {
                 encryptedPrefs.edit().remove(PIN_CODE).apply()
-                PinCodeState.Removed
+                Result.success(true)
             } catch (e: Exception) {
-                PinCodeState.Error(e)
+                Result.failure(e)
             }
         }
     }
 
-    override suspend fun isSetPinCode(): PinCodeState {
+    override suspend fun isSetPinCode(): Result<Boolean> {
         return withContext(ioDispatcher) {
             try {
-                if (defaultPrefs.getBoolean(SKIPPED, false)) {
-                    return@withContext PinCodeState.Skipped
-                }
                 if (encryptedPrefs.getString(PIN_CODE, null).isNullOrBlank()) {
-                    PinCodeState.NotInstalled
-                } else PinCodeState.Installed
+                    Result.success(false)
+                } else Result.success(true)
             } catch (e: Exception) {
-                PinCodeState.Error(e)
+                Result.failure(e)
             }
         }
     }
 
-    override suspend fun skipPinCode(): PinCodeState {
+    override suspend fun skipPinCode(): Result<Boolean> {
         return withContext(ioDispatcher) {
             try {
                 defaultPrefs.edit().putBoolean(SKIPPED, true).apply()
-                PinCodeState.Skipped
+                Result.success(true)
             } catch (e: Exception) {
-                PinCodeState.Error(e)
+                Result.failure(e)
             }
         }
     }

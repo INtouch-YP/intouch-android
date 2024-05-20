@@ -1,7 +1,7 @@
 package care.intouch.app.feature.authorization.pinCode.di
 
 import care.intouch.app.feature.authorization.pinCode.data.PinCodeRepositoryImpl
-import care.intouch.app.feature.authorization.pinCode.domain.PinCodeRepository
+import care.intouch.app.feature.authorization.pinCode.data.PinCodeRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

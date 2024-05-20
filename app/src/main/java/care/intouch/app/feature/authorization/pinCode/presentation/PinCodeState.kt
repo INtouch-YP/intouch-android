@@ -1,4 +1,4 @@
-package care.intouch.app.feature.authorization.pinCode.data
+package care.intouch.app.feature.authorization.pinCode.presentation
 
 sealed class PinCodeState {
     data object Skipped : PinCodeState()

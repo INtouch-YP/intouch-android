@@ -4,11 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import care.intouch.app.feature.authorization.pinCode.data.PinCodeState
-import care.intouch.app.feature.authorization.pinCode.domain.InstallPinCodeUseCase
-import care.intouch.app.feature.authorization.pinCode.domain.IsSetPinCodeUseCase
-import care.intouch.app.feature.authorization.pinCode.domain.ResetPinCodeUseCase
-import care.intouch.app.feature.authorization.pinCode.domain.VerifyPinCodeUseCase
+import care.intouch.app.feature.authorization.pinCode.data.PinCodeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,10 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PinCodeViewModel @Inject constructor(
-    private val installPinCodeUseCase: InstallPinCodeUseCase,
-    private val verifyPinCodeUseCase: VerifyPinCodeUseCase,
-    private val isSetPinCodeUseCase: IsSetPinCodeUseCase,
-    private val resetPinCodeUseCase: ResetPinCodeUseCase
+    private val repository: PinCodeRepository
 ) : ViewModel() {
 
     @SuppressLint("LogNotTimber")
@@ -27,29 +20,34 @@ class PinCodeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
 
             Log.d("TAG", "Проверка установлен ли пин код до ")
-            testLog(isSetPinCodeUseCase.invoke())
+            testLog(repository.isSetPinCode())
 
-            installPinCodeUseCase.invoke("1234")
+            repository.installPinCode("1234")
 
             Log.d("TAG", "До Подтверждения Проверка установлен ли пин код после ")
-            testLog(isSetPinCodeUseCase.invoke())
+            testLog(repository.isSetPinCode())
 
             Log.d("TAG", "Подтверждение")
-            testLog(installPinCodeUseCase.invoke("1234"))
+            testLog(repository.installPinCode("1234"))
 
 
             Log.d("TAG", "После Подтверждения Проверка установлен ли пин код после ")
-            testLog(isSetPinCodeUseCase.invoke())
+            testLog(repository.isSetPinCode())
 
             Log.d("TAG", "Проверка подтверждения: Правильный ")
-            testLog(verifyPinCodeUseCase.invoke("1234"))
+            testLog(repository.verifyPinCode("1234"))
 
 
             Log.d("TAG", "Проверка подтверждения: Неправильный ")
-            testLog(verifyPinCodeUseCase.invoke("1214"))
-            resetPinCodeUseCase.invoke()
+            testLog(repository.verifyPinCode("1214"))
+            repository.resetPinCode()
         }
 
+    }
+
+    @SuppressLint("LogNotTimber")
+    private fun testLog(value: Result<Boolean>) {
+        Log.d("TAG", value.toString())
     }
 
     @SuppressLint("LogNotTimber")
