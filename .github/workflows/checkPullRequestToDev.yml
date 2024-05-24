@@ -28,7 +28,7 @@ jobs:
         run: echo "::error::Clean failed"
 
       - name: Run build script
-        run: ./gradlew :app:build
+        run: ./gradlew :app:build --no-build-cache
 
       - name: Check status
         run: echo "Check build status"
