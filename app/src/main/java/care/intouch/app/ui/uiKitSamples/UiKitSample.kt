@@ -13,13 +13,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import care.intouch.app.UikitSampleButton
 import care.intouch.app.ui.uiKitSamples.ScreenSample
 import care.intouch.app.ui.uiKitSamples.samples.ButtonSampleScreen
-import care.intouch.app.ui.uiKitSamples.samples.ButtonSampleScreen2
+import care.intouch.app.ui.uiKitSamples.samples.CardsSample
+import care.intouch.app.ui.uiKitSamples.samples.ButtonSampleScreenSecond
 import care.intouch.app.ui.uiKitSamples.samples.CheckboxSampleScreen
 import care.intouch.app.ui.uiKitSamples.samples.CheckmarkSample
 import care.intouch.app.ui.uiKitSamples.samples.MultilineTextFieldSampleScreen
 import care.intouch.app.ui.uiKitSamples.samples.NavigationSample
 import care.intouch.app.ui.uiKitSamples.samples.OneLineTextFieldSampleScreen
 import care.intouch.app.ui.uiKitSamples.samples.PasswordTextFieldSampleScreen
+import care.intouch.app.ui.uiKitSamples.samples.PinCodeInputFieldSample
 import care.intouch.app.ui.uiKitSamples.samples.ProgressBarSample
 import care.intouch.app.ui.uiKitSamples.samples.RegularChipsSample
 import care.intouch.app.ui.uiKitSamples.samples.SliderSample
@@ -101,6 +103,16 @@ fun UiKitSample() {
                     text = "Go to checkmark sample",
                     onClick = { screenSample = ScreenSample.CheckmarkSample }
                 )
+                
+                UikitSampleButton(
+                    text = "Go to cards sample",
+                    onClick = { screenSample = ScreenSample.CardsSample }
+                )
+
+                UikitSampleButton(
+                    text = "Go to pin code input field sample",
+                    onClick = { screenSample = ScreenSample.PinCodeInputFieldSample }
+                )
             }
         }
 
@@ -109,7 +121,7 @@ fun UiKitSample() {
         }
 
         ScreenSample.ButtonsSample2 -> {
-            ButtonSampleScreen2()
+            ButtonSampleScreenSecond()
         }
         ScreenSample.OneLineTexFieldSample -> {
             OneLineTextFieldSampleScreen()
@@ -147,8 +159,16 @@ fun UiKitSample() {
             ProgressBarSample()
         }
 
+        ScreenSample.CardsSample -> {
+            CardsSample()
+        }
+
         ScreenSample.CheckmarkSample -> {
             CheckmarkSample()
+        }
+
+        ScreenSample.PinCodeInputFieldSample -> {
+            PinCodeInputFieldSample()
         }
     }
 }

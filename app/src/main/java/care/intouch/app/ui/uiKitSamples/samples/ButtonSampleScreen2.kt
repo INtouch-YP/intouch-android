@@ -19,7 +19,7 @@ import care.intouch.uikit.ui.buttons.TertiaryButtonDefault
 import care.intouch.uikit.ui.navigation.TopBarArcButton
 
 @Composable
-fun ButtonSampleScreen2() {
+fun ButtonSampleScreenSecond() {
     Surface(
         color = InTouchTheme.colors.mainBlue,
         modifier = Modifier.fillMaxSize()

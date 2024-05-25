@@ -8,4 +8,157 @@
     <string name="my_progress_bottom_nav_bar">My progress</string>
     <string name="my_plan_bottom_nav_bar">My plan</string>
     <string name="additional_bottom_nav_bar">Additional</string>
+
+    <string name="welcome_with_name_title">Hello, %1$s!\nWelcome to INtouch!</string>
+    <string name="hi_title">Hi, %1$s!</string>
+    <string name="dialogue_title">Socratic Dialogue</string>
+    <string name="emotional_title">Emotional Journal</string>
+    <string name="welcome_title">Welcome to INtouch!</string>
+    <string name="create_pin_title">Create a PIN code</string>
+    <string name="confirm_pin_title">Confirm a PIN code</string>
+    <string name="diary_title">Diary</string>
+    <string name="profile_title">Profile</string>
+    <string name="security_title">Security</string>
+
+    <string name="my_diary_sub_title">My diary</string>
+    <string name="my_plan_sub_title">My plan</string>
+    <string name="set_password_sub_title">Set Your Password To Proceed</string>
+    <string name="enter_pin_sub_title">Enter your PIN code</string>
+    <string name="sign_in_sub_title">Sign in to continue</string>
+    <string name="email_for_recovery_sub_title">Enter your email for password recovery</string>
+
+    <string name="ops_title_error">Ooops!</string>
+
+    <string name="note_title">Note:</string>
+    <string name="mood_title">Mood:</string>
+
+    <string name="next_button">Next</string>
+    <string name="set_password_button">Set Password</string>
+    <string name="save_button">Save</string>
+    <string name="skip_button">Skip</string>
+    <string name="back_button">Back</string>
+    <string name="done_button">Done</string>
+    <string name="retry_button">Try again</string>
+    <string name="confirm_button">Yes, delete</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="login_uppercase_button">LOGIN</string>
+    <string name="send_password_uppercase_button">SEND PASSWORD</string>
+    <string name="complete_button">Complete Task</string>
+    <string name="complete_as_is_button">Complete as is</string>
+    <string name="save_in_progress_button">Save in progress</string>
+    <string name="discard_close_button">Discard &amp; Close</string>
+    <string name="make_note_button">Make a note</string>
+    <string name="sing_out_button">Sign out</string>
+    <string name="save_changes_button">Save changes</string>
+    <string name="delete_profile_button">Delete Profile Forever</string>
+    <string name="add_emotions_button">Add emotions</string>
+
+    <string name="empty_plan">Your therapist hasn\'t given tasks yet, but let\'s start by diving into your diary</string>
+    <string name="empty_diary">Share your thoughts and feelings — a wonderful way to begin your path to well-being</string>
+
+    <string name="to_do">To do</string>
+    <string name="in_progress">In progress</string>
+    <string name="done">Done</string>
+    <string name="see_all">See all</string>
+    <string name="show_all">Show all</string>
+    <string name="danger_zone">Danger Zone</string>
+    <string name="share_with_therapist">Share this entry with my therapist</string>
+
+    <string name="name_info_profile">Name</string>
+    <string name="email_info_profile">E-mail</string>
+    <string name="security_profile">Security</string>
+    <string name="create_pin_profile">Create PIN code</string>
+    <string name="update_pin_profile">Change PIN code</string>
+
+    <string name="info_delete_task_question">Are you sure you want to delete this task?</string>
+    <string name="info_delete_node_question">Are you sure you want to delete this note?</string>
+    <string name="info_about_setup_pin">Secure your data with a PIN code or set it up later in your Profile</string>
+    <string name="info_about_password_recovery">If your account exists, you\'ll receive an email with a link to reset your password. Please check your spam folder if you don\'t receive it within a few minutes.</string>
+    <string name="info_about_delete_account">Are you certain you wish to delete your account?</string>
+    <string name="info_about_change_password">You have successfully changed your password</string>
+    <string name="info_about_change_name">You have successfully changed your name</string>
+    <string name="warning_delete">All your entered data will be permanently removed.</string>
+    <string name="warning_delete_account">This action will permanently erase all your data, and there\'s no way to recover it later.</string>
+
+    <string name="agreement_to_terms">I agree with the terms and conditions</string>
+    <string name="forgot_password">Forgot password?</string>
+
+    <string name="password_lengths_small_error">Your password must be at least 8 characters long.</string>
+    <string name="password_lengths_long_error">Your password cannot exceed 128 characters.</string>
+    <string name="password_rules_error">Please ensure your password contains at least one uppercase letter, one lowercase letter, and one digit.</string>
+    <string name="password_special_chars_error">Password can include: Latin letters, Arabic numerals, and these special characters: ~!@#$%^&amp;*_-+()[]{}&#62;&#60;/|\'.,:;</string>
+    <string name="password_spaces_error">Spaces are not allowed in your password.</string>
+    <string name="password_not_match_error">Passwords don\'t match</string>
+    <string name="password_not_match_try_again_error">Passwords don\'t match. Please try again</string>
+    <string name="password_update_error">Password update failed. Please try again later</string>
+    <string name="problem_with_connection">Unable to establish a connection. Please check your internet connection and try again</string>
+    <string name="email_not_valid_error">Not a valid e-mail address</string>
+    <string name="email_invalid_char_error">Invalid characters. Only letters, spaces, and periods are allowed.</string>
+    <string name="email_small_name_error">Please enter a name with at least 2 characters.</string>
+    <string name="incorrect_error">Incorrect. Please try again</string>
+
+    <string name="email_hint">E-mail</string>
+    <string name="password_hint">Password</string>
+    <string name="current_password_hint">Current Password</string>
+    <string name="new_password_hint">New Password</string>
+    <string name="confirm_password_hint">Confirm New Password</string>
+    <string name="edit_text_hint">Write your answer here…</string>
+
+    <string name="duplicate_item_menu">Duplicate</string>
+    <string name="clear_item_menu">Clear</string>
+
+    <string name="event_sub_title_emotional">Event Details</string>
+    <string name="thoughts_sub_title_emotional">Thoughts Analysis</string>
+    <string name="emotional_type_sub_title_emotional">Emotional Type</string>
+    <string name="sensations_sub_title_emotional">Physical Sensations</string>
+    <string name="event_desc_emotional">Describe the event or situaton. What happened?</string>
+    <string name="thoughts_desc_emotional">Reflect on your thoughts related to the situation. What were you thinking?</string>
+    <string name="emotional_type_desc_emotional">How are you feeling? Describe your emotions or choose from our prompt.</string>
+    <string name="sensations_desc_emotional">Describe any physical sensations or changes you noticed in your body. For example, tension, butterflies, etc.</string>
+
+
+    <string name="not_select_emotional_type">How are you feeling? Choose from our prompt.</string>
+    <string name="select_emotional_type">How are you feeling?</string>
+    <string name="terrible_emotional_type">TERRIBLE</string>
+    <string name="bad_primary_emotional">BAD</string>
+    <string name="okay_primary_emotional">OKAY</string>
+    <string name="good_primary_emotional">GOOD</string>
+    <string name="great_primary_emotional">GREAT</string>
+
+    <string name="loss_clarifying_emotional">Loss</string>
+    <string name="humility_clarifying_emotional">Humility</string>
+    <string name="anxiety_clarifying_emotional">Anxiety</string>
+    <string name="embarrassment_clarifying_emotional">Embarrassment</string>
+    <string name="depression_clarifying_emotional">Depression</string>
+    <string name="fear_clarifying_emotional">Fear</string>
+    <string name="anger_clarifying_emotional">Anger</string>
+    <string name="excitement_clarifying_emotional">Excitement</string>
+    <string name="shame_clarifying_emotional">Shame</string>
+    <string name="disgust_clarifying_emotional">Disgust</string>
+    <string name="guilt_clarifying_emotional">Guilt</string>
+    <string name="nervousness_clarifying_emotional">Nervousness</string>
+    <string name="sadness_clarifying_emotional">Sadness</string>
+    <string name="exhaustion_clarifying_emotional">Exhaustion</string>
+    <string name="impatience_clarifying_emotional">Impatience</string>
+    <string name="disappointment_clarifying_emotional">Disappointment</string>
+    <string name="confusion_clarifying_emotional">Confusion</string>
+    <string name="loneliness_clarifying_emotional">Loneliness</string>
+    <string name="acceptance_clarifying_emotional">Acceptance</string>
+    <string name="frustration_clarifying_emotional">Frustration</string>
+    <string name="laziness_clarifying_emotional">Laziness</string>
+    <string name="pride_clarifying_emotional">Pride</string>
+    <string name="hope_clarifying_emotional">Hope</string>
+    <string name="calmness_clarifying_emotional">Calmness</string>
+    <string name="gratitude_clarifying_emotional">Gratitude</string>
+    <string name="interest_clarifying_emotional">Interest</string>
+    <string name="respect_clarifying_emotional">Respect</string>
+    <string name="enthusiasm_clarifying_emotional">Enthusiasm</string>
+    <string name="happiness_clarifying_emotional">Happiness</string>
+    <string name="inspiration_clarifying_emotional">Inspiration</string>
+    <string name="joy_clarifying_emotional">Joy</string>
+    <string name="love_clarifying_emotional">Love</string>
+    <string name="amazement_clarifying_emotional">Amazement</string>
+    <string name="satisfaction_clarifying_emotional">Satisfaction</string>
+    <string name="self_love_clarifying_emotional">Self-love</string>
+    <string name="euphoria_clarifying_emotional">Euphoria</string>
 </resources>
