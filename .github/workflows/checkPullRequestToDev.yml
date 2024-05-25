@@ -18,6 +18,9 @@ jobs:
           java-version: 17
 
       - name: Run clean script
+        run: git reset --hard
+
+      - name: Run clean script 2
         run: ./gradlew clean
 
       - name: Check status
