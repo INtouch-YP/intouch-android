@@ -3,7 +3,7 @@ name: Check Pull Request to dev branch
 on:
   # Triggers the workflow on push or pull request events but only for the "dev" branch
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "dev", "main" ]
 
   workflow_dispatch:
 
