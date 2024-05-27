@@ -20,19 +20,19 @@ class PinCodeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
 
             Log.d("TAG", "Проверка установлен ли пин код до ")
-            testLog(repository.isSetPinCode())
+            testLog(repository.isPinCodeSet())
 
             repository.installPinCode("1234")
 
             Log.d("TAG", "До Подтверждения Проверка установлен ли пин код после ")
-            testLog(repository.isSetPinCode())
+            testLog(repository.isPinCodeSet())
 
             Log.d("TAG", "Подтверждение")
             testLog(repository.installPinCode("1234"))
 
 
             Log.d("TAG", "После Подтверждения Проверка установлен ли пин код после ")
-            testLog(repository.isSetPinCode())
+            testLog(repository.isPinCodeSet())
 
             Log.d("TAG", "Проверка подтверждения: Правильный ")
             testLog(repository.verifyPinCode("1234"))
