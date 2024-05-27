@@ -54,7 +54,7 @@ fun Toggle(
         horizontalArrangement = if (isChecked) Arrangement.End else Arrangement.Start
     ) {
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .padding(2.dp)
                 .width(handleWidth)
                 .height(handleHeight)
