@@ -21,7 +21,7 @@ import care.intouch.uikit.ui.slider.SimpleSlider
 import care.intouch.uikit.ui.slider.SliderWidgetWithScaleAndTenSteps
 
 @Composable
-fun SliderSample() {
+fun SliderSampleScreen() {
 
     var simpleSliderValue by remember {
         mutableFloatStateOf(0.0f)
@@ -75,6 +75,6 @@ fun SliderSample() {
 @Preview(showBackground = true)
 fun SliderSamplePreview() {
     InTouchTheme {
-        SliderSample()
+        SliderSampleScreen()
     }
 }

@@ -15,21 +15,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import care.intouch.uikit.R
 import care.intouch.uikit.theme.InTouchTheme
 
@@ -70,12 +69,15 @@ fun NavBottomBarPlusButtonPreview() {
 
 @Composable
 fun NavBottomComplexElement(
+    selected: Boolean = false,
     onClick: () -> Unit,
     text: String,
     painter: Painter,
-    focusTint: Color,
+    onFocusTint: Color,
+    outFocusTint: Color,
     modifier: Modifier = Modifier
 ) {
+
     Column(
         modifier = modifier
             .width(75.dp)
@@ -83,7 +85,9 @@ fun NavBottomComplexElement(
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
-                onClick = { onClick.invoke() }
+                onClick = {
+                    onClick.invoke()
+                }
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
@@ -91,12 +95,12 @@ fun NavBottomComplexElement(
         Icon(
             painter = painter,
             contentDescription = null,
-            tint = focusTint,
-            modifier = modifier
+            tint = if (selected) onFocusTint else outFocusTint,
+            modifier = modifier.padding(bottom = 5.dp)
         )
         Text(
             text = text,
-            color = focusTint,
+            color = if (selected) onFocusTint else outFocusTint,
             style = InTouchTheme.typography.tabBar,
             modifier = Modifier.padding(bottom = 4.dp),
             maxLines = 1,
@@ -113,40 +117,43 @@ fun NavBottomComplexElementPreview() {
             onClick = { /*TODO*/ },
             text = "Home",
             painter = painterResource(id = R.drawable.icon_home),
-            focusTint = InTouchTheme.colors.mainGreen,
+            onFocusTint = InTouchTheme.colors.mainGreen,
+            outFocusTint = InTouchTheme.colors.mainGreen40,
         )
     }
 }
 
 @Composable
 fun CustomBottomNavBar(
-    onFocusTint: Color,
-    outFocusTint: Color,
-    firstItemText: String,
-    secondItemText: String,
-    thirdItemText: String,
-    fourthItemText: String,
-    firstItemImage: Painter,
-    secondItemImage: Painter,
-    thirdItemImage: Painter,
-    fourthItemImage: Painter,
-    firstItemClick: () -> Unit,
-    secondItemClick: () -> Unit,
-    thirdItemClick: () -> Unit,
-    fourthItemClick: () -> Unit,
-    onPlusItemClick: () -> Unit
+    screenRoute1: String = "",
+    screenRoute2: String = "",
+    screenRoute3: String = "",
+    screenRoute4: String = "",
+    screenRoute5: String = "",
+    currentRoute: String? = "",
+    onFocusTint: Color = InTouchTheme.colors.mainGreen,
+    outFocusTint: Color = InTouchTheme.colors.mainGreen40,
+    firstItemText: String = stringResource(id = R.string.bottom_nav_home),
+    secondItemText: String = stringResource(id = R.string.bottom_nav_my_plan),
+    thirdItemText: String = stringResource(id = R.string.bottom_nav_my_diary),
+    fourthItemText: String = stringResource(id = R.string.bottom_nav_profile),
+    firstItemImage: Painter = painterResource(id = R.drawable.icon_home),
+    secondItemImage: Painter = painterResource(id = R.drawable.icon_plan_notebook),
+    thirdItemImage: Painter = painterResource(id = R.drawable.icon_diary),
+    fourthItemImage: Painter = painterResource(id = R.drawable.icon_profile),
+    firstItemClick: () -> Unit = {},
+    secondItemClick: () -> Unit = {},
+    thirdItemClick: () -> Unit = {},
+    fourthItemClick: () -> Unit = {},
+    onPlusItemClick: () -> Unit = {}
 ) {
+
     ConstraintLayout(
         modifier = Modifier
             .height(70.dp)
             .fillMaxWidth()
-            .background(Color.Transparent)
+            .background(InTouchTheme.colors.transparent)
     ) {
-
-        var selectedElementId: ElementId by rememberSaveable {
-            mutableStateOf(ElementId.HOME_ID)
-        }
-
 
         val (homeTag, progressTag, plusTag, myPlanTag, additionalTag, box) = createRefs()
 
@@ -164,14 +171,14 @@ fun CustomBottomNavBar(
         )
 
         NavBottomComplexElement(
+            selected = screenRoute1 == currentRoute,
             onClick = {
-                selectedElementId = ElementId.HOME_ID
                 firstItemClick.invoke()
             },
             text = firstItemText,
             painter = firstItemImage,
-            focusTint = if (selectedElementId == ElementId.HOME_ID) onFocusTint
-            else outFocusTint,
+            onFocusTint = onFocusTint,
+            outFocusTint = outFocusTint,
             modifier = Modifier
                 .constrainAs(homeTag) {
                     bottom.linkTo(parent.bottom)
@@ -180,14 +187,14 @@ fun CustomBottomNavBar(
         )
 
         NavBottomComplexElement(
+            selected = screenRoute5 == currentRoute,
             onClick = {
-                selectedElementId = ElementId.ADDITIONAL_ID
                 fourthItemClick.invoke()
             },
             text = fourthItemText,
             painter = fourthItemImage,
-            focusTint = if (selectedElementId == ElementId.ADDITIONAL_ID) onFocusTint
-            else outFocusTint,
+            onFocusTint = onFocusTint,
+            outFocusTint = outFocusTint,
             modifier = Modifier
                 .constrainAs(additionalTag) {
                     bottom.linkTo(parent.bottom)
@@ -203,19 +210,18 @@ fun CustomBottomNavBar(
                 top.linkTo(parent.top)
             }
         ) {
-            selectedElementId = ElementId.PLUS_ID
             onPlusItemClick.invoke()
         }
 
         NavBottomComplexElement(
+            selected = screenRoute2 == currentRoute,
             onClick = {
-                selectedElementId = ElementId.MY_PROGRESS_ID
                 secondItemClick.invoke()
             },
             text = secondItemText,
             painter = secondItemImage,
-            focusTint = if (selectedElementId == ElementId.MY_PROGRESS_ID) onFocusTint
-            else outFocusTint,
+            onFocusTint = onFocusTint,
+            outFocusTint = outFocusTint,
             modifier = Modifier
                 .constrainAs(progressTag) {
                     bottom.linkTo(parent.bottom)
@@ -225,14 +231,14 @@ fun CustomBottomNavBar(
         )
 
         NavBottomComplexElement(
+            selected = screenRoute4 == currentRoute,
             onClick = {
-                selectedElementId = ElementId.MY_PLAN_ID
                 thirdItemClick.invoke()
             },
             text = thirdItemText,
             painter = thirdItemImage,
-            focusTint = if (selectedElementId == ElementId.MY_PLAN_ID) onFocusTint
-            else outFocusTint,
+            onFocusTint = onFocusTint,
+            outFocusTint = outFocusTint,
             modifier = Modifier
                 .constrainAs(myPlanTag) {
                     bottom.linkTo(parent.bottom)
@@ -247,26 +253,6 @@ fun CustomBottomNavBar(
 @Preview(showBackground = true)
 fun CustomBottomNavBarPreview() {
     InTouchTheme {
-        CustomBottomNavBar(
-            onFocusTint = InTouchTheme.colors.mainGreen,
-            outFocusTint = InTouchTheme.colors.mainGreen40,
-            firstItemText = "Home",
-            secondItemText = "My progress",
-            thirdItemText = "My plan",
-            fourthItemText = "Additional",
-            firstItemImage = painterResource(id = R.drawable.icon_home),
-            secondItemImage = painterResource(id = R.drawable.icon_progress),
-            thirdItemImage = painterResource(id = R.drawable.icon_plan),
-            fourthItemImage = painterResource(id = R.drawable.icon_additional),
-            firstItemClick = {},
-            secondItemClick = {},
-            thirdItemClick = {},
-            fourthItemClick = {},
-            onPlusItemClick = {}
-        )
+        CustomBottomNavBar()
     }
-}
-
-enum class ElementId {
-    HOME_ID, MY_PROGRESS_ID, PLUS_ID, MY_PLAN_ID, ADDITIONAL_ID;
 }

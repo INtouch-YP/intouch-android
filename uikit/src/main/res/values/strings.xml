@@ -3,4 +3,8 @@
     <string name="hide_password">Hide password</string>
     <string name="mood">Mood:</string>
     <string name="note">Note:</string>
+    <string name="bottom_nav_home">Home</string>
+    <string name="bottom_nav_my_plan">My plan</string>
+    <string name="bottom_nav_my_diary">My diary</string>
+    <string name="bottom_nav_profile">Profile</string>
 </resources>
