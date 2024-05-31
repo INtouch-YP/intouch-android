@@ -6,11 +6,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class PinCodeRepositoryImpl @Inject constructor(
     private val encryptedPrefs: SharedPreferencesHelper,
-    @Named("DefaultSharedPreferences") private val defaultPrefs: SharedPreferences,
+    private val defaultPrefs: SharedPreferences,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PinCodeRepository {
 
@@ -18,10 +17,10 @@ class PinCodeRepositoryImpl @Inject constructor(
         return withContext(ioDispatcher) {
             try {
                 encryptedPrefs.sharedPreferences.edit {
-                    putString(PIN_CODE, pinCode).apply()
+                    putString(PIN_CODE, pinCode)
                 }
                 defaultPrefs.edit {
-                    putBoolean(SKIPPED, false).apply()
+                    putBoolean(SKIPPED, false)
                 }
                 Result.success(true)
             } catch (e: Exception) {
@@ -47,7 +46,7 @@ class PinCodeRepositoryImpl @Inject constructor(
         return withContext(ioDispatcher) {
             try {
                 encryptedPrefs.sharedPreferences.edit {
-                    remove(PIN_CODE).apply()
+                    remove(PIN_CODE)
                 }
                 Result.success(true)
             } catch (e: Exception) {
@@ -72,7 +71,7 @@ class PinCodeRepositoryImpl @Inject constructor(
         return withContext(ioDispatcher) {
             try {
                 defaultPrefs.edit {
-                    putBoolean(SKIPPED, true).apply()
+                    putBoolean(SKIPPED, true)
                 }
                 Result.success(true)
             } catch (e: Exception) {

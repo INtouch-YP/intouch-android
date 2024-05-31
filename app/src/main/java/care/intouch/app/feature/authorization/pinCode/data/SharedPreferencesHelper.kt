@@ -12,8 +12,9 @@ import javax.inject.Singleton
 class SharedPreferencesHelper
 @Inject constructor(@ApplicationContext private val context: Context) {
 
-    private val masterKey =
+    private val masterKey: MasterKey by lazy {
         MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
+    }
 
     val sharedPreferences: SharedPreferences by lazy {
         EncryptedSharedPreferences.create(
