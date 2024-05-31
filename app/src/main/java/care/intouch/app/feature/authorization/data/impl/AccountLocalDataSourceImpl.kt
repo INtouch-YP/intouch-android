@@ -14,10 +14,9 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
-import javax.inject.Named
 
 class AccountLocalDataSourceImpl @Inject constructor(
-    @Named("DefaultSharedPreferences") private val sharedPreferences: SharedPreferences,
+    private val sharedPreferences: SharedPreferences,
     private val coroutineScope: CoroutineScope,
     private val json: Json,
 ) : AccountLocalDataSource, SharedPreferences.OnSharedPreferenceChangeListener {
