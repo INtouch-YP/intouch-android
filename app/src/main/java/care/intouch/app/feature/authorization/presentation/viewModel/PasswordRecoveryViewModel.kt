@@ -15,9 +15,6 @@ class PasswordRecoveryViewModel @Inject constructor(
     private val resetPasswordUseCase: ResetPasswordUseCase
 ) : ViewModel() {
 
-    private var _resetPasswordState = MutableStateFlow("")
-    val resetPasswordState = _resetPasswordState.asStateFlow()
-
     fun resetPassword(email: String) {
         viewModelScope.launch {
             val result = resetPasswordUseCase(email)

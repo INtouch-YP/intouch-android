@@ -32,21 +32,15 @@ class UserRemoteDataSourceImpl @Inject constructor(
     override suspend fun resetPassword(email: String): Result<PasswordResetResponse> {
         return withContext(Dispatchers.IO) {
             try {
-                Timber.tag("ERROR RESPONSE").d("Try block")
                 val response = userUtilsApiService.resetPassword(PasswordResetRequest(email))
                 Result.success(response)
-            } catch (e: HttpException) {
-                Timber.tag("ERROR RESPONSE").d("http exception block")
-                val errorBody = e.response()?.errorBody()
-                if (e.code() == 400 && errorBody != null) {
-                    val jsonString = errorBody.string()
-                    val errorPasswordResetResponse = Json.decodeFromString<ErrorPasswordResetResponse>(jsonString)
-                    Timber.tag("ERROR RESPONSE").d(errorPasswordResetResponse.toString())
-                    return@withContext Result.failure(Exception(errorPasswordResetResponse.email.toString()))
+            } catch (e: NetworkException) {
+                if (e is NetworkException.BadRequest && e.httpStatusCode == 400) {
+                    val errorPasswordResetResponse = Json
+                        .decodeFromString<ErrorPasswordResetResponse>(e.errorBody)
+                    return@withContext Result
+                        .failure(Exception(errorPasswordResetResponse.email.joinToString()))
                 }
-                Result.failure(Exception("Unexpected error: ${e.message()}"))
-            } catch (e: Exception) {
-                Timber.tag("ERROR RESPONSE").d("Default exception block")
                 Result.failure(e)
             }
         }
