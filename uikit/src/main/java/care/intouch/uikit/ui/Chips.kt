@@ -220,7 +220,7 @@ fun EmotionalChipsSmall(
     onClick: () -> Unit
 ) {
     Box(contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(20.dp))
             .background(if (selected) selectedColor else unselectedColor)
             .clickable(
@@ -232,7 +232,7 @@ fun EmotionalChipsSmall(
             text = text.value(),
             style = InTouchTheme.typography.caption2Regular,
             color = if (selected) unselectedColorText else selectedColorText,
-            modifier = modifier.padding(horizontal = 14.dp, vertical = 2.dp),
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
             textAlign = TextAlign.Center,
             maxLines = 1
         )

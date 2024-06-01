@@ -15,7 +15,17 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v1
         with: {java-version: 1.17}
-      - name: Run check out script
+
+      - name: Run clean script
+        run: ./gradlew :app:clean
+
+      - name: Check status
+        run: echo "Check clean status"
+      - name: Set failed if clean failed
+        if: failure()
+        run: echo "::error::Clean failed"
+
+      - name: Run build script
         run: ./gradlew :app:build
 
       - name: Check status

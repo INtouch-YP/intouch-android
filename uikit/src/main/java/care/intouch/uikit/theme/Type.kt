@@ -48,7 +48,7 @@ data class InTouchTypography(
         fontFamily = itimRegular,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 15.sp,
+        lineHeight = 21.sp,
         letterSpacing = (-0.32).sp,
     ),
     val bodyRegular: TextStyle = TextStyle(

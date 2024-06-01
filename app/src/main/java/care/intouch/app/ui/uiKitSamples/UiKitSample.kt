@@ -1,3 +1,4 @@
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,13 +28,8 @@ import care.intouch.app.ui.uiKitSamples.samples.RegularChipsSample
 import care.intouch.app.ui.uiKitSamples.samples.SliderSample
 import care.intouch.app.ui.uiKitSamples.samples.ToggleSampleScreen
 import care.intouch.uikit.theme.InTouchTheme
+package care.intouch.app.ui.uiKitSamples
 
-@Composable
-fun UiKitSample() {
-
-    var screenSample by remember {
-        mutableStateOf<ScreenSample>(ScreenSample.MainSampleMenu)
-    }
 
     when (screenSample) {
         ScreenSample.MainSampleMenu -> {
