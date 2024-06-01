@@ -7,13 +7,17 @@ package care.intouch.app
  import androidx.compose.foundation.layout.fillMaxSize
  import androidx.compose.material3.Surface
  import androidx.compose.ui.Modifier
+ import androidx.hilt.navigation.compose.hiltViewModel
  import androidx.navigation.compose.rememberNavController
  import care.intouch.app.core.navigation.AppNavScreen
  import care.intouch.app.core.navigation.Authentication
  import care.intouch.app.core.navigation.AuthorizationRouteBranch
  import care.intouch.app.core.navigation.navhost.MainNavHost
+ import care.intouch.app.feature.authorization.presentation.viewModel.PasswordRecoveryViewModel
  import care.intouch.uikit.theme.InTouchTheme
+ import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
