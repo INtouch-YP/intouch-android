@@ -2,6 +2,7 @@ package care.intouch.app.feature.authorization.data.impl
 
 import care.intouch.app.feature.authorization.data.api.UserApiService
 import care.intouch.app.feature.authorization.data.api.UserRemoteDataSource
+import care.intouch.app.feature.authorization.data.api.UserUtilsApiService
 import care.intouch.app.feature.authorization.data.models.mappers.NetworkToUserExceptionMapper
 import care.intouch.app.feature.authorization.data.models.response.UserResponse
 import care.intouch.app.feature.authorization.data.models.request.PasswordResetRequest
@@ -12,10 +13,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class UserRemoteDataSourceImpl @Inject constructor(
     private val userApiService: UserApiService,
+    private val userUtilsApiService: UserUtilsApiService,
     private val networkToUserExceptionMapper: NetworkToUserExceptionMapper
 ) : UserRemoteDataSource {
     override suspend fun getUser(): UserResponse {
@@ -29,17 +32,21 @@ class UserRemoteDataSourceImpl @Inject constructor(
     override suspend fun resetPassword(email: String): Result<PasswordResetResponse> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = userApiService.resetPassword(PasswordResetRequest(email))
+                Timber.tag("ERROR RESPONSE").d("Try block")
+                val response = userUtilsApiService.resetPassword(PasswordResetRequest(email))
                 Result.success(response)
             } catch (e: HttpException) {
+                Timber.tag("ERROR RESPONSE").d("http exception block")
                 val errorBody = e.response()?.errorBody()
                 if (e.code() == 400 && errorBody != null) {
                     val jsonString = errorBody.string()
-                    val errorPasswordResetResponse: ErrorPasswordResetResponse = Json.decodeFromString(jsonString)
-                    return@withContext Result.failure(Exception(errorPasswordResetResponse.email.joinToString()))
+                    val errorPasswordResetResponse = Json.decodeFromString<ErrorPasswordResetResponse>(jsonString)
+                    Timber.tag("ERROR RESPONSE").d(errorPasswordResetResponse.toString())
+                    return@withContext Result.failure(Exception(errorPasswordResetResponse.email.toString()))
                 }
                 Result.failure(Exception("Unexpected error: ${e.message()}"))
             } catch (e: Exception) {
+                Timber.tag("ERROR RESPONSE").d("Default exception block")
                 Result.failure(e)
             }
         }
