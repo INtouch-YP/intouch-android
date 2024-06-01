@@ -43,7 +43,7 @@ fun ProfileInfoTextField(
     val interactionSource = remember { MutableInteractionSource() }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .background(color = backgroundColor)
     ) {
         Text(
