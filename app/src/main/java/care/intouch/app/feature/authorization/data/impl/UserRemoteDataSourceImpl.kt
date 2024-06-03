@@ -42,6 +42,8 @@ class UserRemoteDataSourceImpl @Inject constructor(
                         .failure(Exception(errorPasswordResetResponse.email.joinToString()))
                 }
                 Result.failure(e)
+            } catch (e: Exception) {
+                Result.failure(e)
             }
         }
     }

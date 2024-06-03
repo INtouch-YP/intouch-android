@@ -23,16 +23,20 @@ class PasswordRecoveryViewModel @Inject constructor(
                 result.isSuccess -> {
                     val response = result.getOrNull()
                     Timber
-                        .tag("VM PASS RECOVERY")
-                        .d("Success ${response?.message}")
+                        .tag(LOG_TAG)
+                        .d("Success: ${response?.message}")
                 }
                 result.isFailure -> {
                     val response = result.exceptionOrNull()
                     Timber
-                        .tag("VM PASS RECOVERY")
-                        .d("Error ${response?.message}")
+                        .tag(LOG_TAG)
+                        .d("Error: ${response?.message}")
                 }
             }
         }
+    }
+
+    companion object {
+        const val LOG_TAG = "password_recovery_response"
     }
 }

@@ -1,26 +1,39 @@
 package care.intouch.app
 
- import android.os.Bundle
- import androidx.activity.ComponentActivity
- import androidx.activity.compose.setContent
- import androidx.compose.foundation.layout.Column
- import androidx.compose.foundation.layout.fillMaxSize
- import androidx.compose.material3.Surface
- import androidx.compose.ui.Modifier
- import androidx.hilt.navigation.compose.hiltViewModel
- import androidx.navigation.compose.rememberNavController
- import care.intouch.app.core.navigation.AppNavScreen
- import care.intouch.app.core.navigation.Authentication
- import care.intouch.app.core.navigation.AuthorizationRouteBranch
- import care.intouch.app.core.navigation.navhost.MainNavHost
- import care.intouch.app.feature.authorization.presentation.viewModel.PasswordRecoveryViewModel
- import care.intouch.uikit.theme.InTouchTheme
- import dagger.hilt.android.AndroidEntryPoint
+import android.net.Uri
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
+import care.intouch.app.core.navigation.AppNavScreen
+import care.intouch.app.core.navigation.Authentication
+import care.intouch.app.core.navigation.AuthorizationRouteBranch
+import care.intouch.app.core.navigation.Registration
+import care.intouch.app.core.navigation.navhost.MainNavHost
+import care.intouch.uikit.theme.InTouchTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        var isResetPasswordDeepLink = false
+
+        if (intent?.action == ACTION_VIEW) {
+            val data: Uri? = intent?.data
+
+            val resetUrlPattern = "$BASE_URL$RESET_PASSWORD_ENDPOINT.*".toRegex()
+
+            if (data.toString().matches(resetUrlPattern)) {
+                isResetPasswordDeepLink = true
+            }
+        }
+
         setContent {
             InTouchTheme {
                 Surface(
@@ -29,16 +42,30 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Column {
                         if (BuildConfig.DEBUG) {
-                            MainNavHost(navController = rememberNavController())
+                            if (isResetPasswordDeepLink) {
+                                AppNavScreen(
+                                    startDestination = AuthorizationRouteBranch.route,
+                                    authStartDestination = Registration.route
+                                )
+                            } else {
+                                MainNavHost(navController = rememberNavController())
+                            }
                         } else {
                             AppNavScreen(
                                 startDestination = AuthorizationRouteBranch.route,
-                                authStartDestination = Authentication.route
+                                authStartDestination = if (isResetPasswordDeepLink) Registration.route
+                                else Authentication.route
                             )
                         }
                     }
                 }
             }
         }
+    }
+
+    companion object {
+        const val ACTION_VIEW = "android.intent.action.VIEW"
+        const val BASE_URL = "https://app.intouch.care"
+        const val RESET_PASSWORD_ENDPOINT = "/api/v1/password/reset/confirm/"
     }
 }
