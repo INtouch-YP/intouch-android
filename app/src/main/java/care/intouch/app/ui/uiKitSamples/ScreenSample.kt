@@ -17,4 +17,5 @@ sealed class ScreenSample {
     data object CardsSample: ScreenSample()
     data object CheckmarkSample: ScreenSample()
     data object PinCodeInputFieldSample : ScreenSample()
+    data object ProfileInfoTextField : ScreenSample()
 }
