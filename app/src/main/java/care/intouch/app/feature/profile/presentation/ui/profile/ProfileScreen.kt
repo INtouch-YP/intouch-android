@@ -1,4 +1,4 @@
-package care.intouch.app.feature.profile.presentation.ui
+package care.intouch.app.feature.profile.presentation.ui.profile
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +25,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.painterResource
 import care.intouch.uikit.R
+import care.intouch.uikit.common.ImageVO
 import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.ui.buttons.IntouchButton
 import care.intouch.uikit.ui.buttons.PrimaryButtonWhite
@@ -51,10 +51,16 @@ fun ProfileScreen(
     var textName by rememberSaveable { mutableStateOf("MyName") }
     var textLastName by rememberSaveable { mutableStateOf("MyLastName") }
     var textEmail by rememberSaveable { mutableStateOf("gogo@gmail.com") }
+
     var saveChangesButtonState by rememberSaveable { mutableStateOf(false) }
+
     var nameTextFieldEnabled by rememberSaveable { mutableStateOf(false) }
     var lastNameTextFieldEnabled by rememberSaveable { mutableStateOf(false) }
     var emailTextFieldEnabled by rememberSaveable { mutableStateOf(false) }
+
+    var nameButtonEnabled by rememberSaveable { mutableStateOf(true) }
+    var lastNameButtonEnabled by rememberSaveable { mutableStateOf(true) }
+    var emailButtonEnabled by rememberSaveable { mutableStateOf(true) }
 
     val nameFocusRequester = remember { FocusRequester() }
     val lastNameFocusRequester = remember { FocusRequester() }
@@ -78,14 +84,19 @@ fun ProfileScreen(
                 textFieldEnabled = nameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    textName = it
+                    if(it.length <= 20) textName = it
                 },
                 onIconClick = {
                     nameTextFieldEnabled = true
                     saveChangesButtonState = true
+                    nameButtonEnabled = false
                     nameFocusRequester.requestFocus()
                 },
-                focusRequester = nameFocusRequester
+                focusRequester = nameFocusRequester,
+                buttonEnabled = nameButtonEnabled,
+                icon = if (nameButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
+                    R.drawable.icon_edit_light
+                )
             )
             Spacer(modifier = Modifier.height(16.dp))
             PersonalData(
@@ -93,13 +104,20 @@ fun ProfileScreen(
                 value = textLastName,
                 textFieldEnabled = lastNameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
-                onValueChange = { textLastName = it },
+                onValueChange = {
+                    if(it.length <= 20) textLastName = it
+                },
                 onIconClick = {
                     lastNameTextFieldEnabled = true
                     saveChangesButtonState = true
+                    lastNameButtonEnabled = false
                     lastNameFocusRequester.requestFocus()
                 },
-                focusRequester = lastNameFocusRequester
+                focusRequester = lastNameFocusRequester,
+                buttonEnabled = lastNameButtonEnabled,
+                icon = if (lastNameButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
+                    R.drawable.icon_edit_light
+                )
             )
             Spacer(modifier = Modifier.height(16.dp))
             PersonalData(
@@ -107,13 +125,20 @@ fun ProfileScreen(
                 value = textEmail,
                 textFieldEnabled = emailTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
-                onValueChange = { textEmail = it },
+                onValueChange = {
+                    if(it.length <= 20) textEmail = it
+                },
                 onIconClick = {
                     emailTextFieldEnabled = true
                     saveChangesButtonState = true
+                    emailButtonEnabled = false
                     emailFocusRequester.requestFocus()
                 },
-                focusRequester = emailFocusRequester
+                focusRequester = emailFocusRequester,
+                buttonEnabled = emailButtonEnabled,
+                icon = if (emailButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
+                    R.drawable.icon_edit_light
+                )
             )
             Spacer(modifier = Modifier.height(22.dp))
             if (saveChangesButtonState) {
@@ -124,6 +149,9 @@ fun ProfileScreen(
                         nameTextFieldEnabled = false
                         lastNameTextFieldEnabled = false
                         emailTextFieldEnabled = false
+                        nameButtonEnabled = true
+                        lastNameButtonEnabled = true
+                        emailButtonEnabled = true
                     },
                     isEnabled = checkBasicTextFields(textName, textLastName, textEmail),
                     contentPadding = PaddingValues(horizontal = 72.dp, vertical = 16.dp),

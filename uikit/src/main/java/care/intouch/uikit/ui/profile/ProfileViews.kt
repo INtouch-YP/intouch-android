@@ -78,6 +78,7 @@ fun PersonalData(
     onIconClick: () -> Unit,
     textFieldEnabled: Boolean,
     readOnly: Boolean = false,
+    buttonEnabled: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -120,7 +121,8 @@ fun PersonalData(
         )
         IconButton(
             onClick = onIconClick,
-            modifier = Modifier.align(Alignment.CenterEnd)
+            modifier = Modifier.align(Alignment.CenterEnd),
+            enabled = buttonEnabled
         ){
             Icon(
                 painter = icon.painter(),
@@ -173,7 +175,7 @@ fun ProfileButton(
                 disabledContentColor = disableTextColor,
             )
         },
-        onClick = { onClick }
+        onClick = { onClick() }
     )
     {
         Text(text = text.value(), style = textStyle)
