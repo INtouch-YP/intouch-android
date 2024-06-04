@@ -31,6 +31,7 @@ import care.intouch.uikit.ui.buttons.IntouchButton
 import care.intouch.uikit.ui.buttons.PrimaryButtonWhite
 import care.intouch.uikit.ui.profile.PersonalData
 import care.intouch.uikit.ui.profile.ProfileButton
+import care.intouch.uikit.ui.profile.RowWithMessage
 import care.intouch.uikit.ui.profile.TopPanel
 
 
@@ -45,9 +46,11 @@ private fun checkBasicTextFields(
 @Composable
 fun ProfileScreen(
     onSecurityClick: () -> Unit,
-    onChangePinCode: () -> Unit,
-    //profileViewModel: ProfileViewModel = ProfileViewModel()
+    onChangePinCode: () -> Unit
 ) {
+    val profileViewModel: ProfileViewModel = ProfileViewModel()
+
+
     var textName by rememberSaveable { mutableStateOf("MyName") }
     var textLastName by rememberSaveable { mutableStateOf("MyLastName") }
     var textEmail by rememberSaveable { mutableStateOf("gogo@gmail.com") }
@@ -65,6 +68,14 @@ fun ProfileScreen(
     val nameFocusRequester = remember { FocusRequester() }
     val lastNameFocusRequester = remember { FocusRequester() }
     val emailFocusRequester = remember { FocusRequester() }
+
+    var allDataIsValid by rememberSaveable { mutableStateOf(true) }
+
+    var resultOfCheckData = profileViewModel.checkProfileData(
+        textName,
+        textLastName,
+        textEmail
+    )
 
     Box(
         modifier = Modifier.background(InTouchTheme.colors.input)
@@ -84,7 +95,15 @@ fun ProfileScreen(
                 textFieldEnabled = nameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    if(it.length <= 20) textName = it
+                    if (it.length <= 20) {
+                        textName = it
+//                        resultOfCheckData = profileViewModel.checkProfileData(
+//                            textName,
+//                            textLastName,
+//                            textEmail
+//                        )
+                        allDataIsValid = resultOfCheckData.dataIsValid
+                    }
                 },
                 onIconClick = {
                     nameTextFieldEnabled = true
@@ -105,7 +124,15 @@ fun ProfileScreen(
                 textFieldEnabled = lastNameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    if(it.length <= 20) textLastName = it
+                    if (it.length <= 20) {
+                        textLastName = it
+//                        resultOfCheckData = profileViewModel.checkProfileData(
+//                            textName,
+//                            textLastName,
+//                            textEmail
+//                        )
+                        allDataIsValid = resultOfCheckData.dataIsValid
+                    }
                 },
                 onIconClick = {
                     lastNameTextFieldEnabled = true
@@ -126,7 +153,15 @@ fun ProfileScreen(
                 textFieldEnabled = emailTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    if(it.length <= 20) textEmail = it
+                    if (it.length <= 20) {
+                        textEmail = it
+//                        resultOfCheckData = profileViewModel.checkProfileData(
+//                            textName,
+//                            textLastName,
+//                            textEmail
+//                        )
+                        allDataIsValid = resultOfCheckData.dataIsValid
+                    }
                 },
                 onIconClick = {
                     emailTextFieldEnabled = true
@@ -140,11 +175,22 @@ fun ProfileScreen(
                     R.drawable.icon_edit_light
                 )
             )
-            Spacer(modifier = Modifier.height(22.dp))
+            if(allDataIsValid){
+                Spacer(modifier = Modifier.height(22.dp))
+            } else {
+                Spacer(modifier = Modifier.height(16.dp))
+                RowWithMessage(
+                    successOrError = allDataIsValid,
+                    messageText = StringVO.Plain(resultOfCheckData.message),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
             if (saveChangesButtonState) {
                 IntouchButton(
                     text = StringVO.Plain("Save changes").value(),
                     onClick = {
+                        profileViewModel.sendDataInDomain()
                         saveChangesButtonState = false
                         nameTextFieldEnabled = false
                         lastNameTextFieldEnabled = false
@@ -152,8 +198,10 @@ fun ProfileScreen(
                         nameButtonEnabled = true
                         lastNameButtonEnabled = true
                         emailButtonEnabled = true
+
                     },
-                    isEnabled = checkBasicTextFields(textName, textLastName, textEmail),
+                    //isEnabled = checkBasicTextFields(textName, textLastName, textEmail),
+                    isEnabled = allDataIsValid,
                     contentPadding = PaddingValues(horizontal = 72.dp, vertical = 16.dp),
                     modifier = Modifier.align(CenterHorizontally),
                 )

@@ -15,23 +15,33 @@ class ProfileViewModel: ViewModel() {
         return regex.matches(text) && (text.length > 2)
     }
 
-
     fun checkProfileData(name: String, lastName: String, email: String): ResultOfCheckProfileData{
         val isEmailValid = isEmailValid(email)
         val isNameValid = isTextValid(name)
         val isLastNameValid = isTextValid(lastName)
         var message = ""
         if (!isEmailValid) {
-            message += "Not a valid e-mail address" + "\n"
+            message += "Not a valid e-mail address." + "\n"
+        }
+        if (!isNameValid || !isLastNameValid) {
+            message += "Invalid characters. Only letters, spaces, and periods are allowed." + "\n"
+        }
+        if (name.length <=2){
+            message += "Please enter a name with at least 2 characters." + "\n"
+        }
+        if (lastName.length <=2){
+            message += "Please enter a last name with at least 2 characters." + "\n"
         }
 
-
-        return ResultOfCheckProfileData(isEmailValid && isNameValid && isLastNameValid, "Hello")
-
+        if (isEmailValid && isNameValid && isLastNameValid){
+            message = "You have successfully changed your name"
+        }
+        return ResultOfCheckProfileData(isEmailValid && isNameValid && isLastNameValid, message.trim())
     }
 
+    fun sendDataInDomain(){
 
-
+    }
 }
 
 

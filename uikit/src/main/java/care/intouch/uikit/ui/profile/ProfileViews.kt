@@ -3,8 +3,10 @@ package care.intouch.uikit.ui.profile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -123,12 +125,13 @@ fun PersonalData(
             onClick = onIconClick,
             modifier = Modifier.align(Alignment.CenterEnd),
             enabled = buttonEnabled
-        ){
+        ) {
             Icon(
                 painter = icon.painter(),
                 contentDescription = null,
                 tint = iconTint,
-                modifier = Modifier.align(Alignment.CenterEnd))
+                modifier = Modifier.align(Alignment.CenterEnd)
+            )
         }
     }
 }
@@ -188,6 +191,34 @@ fun ProfileButton(
     }
 }
 
+@Composable
+fun RowWithMessage(
+    successOrError: Boolean,
+    messageText: StringVO,
+    textStyle: TextStyle = InTouchTheme.typography.caption1Regular,
+    colorError: Color = InTouchTheme.colors.errorRed,
+    colorSuccess: Color = InTouchTheme.colors.green,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .height(32.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = messageText.value(),
+            style = textStyle,
+            color = if (successOrError) {
+                colorSuccess
+            } else {
+                colorError
+            },
+        )
+    }
+}
+
 @Preview(showBackground = true, backgroundColor = 0x80338C8B)
 @Composable
 fun TopPanelPreview() {
@@ -214,5 +245,21 @@ fun NameProfileInfoTextFieldPreview() {
 @Preview(showBackground = true, backgroundColor = 0x80338C8B)
 @Composable
 fun ProfileButtonPreview() {
-    InTouchTheme { ProfileButton(text = StringVO.Plain("Security"), modifier = Modifier, onClick = {}) }
+    InTouchTheme {
+        ProfileButton(
+            text = StringVO.Plain("Security"),
+            modifier = Modifier,
+            onClick = {})
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0x80338C8B)
+@Composable
+fun RowWithMessagePreview() {
+    InTouchTheme {
+        RowWithMessage(
+            successOrError = true,
+            messageText = StringVO.Plain("resultOfCheckData.message\nresultOfCheckData.message2"),
+        )
+    }
 }
