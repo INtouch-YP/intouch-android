@@ -3,6 +3,7 @@
     //UiKitSample
     <string name="uikit_sample_button">UiKitSample</string>
     <string name="main_screen_button">MainScreen</string>
+    <string name="registration_screen_button">RegistrationScreen</string>
 
     <string name="home_bottom_nav_bar">Home</string>
     <string name="my_progress_bottom_nav_bar">My progress</string>
@@ -80,7 +81,9 @@
     <string name="warning_delete">All your entered data will be permanently removed.</string>
     <string name="warning_delete_account">This action will permanently erase all your data, and there\'s no way to recover it later.</string>
 
-    <string name="agreement_to_terms">I agree with the terms and conditions</string>
+    <string name="agreement_to_terms">I agree with</string>
+    <string name="terms_and_condition">the terms and conditions</string>
+    <string name="terms_and_condition_link">https://intouch.care/terms-conditions</string>
     <string name="forgot_password">Forgot password?</string>
 
     <string name="password_lengths_small_error">Your password must be at least 8 characters long.</string>
@@ -99,6 +102,7 @@
 
     <string name="email_hint">E-mail</string>
     <string name="password_hint">Password</string>
+    <string name="password_confirm_hint">Confirm Password</string>
     <string name="current_password_hint">Current Password</string>
     <string name="new_password_hint">New Password</string>
     <string name="confirm_password_hint">Confirm New Password</string>
