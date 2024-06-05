@@ -25,7 +25,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="app.intouch.care"
+                    android:host="${hostName}"
                     android:scheme="https"
                     android:pathPattern="/api/v1/password/reset/confirm/.*" />
             </intent-filter>

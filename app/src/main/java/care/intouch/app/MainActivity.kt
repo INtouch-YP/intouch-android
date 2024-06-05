@@ -1,5 +1,6 @@
 package care.intouch.app
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
 
         var isResetPasswordDeepLink = false
 
-        if (intent?.action == ACTION_VIEW) {
+        if (intent?.action == Intent.ACTION_VIEW) {
             val data: Uri? = intent?.data
 
             val resetUrlPattern = "$BASE_URL$RESET_PASSWORD_ENDPOINT.*".toRegex()
@@ -64,7 +65,6 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object {
-        const val ACTION_VIEW = "android.intent.action.VIEW"
         const val BASE_URL = "https://app.intouch.care"
         const val RESET_PASSWORD_ENDPOINT = "/api/v1/password/reset/confirm/"
     }
