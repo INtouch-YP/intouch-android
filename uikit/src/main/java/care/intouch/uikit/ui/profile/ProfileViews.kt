@@ -149,10 +149,10 @@ fun ProfileButton(
     disableTextColor: Color = InTouchTheme.colors.textBlue,
     arrowColor: Color = InTouchTheme.colors.mainGreen,
     contentPadding: PaddingValues = PaddingValues(
-        start = 32.dp,
+        //start = 32.dp,
         top = 9.dp,
         bottom = 12.dp,
-        end = 32.dp
+        //end = 32.dp
     ),
     shape: Shape = RoundedCornerShape(12.dp),
     text: StringVO,

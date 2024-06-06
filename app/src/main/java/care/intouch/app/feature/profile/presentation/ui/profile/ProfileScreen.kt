@@ -214,7 +214,8 @@ fun ProfileScreen(
                 onClick = { onSecurityClick.invoke() },
                 text = StringVO.Plain("Security"),
                 enableBackgroundColor = InTouchTheme.colors.input,
-                disableBackgroundColor = InTouchTheme.colors.input
+                disableBackgroundColor = InTouchTheme.colors.input,
+                modifier = Modifier.padding(horizontal = 32.dp)
             )
             HorizontalDivider(
                 color = InTouchTheme.colors.accentGreen30,
@@ -225,7 +226,8 @@ fun ProfileScreen(
                 onClick = { onChangePinCode.invoke() },
                 text = StringVO.Plain("Create PIN code"),
                 enableBackgroundColor = InTouchTheme.colors.input,
-                disableBackgroundColor = InTouchTheme.colors.input
+                disableBackgroundColor = InTouchTheme.colors.input,
+                modifier = Modifier.padding(horizontal = 32.dp)
             )
             HorizontalDivider(
                 color = InTouchTheme.colors.accentGreen30,
