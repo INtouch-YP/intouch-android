@@ -1,6 +1,9 @@
 package care.intouch.app.feature.profile.presentation.ui.profile
 
 data class ResultOfCheckProfileData(
-    val dataIsValid: Boolean,
-    val message: String
+    val dataIsValid: Boolean = false,
+    val name: String = "",
+    val lastName: String = "",
+    val email: String = "",
+    val message: String = ""
 )

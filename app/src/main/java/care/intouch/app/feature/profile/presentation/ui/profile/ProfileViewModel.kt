@@ -1,10 +1,25 @@
 package care.intouch.app.feature.profile.presentation.ui.profile
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class ProfileViewModel: ViewModel() {
+@HiltViewModel
+class ProfileViewModel @Inject constructor() : ViewModel() {
 
-
+    //private var _state = MutableStateFlow(ResultOfCheckProfileData())
+    private var _state = MutableStateFlow(
+        ResultOfCheckProfileData(
+            dataIsValid = true,
+            name = "MyName",
+            lastName = "MyLastName",
+            email = "gogo@gmail.com",
+            message = ""
+        )
+    )
+    val state = _state.asStateFlow()
 
     private fun isEmailValid(text: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches()
@@ -12,10 +27,10 @@ class ProfileViewModel: ViewModel() {
 
     private fun isTextValid(text: String): Boolean {
         val regex = Regex("[a-zA-Z- \\.]*")
-        return regex.matches(text) && (text.length > 2)
+        return regex.matches(text)
     }
 
-    fun checkProfileData(name: String, lastName: String, email: String): ResultOfCheckProfileData{
+    fun updateState(name: String, lastName: String, email: String) {
         val isEmailValid = isEmailValid(email)
         val isNameValid = isTextValid(name)
         val isLastNameValid = isTextValid(lastName)
@@ -26,22 +41,31 @@ class ProfileViewModel: ViewModel() {
         if (!isNameValid || !isLastNameValid) {
             message += "Invalid characters. Only letters, spaces, and periods are allowed." + "\n"
         }
-        if (name.length <=2){
+        if (name.length <= 2) {
             message += "Please enter a name with at least 2 characters." + "\n"
         }
-        if (lastName.length <=2){
+        if (lastName.length <= 2) {
             message += "Please enter a last name with at least 2 characters." + "\n"
         }
 
-        if (isEmailValid && isNameValid && isLastNameValid){
+        if (isEmailValid && isNameValid && isLastNameValid) {
             message = "You have successfully changed your name"
         }
-        return ResultOfCheckProfileData(isEmailValid && isNameValid && isLastNameValid, message.trim())
+        _state.value = ResultOfCheckProfileData(
+            isEmailValid && isNameValid && isLastNameValid
+                    && (name.length > 2) && (lastName.length > 2),
+            name,
+            lastName,
+            email,
+            message.trim()
+        )
     }
 
-    fun sendDataInDomain(){
+    fun sendDataInDomain() {
 
     }
+
+
 }
 
 
