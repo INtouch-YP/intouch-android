@@ -2,6 +2,9 @@ package care.intouch.app.feature.authorization.pinCode.data
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import care.intouch.app.feature.authorization.data.models.mappers.AuthenticationExceptionToErrorMapper
+import care.intouch.app.feature.common.Resource
+import care.intouch.app.feature.common.domain.errors.ErrorEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -10,10 +13,11 @@ import javax.inject.Inject
 class PinCodeRepositoryImpl @Inject constructor(
     private val encryptedPrefs: SharedPreferencesHelper,
     private val defaultPrefs: SharedPreferences,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val exceptionToErrorMapper: AuthenticationExceptionToErrorMapper
 ) : PinCodeRepository {
 
-    override suspend fun installPinCode(pinCode: String): Result<Boolean> {
+    override suspend fun installPinCode(pinCode: String): Resource<Boolean, ErrorEntity> {
         return withContext(ioDispatcher) {
             try {
                 encryptedPrefs.sharedPreferences.edit {
@@ -22,60 +26,65 @@ class PinCodeRepositoryImpl @Inject constructor(
                 defaultPrefs.edit {
                     putBoolean(SKIPPED, false)
                 }
-                Result.success(true)
+                Resource.Success(true)
             } catch (e: Exception) {
-                Result.failure(e)
+                val error = exceptionToErrorMapper.handleException(e)
+                Resource.Error(error)
             }
         }
     }
 
-    override suspend fun verifyPinCode(pinCode: String): Result<Boolean> {
+    override suspend fun verifyPinCode(pinCode: String): Resource<Boolean, ErrorEntity> {
         return withContext(ioDispatcher) {
             try {
                 if (encryptedPrefs.sharedPreferences.getString(PIN_CODE, null) == pinCode) {
-                    Result.success(true)
-                } else Result.success(false)
+                    Resource.Success(true)
+                } else Resource.Success(false)
 
             } catch (e: Exception) {
-                Result.failure(e)
+                val error = exceptionToErrorMapper.handleException(e)
+                Resource.Error(error)
             }
         }
     }
 
-    override suspend fun resetPinCode(): Result<Boolean> {
+    override suspend fun resetPinCode(): Resource<Boolean, ErrorEntity> {
         return withContext(ioDispatcher) {
             try {
                 encryptedPrefs.sharedPreferences.edit {
                     remove(PIN_CODE)
                 }
-                Result.success(true)
+                Resource.Success(true)
             } catch (e: Exception) {
-                Result.failure(e)
+                val error = exceptionToErrorMapper.handleException(e)
+                Resource.Error(error)
             }
         }
     }
 
-    override suspend fun isPinCodeSet(): Result<Boolean> {
+    override suspend fun isPinCodeSet(): Resource<Boolean, ErrorEntity> {
         return withContext(ioDispatcher) {
             try {
                 if (encryptedPrefs.sharedPreferences.getString(PIN_CODE, null).isNullOrBlank()) {
-                    Result.success(false)
-                } else Result.success(true)
+                    Resource.Success(false)
+                } else Resource.Success(true)
             } catch (e: Exception) {
-                Result.failure(e)
+                val error = exceptionToErrorMapper.handleException(e)
+                Resource.Error(error)
             }
         }
     }
 
-    override suspend fun skipPinCode(): Result<Boolean> {
+    override suspend fun skipPinCode(): Resource<Boolean, ErrorEntity> {
         return withContext(ioDispatcher) {
             try {
                 defaultPrefs.edit {
                     putBoolean(SKIPPED, true)
                 }
-                Result.success(true)
+                Resource.Success(true)
             } catch (e: Exception) {
-                Result.failure(e)
+                val error = exceptionToErrorMapper.handleException(e)
+                Resource.Error(error)
             }
         }
     }
