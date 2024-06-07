@@ -17,7 +17,8 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
             name = "MyName",
             lastName = "MyLastName",
             email = "gogo@gmail.com",
-            message = ""
+            errorMessage = "",
+            successMessage = ""
         )
     )
     val state = _state.asStateFlow()
@@ -36,29 +37,31 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
         val isNameValid = isTextValid(name)
         val isLastNameValid = isTextValid(lastName)
         val allDataIsValid = isEmailValid && isNameValid && isLastNameValid && (name.length > 2) && (lastName.length > 2)
-        var message = ""
+        var errorMessage = ""
+        var successMessage = ""
         if (!isEmailValid) {
-            message += "Not a valid e-mail address." + "\n"
+            errorMessage += "Not a valid e-mail address." + "\n"
         }
         if (!isNameValid || !isLastNameValid) {
-            message += "Invalid characters. Only letters, spaces, and periods are allowed." + "\n"
+            errorMessage += "Invalid characters. Only letters, spaces, and periods are allowed." + "\n"
         }
         if (name.length <= 2) {
-            message += "Please enter a name with at least 2 characters." + "\n"
+            errorMessage += "Please enter a name with at least 2 characters." + "\n"
         }
         if (lastName.length <= 2) {
-            message += "Please enter a last name with at least 2 characters." + "\n"
+            errorMessage += "Please enter a last name with at least 2 characters." + "\n"
         }
 
         if (allDataIsValid) {
-            message = "You have successfully changed your name"
+            successMessage = "You have successfully changed your name"
         }
         _state.value = ResultOfCheckProfileData(
             allDataIsValid,
             name,
             lastName,
             email,
-            message.trim()
+            errorMessage.trim(),
+            successMessage
         )
         Log.d("PROFILE_SCREEN_TAG", "Name = $name AllDataIsValid = (${_state.value.dataIsValid})")
     }
