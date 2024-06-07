@@ -11,8 +11,6 @@ import androidx.compose.ui.unit.dp
 import care.intouch.uikit.theme.InTouchTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -28,7 +26,6 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import care.intouch.uikit.R
 import care.intouch.uikit.common.ImageVO
 import care.intouch.uikit.common.StringVO
@@ -81,7 +78,6 @@ fun ProfileScreen(
                 onValueChange = {
                     if (it.length <= 20) {
                         viewModel.updateState(it, state.lastName, state.email)
-                        //allDataIsValid = state.dataIsValid
                     }
                 },
                 onIconClick = {
@@ -105,8 +101,6 @@ fun ProfileScreen(
                 onValueChange = {
                     if (it.length <= 20) {
                         viewModel.updateState(state.name, it, state.email)
-                        //allDataIsValid = state.dataIsValid
-
                     }
                 },
                 onIconClick = {
@@ -130,7 +124,6 @@ fun ProfileScreen(
                 onValueChange = {
                     if (it.length <= 20) {
                         viewModel.updateState(state.name, state.lastName, it)
-                        //allDataIsValid = state.dataIsValid
                     }
                 },
                 onIconClick = {
@@ -150,7 +143,7 @@ fun ProfileScreen(
             } else {
                 Spacer(modifier = Modifier.height(16.dp))
                 RowWithMessage(
-                    successOrError = state.dataIsValid, //allDataIsValid,
+                    successOrError = state.dataIsValid,
                     messageText = StringVO.Plain(state.errorMessage),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
