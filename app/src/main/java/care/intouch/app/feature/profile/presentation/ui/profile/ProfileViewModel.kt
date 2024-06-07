@@ -1,5 +1,6 @@
 package care.intouch.app.feature.profile.presentation.ui.profile
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +35,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
         val isEmailValid = isEmailValid(email)
         val isNameValid = isTextValid(name)
         val isLastNameValid = isTextValid(lastName)
+        val allDataIsValid = isEmailValid && isNameValid && isLastNameValid && (name.length > 2) && (lastName.length > 2)
         var message = ""
         if (!isEmailValid) {
             message += "Not a valid e-mail address." + "\n"
@@ -48,17 +50,17 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
             message += "Please enter a last name with at least 2 characters." + "\n"
         }
 
-        if (isEmailValid && isNameValid && isLastNameValid) {
+        if (allDataIsValid) {
             message = "You have successfully changed your name"
         }
         _state.value = ResultOfCheckProfileData(
-            isEmailValid && isNameValid && isLastNameValid
-                    && (name.length > 2) && (lastName.length > 2),
+            allDataIsValid,
             name,
             lastName,
             email,
             message.trim()
         )
+        Log.d("PROFILE_SCREEN_TAG", "Name = $name AllDataIsValid = (${_state.value.dataIsValid})")
     }
 
     fun sendDataInDomain() {

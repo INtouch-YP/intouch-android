@@ -124,7 +124,8 @@ fun PersonalData(
         IconButton(
             onClick = onIconClick,
             modifier = Modifier.align(Alignment.CenterEnd),
-            enabled = buttonEnabled
+            enabled = buttonEnabled,
+            interactionSource = NoRippleInteractionSource(),
         ) {
             Icon(
                 painter = icon.painter(),
@@ -158,6 +159,7 @@ fun ProfileButton(
 ) {
     Button(
         shape = shape,
+        interactionSource = NoRippleInteractionSource(),
         modifier = modifier,
         contentPadding = contentPadding,
         enabled = isEnabled,

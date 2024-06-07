@@ -1,5 +1,6 @@
 package care.intouch.app.feature.profile.presentation.ui.profile
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,8 @@ import androidx.compose.ui.unit.dp
 import care.intouch.uikit.theme.InTouchTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -36,15 +39,6 @@ import care.intouch.uikit.ui.profile.ProfileButton
 import care.intouch.uikit.ui.profile.RowWithMessage
 import care.intouch.uikit.ui.profile.TopPanel
 
-
-private fun checkBasicTextFields(
-    textName: String,
-    textLastName: String,
-    textEmail: String
-): Boolean {
-    return !(textName.isEmpty() || textLastName.isEmpty() || textEmail.isEmpty())
-}
-
 @Composable
 fun ProfileScreen(
     onSecurityClick: () -> Unit,
@@ -53,11 +47,7 @@ fun ProfileScreen(
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
-//    var textName by rememberSaveable { mutableStateOf("MyName") }
-//    var textLastName by rememberSaveable { mutableStateOf("MyLastName") }
-//    var textEmail by rememberSaveable { mutableStateOf("gogo@gmail.com") }
-
-    var saveChangesButtonState by rememberSaveable { mutableStateOf(false) }
+    var saveChangesButtonVisibility by rememberSaveable { mutableStateOf(false) }
 
     var nameTextFieldEnabled by rememberSaveable { mutableStateOf(false) }
     var lastNameTextFieldEnabled by rememberSaveable { mutableStateOf(false) }
@@ -71,14 +61,7 @@ fun ProfileScreen(
     val lastNameFocusRequester = remember { FocusRequester() }
     val emailFocusRequester = remember { FocusRequester() }
 
-
     var allDataIsValid by rememberSaveable { mutableStateOf(true) }
-
-//    var resultOfCheckData = viewModel.checkProfileData(
-//        textName,
-//        textLastName,
-//        textEmail
-//    )
 
     Box(
         modifier = Modifier.background(InTouchTheme.colors.input)
@@ -105,7 +88,7 @@ fun ProfileScreen(
                 },
                 onIconClick = {
                     nameTextFieldEnabled = true
-                    saveChangesButtonState = true
+                    saveChangesButtonVisibility = true
                     nameButtonEnabled = false
                     nameFocusRequester.requestFocus()
                 },
@@ -125,11 +108,12 @@ fun ProfileScreen(
                     if (it.length <= 20) {
                         viewModel.updateState(state.value.name, it, state.value.email)
                         allDataIsValid = state.value.dataIsValid
+
                     }
                 },
                 onIconClick = {
                     lastNameTextFieldEnabled = true
-                    saveChangesButtonState = true
+                    saveChangesButtonVisibility = true
                     lastNameButtonEnabled = false
                     lastNameFocusRequester.requestFocus()
                 },
@@ -153,7 +137,7 @@ fun ProfileScreen(
                 },
                 onIconClick = {
                     emailTextFieldEnabled = true
-                    saveChangesButtonState = true
+                    saveChangesButtonVisibility = true
                     emailButtonEnabled = false
                     emailFocusRequester.requestFocus()
                 },
@@ -174,21 +158,19 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            if (saveChangesButtonState) {
+            if (saveChangesButtonVisibility) {
                 IntouchButton(
                     text = StringVO.Plain("Save changes").value(),
                     onClick = {
                         viewModel.sendDataInDomain()
-                        saveChangesButtonState = false
+                        saveChangesButtonVisibility = false
                         nameTextFieldEnabled = false
                         lastNameTextFieldEnabled = false
                         emailTextFieldEnabled = false
                         nameButtonEnabled = true
                         lastNameButtonEnabled = true
                         emailButtonEnabled = true
-
                     },
-                    //isEnabled = checkBasicTextFields(textName, textLastName, textEmail),
                     isEnabled = allDataIsValid,
                     contentPadding = PaddingValues(horizontal = 72.dp, vertical = 16.dp),
                     modifier = Modifier.align(CenterHorizontally),
@@ -203,7 +185,12 @@ fun ProfileScreen(
                 text = StringVO.Plain("Security"),
                 enableBackgroundColor = InTouchTheme.colors.input,
                 disableBackgroundColor = InTouchTheme.colors.input,
-                modifier = Modifier.padding(horizontal = 32.dp)
+                modifier = Modifier
+                    .padding(horizontal = 32.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() } // This is mandatory
+                    ) {}
             )
             HorizontalDivider(
                 color = InTouchTheme.colors.accentGreen30,
