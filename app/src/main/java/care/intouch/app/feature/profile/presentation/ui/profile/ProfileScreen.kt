@@ -45,9 +45,7 @@ fun ProfileScreen(
     onChangePinCode: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    //val state = viewModel.state.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsState()
-
 
     var saveChangesButtonVisibility by rememberSaveable { mutableStateOf(false) }
 
@@ -62,8 +60,6 @@ fun ProfileScreen(
     val nameFocusRequester = remember { FocusRequester() }
     val lastNameFocusRequester = remember { FocusRequester() }
     val emailFocusRequester = remember { FocusRequester() }
-
-    var allDataIsValid by rememberSaveable { mutableStateOf(true) }
 
     Box(
         modifier = Modifier.background(InTouchTheme.colors.input)
@@ -85,7 +81,7 @@ fun ProfileScreen(
                 onValueChange = {
                     if (it.length <= 20) {
                         viewModel.updateState(it, state.lastName, state.email)
-                        allDataIsValid = state.dataIsValid
+                        //allDataIsValid = state.dataIsValid
                     }
                 },
                 onIconClick = {
@@ -109,7 +105,7 @@ fun ProfileScreen(
                 onValueChange = {
                     if (it.length <= 20) {
                         viewModel.updateState(state.name, it, state.email)
-                        allDataIsValid = state.dataIsValid
+                        //allDataIsValid = state.dataIsValid
 
                     }
                 },
@@ -134,7 +130,7 @@ fun ProfileScreen(
                 onValueChange = {
                     if (it.length <= 20) {
                         viewModel.updateState(state.name, state.lastName, it)
-                        allDataIsValid = state.dataIsValid
+                        //allDataIsValid = state.dataIsValid
                     }
                 },
                 onIconClick = {
@@ -149,12 +145,12 @@ fun ProfileScreen(
                     R.drawable.icon_edit_light
                 )
             )
-            if(allDataIsValid){
+            if(state.dataIsValid){
                 Spacer(modifier = Modifier.height(22.dp))
             } else {
                 Spacer(modifier = Modifier.height(16.dp))
                 RowWithMessage(
-                    successOrError = allDataIsValid,
+                    successOrError = state.dataIsValid, //allDataIsValid,
                     messageText = StringVO.Plain(state.errorMessage),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -173,7 +169,7 @@ fun ProfileScreen(
                         lastNameButtonEnabled = true
                         emailButtonEnabled = true
                     },
-                    isEnabled = allDataIsValid,
+                    isEnabled = state.dataIsValid,
                     contentPadding = PaddingValues(horizontal = 72.dp, vertical = 16.dp),
                     modifier = Modifier.align(CenterHorizontally),
                 )
@@ -187,12 +183,7 @@ fun ProfileScreen(
                 text = StringVO.Plain("Security"),
                 enableBackgroundColor = InTouchTheme.colors.input,
                 disableBackgroundColor = InTouchTheme.colors.input,
-                modifier = Modifier
-                    .padding(horizontal = 32.dp)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() } // This is mandatory
-                    ) {}
+                modifier = Modifier.padding(horizontal = 32.dp)
             )
             HorizontalDivider(
                 color = InTouchTheme.colors.accentGreen30,

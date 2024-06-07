@@ -41,6 +41,7 @@ import care.intouch.uikit.R
 import care.intouch.uikit.common.ImageVO
 import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
+import care.intouch.uikit.ui.NoRippleInteractionSource
 
 @Composable
 fun TopPanel(

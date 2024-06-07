@@ -1,4 +1,4 @@
-package care.intouch.uikit.ui.profile
+package care.intouch.uikit.ui
 
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
