@@ -1,6 +1,5 @@
 package care.intouch.app.feature.profile.presentation.ui.profile
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +17,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +45,9 @@ fun ProfileScreen(
     onChangePinCode: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val state = viewModel.state.collectAsStateWithLifecycle()
+    //val state = viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsState()
+
 
     var saveChangesButtonVisibility by rememberSaveable { mutableStateOf(false) }
 
@@ -77,13 +79,13 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(104.dp))
             PersonalData(
                 naming = StringVO.Plain("Name").value(),
-                value = state.value.name,
+                value = state.name,
                 textFieldEnabled = nameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
                     if (it.length <= 20) {
-                        viewModel.updateState(it, state.value.lastName, state.value.email)
-                        allDataIsValid = state.value.dataIsValid
+                        viewModel.updateState(it, state.lastName, state.email)
+                        allDataIsValid = state.dataIsValid
                     }
                 },
                 onIconClick = {
@@ -101,13 +103,13 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             PersonalData(
                 naming = StringVO.Plain("Last name").value(),
-                value = state.value.lastName,
+                value = state.lastName,
                 textFieldEnabled = lastNameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
                     if (it.length <= 20) {
-                        viewModel.updateState(state.value.name, it, state.value.email)
-                        allDataIsValid = state.value.dataIsValid
+                        viewModel.updateState(state.name, it, state.email)
+                        allDataIsValid = state.dataIsValid
 
                     }
                 },
@@ -126,13 +128,13 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             PersonalData(
                 naming = StringVO.Plain("E-mail").value(),
-                value = state.value.email,
+                value = state.email,
                 textFieldEnabled = emailTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
                     if (it.length <= 20) {
-                        viewModel.updateState(state.value.name, state.value.lastName, it)
-                        allDataIsValid = state.value.dataIsValid
+                        viewModel.updateState(state.name, state.lastName, it)
+                        allDataIsValid = state.dataIsValid
                     }
                 },
                 onIconClick = {
@@ -153,7 +155,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 RowWithMessage(
                     successOrError = allDataIsValid,
-                    messageText = StringVO.Plain(state.value.message),
+                    messageText = StringVO.Plain(state.errorMessage),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
