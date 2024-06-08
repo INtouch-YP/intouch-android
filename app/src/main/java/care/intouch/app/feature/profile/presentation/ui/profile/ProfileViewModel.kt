@@ -22,7 +22,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
             errorMessage += "Not a valid e-mail address." + "\n"
         }
         if (!isNameValid || !isLastNameValid) {
-            errorMessage += "Invalid characters. Only letters, spaces, and periods are allowed." + "\n"
+            errorMessage += "Invalid characters. Only letters, spaces,\nand periods are allowed." + "\n"
         }
         if (name.length <= 2) {
             errorMessage += "Please enter a name with at least 2 characters." + "\n"
