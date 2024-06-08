@@ -76,7 +76,7 @@
     <string name="info_about_password_recovery">If your account exists, you\'ll receive an email with a link to reset your password. Please check your spam folder if you don\'t receive it within a few minutes.</string>
     <string name="info_about_delete_account">Are you certain you wish to delete your account?</string>
     <string name="info_about_change_password">You have successfully changed your password</string>
-    <string name="info_about_change_name">You have successfully changed your name</string>
+    <string name="info_about_change_profile_data">Information successfully updated</string>
     <string name="warning_delete">All your entered data will be permanently removed.</string>
     <string name="warning_delete_account">This action will permanently erase all your data, and there\'s no way to recover it later.</string>
 

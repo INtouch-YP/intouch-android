@@ -6,5 +6,5 @@ data class ResultOfCheckProfileData(
     val lastName: String = "",
     val email: String = "",
     val errorMessage: String = "",
-    val successMessage: String = ""
+    val successMessage: String = "Information successfully updated"
 )

@@ -58,6 +58,8 @@ fun ProfileScreen(
     val lastNameFocusRequester = remember { FocusRequester() }
     val emailFocusRequester = remember { FocusRequester() }
 
+    var informationIsUpdate by rememberSaveable { mutableStateOf(false) }
+
     Box(
         modifier = Modifier.background(InTouchTheme.colors.input)
     ) {
@@ -84,6 +86,7 @@ fun ProfileScreen(
                     nameTextFieldEnabled = true
                     saveChangesButtonVisibility = true
                     nameButtonEnabled = false
+                    informationIsUpdate = false
                     nameFocusRequester.requestFocus()
                 },
                 focusRequester = nameFocusRequester,
@@ -107,6 +110,7 @@ fun ProfileScreen(
                     lastNameTextFieldEnabled = true
                     saveChangesButtonVisibility = true
                     lastNameButtonEnabled = false
+                    informationIsUpdate = false
                     lastNameFocusRequester.requestFocus()
                 },
                 focusRequester = lastNameFocusRequester,
@@ -130,6 +134,7 @@ fun ProfileScreen(
                     emailTextFieldEnabled = true
                     saveChangesButtonVisibility = true
                     emailButtonEnabled = false
+                    informationIsUpdate = false
                     emailFocusRequester.requestFocus()
                 },
                 focusRequester = emailFocusRequester,
@@ -138,13 +143,21 @@ fun ProfileScreen(
                     R.drawable.icon_edit_light
                 )
             )
-            if(state.dataIsValid){
+            if(state.dataIsValid){  // Show or not a message about data incorrectness
                 Spacer(modifier = Modifier.height(22.dp))
             } else {
                 Spacer(modifier = Modifier.height(16.dp))
                 RowWithMessage(
                     successOrError = state.dataIsValid,
                     messageText = StringVO.Plain(state.errorMessage),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            if(informationIsUpdate){    // Show message "Information successfully updated"
+                RowWithMessage(
+                    successOrError = state.dataIsValid,
+                    messageText = StringVO.Plain(state.successMessage),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -161,6 +174,7 @@ fun ProfileScreen(
                         nameButtonEnabled = true
                         lastNameButtonEnabled = true
                         emailButtonEnabled = true
+                        informationIsUpdate = true
                     },
                     isEnabled = state.dataIsValid,
                     contentPadding = PaddingValues(horizontal = 72.dp, vertical = 16.dp),
@@ -169,6 +183,7 @@ fun ProfileScreen(
             } else {
                 Spacer(modifier = Modifier.height(8.dp))
             }
+
             Spacer(modifier = Modifier.height(18.dp))
 
             ProfileButton(
