@@ -93,6 +93,9 @@ object PinCodeEnter: IntouchDestination {
 object SendingNotification: IntouchDestination {
     override val route = "SENDING_NOTIFICATION"
 }
+object Authorization: IntouchDestination {
+    override val route = "AUTHORIZATION"
+}
 
 //Bottom Navigation
 object MainNav: IntouchDestination {

@@ -13,7 +13,9 @@ package care.intouch.app
  import care.intouch.app.core.navigation.AuthorizationRouteBranch
  import care.intouch.app.core.navigation.navhost.MainNavHost
  import care.intouch.uikit.theme.InTouchTheme
+ import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
