@@ -17,10 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.focus.FocusRequester
@@ -43,22 +40,11 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-
-    var saveChangesButtonVisibility by rememberSaveable { mutableStateOf(false) }
-
-    var nameTextFieldEnabled by rememberSaveable { mutableStateOf(false) }
-    var lastNameTextFieldEnabled by rememberSaveable { mutableStateOf(false) }
-    var emailTextFieldEnabled by rememberSaveable { mutableStateOf(false) }
-
-    var nameButtonEnabled by rememberSaveable { mutableStateOf(true) }
-    var lastNameButtonEnabled by rememberSaveable { mutableStateOf(true) }
-    var emailButtonEnabled by rememberSaveable { mutableStateOf(true) }
+    val viewsState by viewModel.viewsState.collectAsState()
 
     val nameFocusRequester = remember { FocusRequester() }
     val lastNameFocusRequester = remember { FocusRequester() }
     val emailFocusRequester = remember { FocusRequester() }
-
-    var informationIsUpdate by rememberSaveable { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.background(InTouchTheme.colors.input)
@@ -75,29 +61,26 @@ fun ProfileScreen(
             PersonalData(
                 naming = StringVO.Plain("Name").value(),
                 value = state.name.data,
-                textFieldEnabled = nameTextFieldEnabled,
+                textFieldEnabled = viewsState.nameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    if (it.length <= 20) {
-                        viewModel.updateName(it)
-                    }
+                    viewModel.updateName(it)
                 },
                 onIconClick = {
                     if (state.dataIsValid) {
-                        nameTextFieldEnabled = true
-                        saveChangesButtonVisibility = true
-                        nameButtonEnabled = false
-                        informationIsUpdate = false
-                        lastNameTextFieldEnabled = false
-                        lastNameButtonEnabled = true
-                        emailTextFieldEnabled = false
-                        emailButtonEnabled = true
+                        viewModel.changeTextFieldsAndButtonsEnabled(
+                            name = true,
+                            lastName = false,
+                            email = false,
+                            saveChangesButton = true,
+                            infIsUpdate = false
+                        )
                         nameFocusRequester.requestFocus()
                     }
                 },
                 focusRequester = nameFocusRequester,
-                buttonEnabled = nameButtonEnabled,
-                icon = if (nameButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
+                buttonEnabled = viewsState.nameButtonEnabled,
+                icon = if (viewsState.nameButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
                     R.drawable.icon_edit_light
                 )
             )
@@ -105,29 +88,26 @@ fun ProfileScreen(
             PersonalData(
                 naming = StringVO.Plain("Last name").value(),
                 value = state.lastName.data,
-                textFieldEnabled = lastNameTextFieldEnabled,
+                textFieldEnabled = viewsState.lastNameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    if (it.length <= 20) {
-                        viewModel.updateLastName(it)
-                    }
+                    viewModel.updateLastName(it)
                 },
                 onIconClick = {
                     if (state.dataIsValid) {
-                        lastNameTextFieldEnabled = true
-                        saveChangesButtonVisibility = true
-                        lastNameButtonEnabled = false
-                        informationIsUpdate = false
-                        nameTextFieldEnabled = false
-                        nameButtonEnabled = true
-                        emailTextFieldEnabled = false
-                        emailButtonEnabled = true
+                        viewModel.changeTextFieldsAndButtonsEnabled(
+                            name = false,
+                            lastName = true,
+                            email = false,
+                            saveChangesButton = true,
+                            infIsUpdate = false
+                        )
                         lastNameFocusRequester.requestFocus()
                     }
                 },
                 focusRequester = lastNameFocusRequester,
-                buttonEnabled = lastNameButtonEnabled,
-                icon = if (lastNameButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
+                buttonEnabled = viewsState.lastNameButtonEnabled,
+                icon = if (viewsState.lastNameButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
                     R.drawable.icon_edit_light
                 )
             )
@@ -135,29 +115,26 @@ fun ProfileScreen(
             PersonalData(
                 naming = StringVO.Plain("E-mail").value(),
                 value = state.email.data,
-                textFieldEnabled = emailTextFieldEnabled,
+                textFieldEnabled = viewsState.emailTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    if (it.length <= 20) {
                         viewModel.updateEmail(it)
-                    }
                 },
                 onIconClick = {
                     if (state.dataIsValid) {
-                        emailTextFieldEnabled = true
-                        saveChangesButtonVisibility = true
-                        emailButtonEnabled = false
-                        informationIsUpdate = false
-                        lastNameTextFieldEnabled = false
-                        lastNameButtonEnabled = true
-                        nameTextFieldEnabled = false
-                        nameButtonEnabled = true
+                        viewModel.changeTextFieldsAndButtonsEnabled(
+                            name = false,
+                            lastName = false,
+                            email = true,
+                            saveChangesButton = true,
+                            infIsUpdate = false
+                        )
                         emailFocusRequester.requestFocus()
                     }
                 },
                 focusRequester = emailFocusRequester,
-                buttonEnabled = emailButtonEnabled,
-                icon = if (emailButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
+                buttonEnabled = viewsState.emailButtonEnabled,
+                icon = if (viewsState.emailButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
                     R.drawable.icon_edit_light
                 )
             )
@@ -172,7 +149,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            if (informationIsUpdate) {    // Show message "Information successfully updated"
+            if (viewsState.informationIsUpdate) {    // Show message "Information successfully updated"
                 RowWithMessage(
                     successOrError = state.dataIsValid,
                     messageText = StringVO.Plain(state.successMessage),
@@ -180,19 +157,18 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            if (saveChangesButtonVisibility) {
+            if (viewsState.saveChangesButtonVisibility) {
                 IntouchButton(
                     text = StringVO.Plain("Save changes").value(),
                     onClick = {
                         viewModel.sendDataInDomain()
-                        saveChangesButtonVisibility = false
-                        nameTextFieldEnabled = false
-                        lastNameTextFieldEnabled = false
-                        emailTextFieldEnabled = false
-                        nameButtonEnabled = true
-                        lastNameButtonEnabled = true
-                        emailButtonEnabled = true
-                        informationIsUpdate = true
+                        viewModel.changeTextFieldsAndButtonsEnabled(
+                            name = false,
+                            lastName = false,
+                            email = false,
+                            saveChangesButton = false,
+                            infIsUpdate = true
+                        )
                     },
                     isEnabled = state.dataIsValid,
                     contentPadding = PaddingValues(horizontal = 72.dp, vertical = 16.dp),
