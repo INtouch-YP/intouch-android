@@ -107,7 +107,7 @@ fun PersonalData(
         )
         BasicTextField(
             value = value.value(),
-            onValueChange = onValueChange,
+            onValueChange = {onValueChange},
             interactionSource = interactionSource,
             enabled = textFieldEnabled,
             readOnly = readOnly,

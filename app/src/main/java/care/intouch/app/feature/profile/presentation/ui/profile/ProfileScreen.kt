@@ -64,7 +64,7 @@ fun ProfileScreen(
                 textFieldEnabled = viewsState.nameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    viewModel.updateName(it)
+                    viewModel.UpdateName(it)
                 },
                 onIconClick = {
                     if (state.dataIsValid) {
@@ -91,7 +91,7 @@ fun ProfileScreen(
                 textFieldEnabled = viewsState.lastNameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    viewModel.updateLastName(it)
+                    viewModel.UpdateLastName(it)
                 },
                 onIconClick = {
                     if (state.dataIsValid) {
@@ -118,7 +118,7 @@ fun ProfileScreen(
                 textFieldEnabled = viewsState.emailTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                        viewModel.updateEmail(it)
+                        viewModel.UpdateEmail(it)
                 },
                 onIconClick = {
                     if (state.dataIsValid) {

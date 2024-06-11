@@ -1,6 +1,5 @@
 package care.intouch.app.feature.profile.presentation.ui.profile
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import care.intouch.app.R
@@ -22,7 +21,7 @@ class ProfileViewModel @Inject constructor(
 
 
     @Composable
-    fun updateName(name: StringVO) {
+    fun UpdateName(name: StringVO) {
         if (name.value().length <= MAX_NAME_LENGTH) {
             val isTextValid = isTextValid(name.value())
             val isNameValid = isTextValid && (name.value().length > 2)
@@ -48,7 +47,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     @Composable
-    fun updateLastName(lastName: StringVO) {
+    fun UpdateLastName(lastName: StringVO) {
         if (lastName.value().length <= MAX_NAME_LENGTH) {
             val isTextValid = isTextValid(lastName.value())
             val isLastNameValid = isTextValid && (lastName.value().length > 2)
@@ -75,7 +74,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     @Composable
-    fun updateEmail(email: StringVO) {
+    fun UpdateEmail(email: StringVO) {
         if (email.value().length <= MAX_EMAIL_LENGTH) {
             val isEmailValid = isEmailValid(email.value())
             var errorMessage = ""
