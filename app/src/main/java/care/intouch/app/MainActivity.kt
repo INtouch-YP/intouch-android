@@ -66,6 +66,6 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         const val BASE_URL = "https://app.intouch.care"
-        const val RESET_PASSWORD_ENDPOINT = "/api/v1/password/reset/confirm/"
+        const val RESET_PASSWORD_ENDPOINT = "/reset-password/"
     }
 }
