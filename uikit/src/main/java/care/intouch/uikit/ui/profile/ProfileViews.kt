@@ -76,10 +76,10 @@ fun TopPanel(
 @Composable
 fun PersonalData(
     modifier: Modifier = Modifier,
-    naming: String,
-    value: String,
+    naming: StringVO,
+    value: StringVO,
     icon: ImageVO = ImageVO.Resource(R.drawable.icon_edit),
-    onValueChange: (String) -> Unit,
+    onValueChange: @Composable (StringVO) -> Unit,
     onIconClick: () -> Unit,
     textFieldEnabled: Boolean,
     readOnly: Boolean = false,
@@ -99,14 +99,14 @@ fun PersonalData(
             .height(24.dp)
     ) {
         Text(
-            text = naming,
+            text = naming.value(),
             style = InTouchTheme.typography.bodySemibold.copy(
                 color = InTouchTheme.colors.textGreen
             ),
             modifier = Modifier.padding(vertical = 3.dp)
         )
         BasicTextField(
-            value = value,
+            value = value.value(),
             onValueChange = onValueChange,
             interactionSource = interactionSource,
             enabled = textFieldEnabled,
@@ -144,7 +144,7 @@ fun PersonalData(
 fun ProfileButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    icon: Int = R.drawable.icon_arrow_small_right,
+    icon: ImageVO = ImageVO.Resource(R.drawable.icon_arrow_small_right),
     isEnabled: Boolean = true,
     isActive: Boolean = true,
     enableBackgroundColor: Color = InTouchTheme.colors.input,
@@ -187,7 +187,7 @@ fun ProfileButton(
         Text(text = text.value(), style = textStyle)
         Box(modifier = Modifier.weight(1f))
         Icon(
-            painter = painterResource(id = icon),
+            painter = icon.painter(),
             contentDescription = null,
             tint = arrowColor
         )
@@ -218,7 +218,6 @@ fun RowWithMessage(
             } else {
                 colorError
             },
-            //modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
             textAlign = TextAlign.Center
         )
     }
@@ -234,14 +233,14 @@ fun TopPanelPreview() {
 @Composable
 fun NameProfileInfoTextFieldPreview() {
     InTouchTheme {
-        var text by remember { mutableStateOf("Benjamin") }
+        var text by remember { mutableStateOf(StringVO.Plain("Benjamin")) }
         PersonalData(
             value = text,
             onValueChange = {
-                text = it
+                text = StringVO.Plain(it.value())
             },
             textFieldEnabled = false,
-            naming = "Name",
+            naming = StringVO.Plain("Name"),
             onIconClick = {}
         )
     }

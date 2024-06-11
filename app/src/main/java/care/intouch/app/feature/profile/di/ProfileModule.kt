@@ -11,10 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 @InstallIn(ViewModelComponent::class)
 class ProfileModule {
 
-    @Provides
-    fun provideContext(@ApplicationContext context: Context): Context {
-        return context
-    }
+
 
 
 }

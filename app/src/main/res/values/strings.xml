@@ -65,6 +65,7 @@
     <string name="share_with_therapist">Share this entry with my therapist</string>
 
     <string name="name_info_profile">Name</string>
+    <string name="last_name_info_profile">Last name</string>
     <string name="email_info_profile">E-mail</string>
     <string name="security_profile">Security</string>
     <string name="create_pin_profile">Create PIN code</string>

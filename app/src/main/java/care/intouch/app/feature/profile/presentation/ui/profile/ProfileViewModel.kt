@@ -1,8 +1,10 @@
 package care.intouch.app.feature.profile.presentation.ui.profile
 
 import android.content.Context
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import care.intouch.app.R
+import care.intouch.uikit.common.StringVO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +13,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val context: Context
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(loadProfileData())
@@ -20,16 +21,18 @@ class ProfileViewModel @Inject constructor(
     val viewsState = _viewsState.asStateFlow()
 
 
-    fun updateName(name: String) {
-        if (name.length <= MAX_NAME_LENGTH) {
-            val isTextValid = isTextValid(name)
-            val isNameValid = isTextValid && (name.length > 2)
+    @Composable
+    fun updateName(name: StringVO) {
+        if (name.value().length <= MAX_NAME_LENGTH) {
+            val isTextValid = isTextValid(name.value())
+            val isNameValid = isTextValid && (name.value().length > 2)
             var errorMessage = ""
             if (!isTextValid) {
-                errorMessage += context.getString(R.string.profile_invalid_char_error) + "\n"
+                errorMessage =
+                    StringVO.Resource(resId = R.string.profile_invalid_char_error).value()
             }
-            if (name.length <= 2) {
-                errorMessage += context.getString(R.string.profile_small_name_error) + "\n"
+            if (name.value().length <= 2) {
+                errorMessage = StringVO.Resource(resId = R.string.profile_small_name_error).value()
             }
             _state.update {
                 ResultOfCheckProfileData(
@@ -37,22 +40,26 @@ class ProfileViewModel @Inject constructor(
                     name = ProfileInformationData(name, isNameValid),
                     lastName = _state.value.lastName,
                     email = _state.value.email,
-                    errorMessage.trim()
+                    errorMessage = StringVO.Plain(errorMessage),
+                    successMessage = _state.value.successMessage
                 )
             }
         }
     }
 
-    fun updateLastName(lastName: String) {
-        if (lastName.length <= MAX_NAME_LENGTH) {
-            val isTextValid = isTextValid(lastName)
-            val isLastNameValid = isTextValid && (lastName.length > 2)
+    @Composable
+    fun updateLastName(lastName: StringVO) {
+        if (lastName.value().length <= MAX_NAME_LENGTH) {
+            val isTextValid = isTextValid(lastName.value())
+            val isLastNameValid = isTextValid && (lastName.value().length > 2)
             var errorMessage = ""
             if (!isTextValid) {
-                errorMessage += context.getString(R.string.profile_invalid_char_error) + "\n"
+                errorMessage =
+                    StringVO.Resource(resId = R.string.profile_invalid_char_error).value()
             }
-            if (lastName.length <= 2) {
-                errorMessage += context.getString(R.string.profile_small_last_name_error) + "\n"
+            if (lastName.value().length <= 2) {
+                errorMessage =
+                    StringVO.Resource(resId = R.string.profile_small_last_name_error).value()
             }
             _state.update {
                 ResultOfCheckProfileData(
@@ -60,18 +67,20 @@ class ProfileViewModel @Inject constructor(
                     name = _state.value.name,
                     lastName = ProfileInformationData(lastName, isLastNameValid),
                     email = _state.value.email,
-                    errorMessage.trim()
+                    errorMessage = StringVO.Plain(errorMessage),
+                    successMessage = _state.value.successMessage
                 )
             }
         }
     }
 
-    fun updateEmail(email: String) {
-        if(email.length <= MAX_EMAIL_LENGTH) {
-            val isEmailValid = isEmailValid(email)
+    @Composable
+    fun updateEmail(email: StringVO) {
+        if (email.value().length <= MAX_EMAIL_LENGTH) {
+            val isEmailValid = isEmailValid(email.value())
             var errorMessage = ""
             if (!isEmailValid) {
-                errorMessage += context.getString(R.string.email_not_valid_error)
+                errorMessage = StringVO.Resource(resId = R.string.email_not_valid_error).value()
             }
             _state.update {
                 ResultOfCheckProfileData(
@@ -79,7 +88,8 @@ class ProfileViewModel @Inject constructor(
                     name = _state.value.name,
                     lastName = _state.value.lastName,
                     email = ProfileInformationData(email, isEmailValid),
-                    errorMessage
+                    errorMessage = StringVO.Plain(errorMessage),
+                    successMessage = _state.value.successMessage
                 )
             }
         }
@@ -113,10 +123,11 @@ class ProfileViewModel @Inject constructor(
     private fun loadProfileData(): ResultOfCheckProfileData {
         return ResultOfCheckProfileData(
             dataIsValid = true,
-            name = ProfileInformationData("MyName", true),
-            lastName = ProfileInformationData("MyLastName", true),
-            email = ProfileInformationData("gogo@gmail.com", true),
-            errorMessage = ""
+            name = ProfileInformationData(StringVO.Plain("MyName"), true),
+            lastName = ProfileInformationData(StringVO.Plain("MyLastName"), true),
+            email = ProfileInformationData(StringVO.Plain("gogo@gmail.com"), true),
+            errorMessage = StringVO.Plain(""),
+            successMessage = StringVO.Resource(resId = R.string.info_about_change_profile_data)
         )
     }
 

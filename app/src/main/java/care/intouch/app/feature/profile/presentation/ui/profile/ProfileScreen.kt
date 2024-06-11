@@ -56,10 +56,10 @@ fun ProfileScreen(
 
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(66.dp))
-            TopPanel(text = StringVO.Plain("Profile"))
+            TopPanel(text = StringVO.Resource(resId = care.intouch.app.R.string.profile_title))
             Spacer(modifier = Modifier.height(104.dp))
             PersonalData(
-                naming = StringVO.Plain("Name").value(),
+                naming = StringVO.Resource(resId = care.intouch.app.R.string.name_info_profile),
                 value = state.name.data,
                 textFieldEnabled = viewsState.nameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
@@ -86,7 +86,7 @@ fun ProfileScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
             PersonalData(
-                naming = StringVO.Plain("Last name").value(),
+                naming = StringVO.Resource(resId = care.intouch.app.R.string.last_name_info_profile),
                 value = state.lastName.data,
                 textFieldEnabled = viewsState.lastNameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
@@ -113,7 +113,7 @@ fun ProfileScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
             PersonalData(
-                naming = StringVO.Plain("E-mail").value(),
+                naming = StringVO.Resource(resId = care.intouch.app.R.string.email_info_profile),
                 value = state.email.data,
                 textFieldEnabled = viewsState.emailTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
@@ -144,7 +144,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 RowWithMessage(
                     successOrError = state.dataIsValid,
-                    messageText = StringVO.Plain(state.errorMessage),
+                    messageText = state.errorMessage,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -152,7 +152,7 @@ fun ProfileScreen(
             if (viewsState.informationIsUpdate) {    // Show message "Information successfully updated"
                 RowWithMessage(
                     successOrError = state.dataIsValid,
-                    messageText = StringVO.Plain(state.successMessage),
+                    messageText = state.successMessage,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
