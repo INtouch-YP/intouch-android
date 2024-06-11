@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -33,7 +32,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -77,9 +75,9 @@ fun TopPanel(
 fun PersonalData(
     modifier: Modifier = Modifier,
     naming: StringVO,
-    value: StringVO,
+    value: String,
     icon: ImageVO = ImageVO.Resource(R.drawable.icon_edit),
-    onValueChange: @Composable (StringVO) -> Unit,
+    onValueChange: (String) -> Unit,
     onIconClick: () -> Unit,
     textFieldEnabled: Boolean,
     readOnly: Boolean = false,
@@ -106,8 +104,8 @@ fun PersonalData(
             modifier = Modifier.padding(vertical = 3.dp)
         )
         BasicTextField(
-            value = value.value(),
-            onValueChange = {onValueChange},
+            value = value,
+            onValueChange = onValueChange,
             interactionSource = interactionSource,
             enabled = textFieldEnabled,
             readOnly = readOnly,
@@ -233,11 +231,11 @@ fun TopPanelPreview() {
 @Composable
 fun NameProfileInfoTextFieldPreview() {
     InTouchTheme {
-        var text by remember { mutableStateOf(StringVO.Plain("Benjamin")) }
+        var text by remember { mutableStateOf("Benjamin") }
         PersonalData(
             value = text,
             onValueChange = {
-                text = StringVO.Plain(it.value())
+                text = it
             },
             textFieldEnabled = false,
             naming = StringVO.Plain("Name"),

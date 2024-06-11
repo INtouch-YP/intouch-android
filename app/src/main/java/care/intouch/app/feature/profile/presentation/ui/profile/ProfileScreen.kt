@@ -60,11 +60,11 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(104.dp))
             PersonalData(
                 naming = StringVO.Resource(resId = care.intouch.app.R.string.name_info_profile),
-                value = state.name.data,
+                value = state.name.data.value(),
                 textFieldEnabled = viewsState.nameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    viewModel.UpdateName(it)
+                    viewModel.updateName(it)
                 },
                 onIconClick = {
                     if (state.dataIsValid) {
@@ -87,11 +87,11 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             PersonalData(
                 naming = StringVO.Resource(resId = care.intouch.app.R.string.last_name_info_profile),
-                value = state.lastName.data,
+                value = state.lastName.data.value(),
                 textFieldEnabled = viewsState.lastNameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    viewModel.UpdateLastName(it)
+                    viewModel.updateLastName(it)
                 },
                 onIconClick = {
                     if (state.dataIsValid) {
@@ -114,7 +114,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             PersonalData(
                 naming = StringVO.Resource(resId = care.intouch.app.R.string.email_info_profile),
-                value = state.email.data,
+                value = state.email.data.value(),
                 textFieldEnabled = viewsState.emailTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
