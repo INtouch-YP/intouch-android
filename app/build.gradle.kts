@@ -190,6 +190,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
 
+    //Security-crypto
+    implementation(libs.security.crypto)
+
+
     //Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
