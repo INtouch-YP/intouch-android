@@ -2,6 +2,10 @@ package care.intouch.app.feature.profile.presentation.ui.profile
 
 import androidx.lifecycle.ViewModel
 import care.intouch.app.R
+import care.intouch.app.feature.profile.presentation.ui.profile.models.ChangeProfileDataEvent
+import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileInformationData
+import care.intouch.app.feature.profile.presentation.ui.profile.models.ResultOfCheckProfileData
+import care.intouch.app.feature.profile.presentation.ui.profile.models.ViewsComponentsState
 import care.intouch.uikit.common.StringVO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,26 +19,40 @@ class ProfileViewModel @Inject constructor(
 
     private var _state = MutableStateFlow(loadProfileData())
     val state = _state.asStateFlow()
-    private var _viewsState = MutableStateFlow(getDefaultViewState())
+    private var _viewsState = MutableStateFlow(ViewsComponentsState())
     val viewsState = _viewsState.asStateFlow()
 
 
-    fun updateName(name: String) {
-        if (name.length <= MAX_NAME_LENGTH) {
-            val isTextValid = isTextValid(name)
-            val isNameValid = isTextValid && (name.length > 2)
+
+    fun updateState(event: ChangeProfileDataEvent){
+        when (event) {
+            is  ChangeProfileDataEvent.OnChangeName -> {
+                updateName(event)
+            }
+            is ChangeProfileDataEvent.OnChangeLastName -> {
+                updateLastName(event)
+            }
+            is ChangeProfileDataEvent.OnChangeEmail -> {
+                updateEmail(event)
+            }
+        }
+    }
+
+    private fun updateName(event: ChangeProfileDataEvent.OnChangeName) {
+        if (event.name.length <= MAX_NAME_LENGTH) {
+            val isTextValid = isTextValid(event.name)
+            val isNameValid = isTextValid && (event.name.length > 2)
             var errorMessage: StringVO = StringVO.Plain("")
             if (!isTextValid) {
-                errorMessage =
-                    StringVO.Resource(resId = R.string.profile_invalid_char_error)
+                errorMessage = event.errorInvalidChar
             }
-            if (name.length <= 2) {
-                errorMessage = StringVO.Resource(resId = R.string.profile_small_name_error)
+            if (event.name.length <= 2) {
+                errorMessage = event.errorLength
             }
             _state.update {
                 ResultOfCheckProfileData(
                     dataIsValid = isNameValid,
-                    name = ProfileInformationData(StringVO.Plain(name), isNameValid),
+                    name = ProfileInformationData(StringVO.Plain(event.name), isNameValid),
                     lastName = _state.value.lastName,
                     email = _state.value.email,
                     errorMessage = errorMessage,
@@ -44,24 +62,22 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun updateLastName(lastName: String) {
-        if (lastName.length <= MAX_NAME_LENGTH) {
-            val isTextValid = isTextValid(lastName)
-            val isLastNameValid = isTextValid && (lastName.length > 2)
+    private fun updateLastName(event: ChangeProfileDataEvent.OnChangeLastName) {
+        if (event.lastName.length <= MAX_NAME_LENGTH) {
+            val isTextValid = isTextValid(event.lastName)
+            val isLastNameValid = isTextValid && (event.lastName.length > 2)
             var errorMessage: StringVO = StringVO.Plain("")
             if (!isTextValid) {
-                errorMessage =
-                    StringVO.Resource(resId = R.string.profile_invalid_char_error)
+                errorMessage = event.errorInvalidChar
             }
-            if (lastName.length <= 2) {
-                errorMessage =
-                    StringVO.Resource(resId = R.string.profile_small_last_name_error)
+            if (event.lastName.length <= 2) {
+                errorMessage = event.errorLength
             }
             _state.update {
                 ResultOfCheckProfileData(
                     dataIsValid = isLastNameValid,
                     name = _state.value.name,
-                    lastName = ProfileInformationData(StringVO.Plain(lastName), isLastNameValid),
+                    lastName = ProfileInformationData(StringVO.Plain(event.lastName), isLastNameValid),
                     email = _state.value.email,
                     errorMessage = errorMessage,
                     successMessage = _state.value.successMessage
@@ -71,19 +87,19 @@ class ProfileViewModel @Inject constructor(
     }
 
 
-    fun UpdateEmail(email: String) {
-        if (email.length <= MAX_EMAIL_LENGTH) {
-            val isEmailValid = isEmailValid(email)
+    private fun updateEmail(event: ChangeProfileDataEvent.OnChangeEmail) {
+        if (event.email.length <= MAX_EMAIL_LENGTH) {
+            val isEmailValid = isEmailValid(event.email)
             var errorMessage: StringVO = StringVO.Plain("")
             if (!isEmailValid) {
-                errorMessage = StringVO.Resource(resId = R.string.email_not_valid_error)
+                errorMessage = event.errorEmailNotValid
             }
             _state.update {
                 ResultOfCheckProfileData(
                     dataIsValid = isEmailValid,
                     name = _state.value.name,
                     lastName = _state.value.lastName,
-                    email = ProfileInformationData(StringVO.Plain(email), isEmailValid),
+                    email = ProfileInformationData(StringVO.Plain(event.email), isEmailValid),
                     errorMessage = errorMessage,
                     successMessage = _state.value.successMessage
                 )
@@ -134,19 +150,6 @@ class ProfileViewModel @Inject constructor(
     private fun isTextValid(text: String): Boolean {
         val regex = Regex("[a-zA-Z- \\.]*")
         return regex.matches(text)
-    }
-
-    private fun getDefaultViewState(): ViewsComponentsState {
-        return ViewsComponentsState(
-            saveChangesButtonVisibility = false,
-            informationIsUpdate = false,
-            nameTextFieldEnabled = false,
-            lastNameTextFieldEnabled = false,
-            emailTextFieldEnabled = false,
-            nameButtonEnabled = true,
-            lastNameButtonEnabled = true,
-            emailButtonEnabled = true,
-        )
     }
 
     private companion object {

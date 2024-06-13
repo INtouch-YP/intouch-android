@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -25,6 +24,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import care.intouch.app.feature.profile.presentation.ui.profile.models.ChangeProfileDataEvent
 import care.intouch.uikit.R
 import care.intouch.uikit.common.ImageVO
 import care.intouch.uikit.common.StringVO
@@ -69,7 +69,7 @@ fun ProfileScreen(
                 textFieldEnabled = viewsState.nameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    viewModel.updateName(it)
+                    viewModel.updateState(ChangeProfileDataEvent.OnChangeName(name = it))
                 },
                 onIconClick = {
                     if (state.dataIsValid) {
@@ -99,7 +99,7 @@ fun ProfileScreen(
                 textFieldEnabled = viewsState.lastNameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    viewModel.updateLastName(it)
+                    viewModel.updateState(ChangeProfileDataEvent.OnChangeLastName(lastName = it))
                 },
                 onIconClick = {
                     if (state.dataIsValid) {
@@ -129,7 +129,7 @@ fun ProfileScreen(
                 textFieldEnabled = viewsState.emailTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    viewModel.UpdateEmail(it)
+                    viewModel.updateState(ChangeProfileDataEvent.OnChangeEmail(email = it))
                 },
                 onIconClick = {
                     if (state.dataIsValid) {
