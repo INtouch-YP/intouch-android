@@ -78,7 +78,7 @@ fun PersonalData(
     value: String,
     icon: ImageVO = ImageVO.Resource(R.drawable.icon_edit),
     onValueChange: (String) -> Unit,
-    onIconClick: () -> Unit,
+    onIconClick:  () -> Unit,
     textFieldEnabled: Boolean,
     readOnly: Boolean = false,
     buttonEnabled: Boolean = true,

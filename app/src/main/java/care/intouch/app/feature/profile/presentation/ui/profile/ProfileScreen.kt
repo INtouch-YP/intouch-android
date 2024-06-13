@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.focus.FocusRequester
@@ -32,6 +34,8 @@ import care.intouch.uikit.ui.profile.PersonalData
 import care.intouch.uikit.ui.profile.ProfileButton
 import care.intouch.uikit.ui.profile.RowWithMessage
 import care.intouch.uikit.ui.profile.TopPanel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
@@ -41,6 +45,7 @@ fun ProfileScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val viewsState by viewModel.viewsState.collectAsState()
+    val scope = rememberCoroutineScope()
 
     val nameFocusRequester = remember { FocusRequester() }
     val lastNameFocusRequester = remember { FocusRequester() }
@@ -75,7 +80,10 @@ fun ProfileScreen(
                             saveChangesButton = true,
                             infIsUpdate = false
                         )
-                        nameFocusRequester.requestFocus()
+                        scope.launch {
+                            delay(200)  // the delay of 0,2 seconds
+                            nameFocusRequester.requestFocus()
+                        }
                     }
                 },
                 focusRequester = nameFocusRequester,
@@ -102,7 +110,10 @@ fun ProfileScreen(
                             saveChangesButton = true,
                             infIsUpdate = false
                         )
-                        lastNameFocusRequester.requestFocus()
+                        scope.launch {
+                            delay(200)  // the delay of 0,2 seconds
+                            lastNameFocusRequester.requestFocus()
+                        }
                     }
                 },
                 focusRequester = lastNameFocusRequester,
@@ -118,7 +129,7 @@ fun ProfileScreen(
                 textFieldEnabled = viewsState.emailTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                        viewModel.UpdateEmail(it)
+                    viewModel.UpdateEmail(it)
                 },
                 onIconClick = {
                     if (state.dataIsValid) {
@@ -129,7 +140,10 @@ fun ProfileScreen(
                             saveChangesButton = true,
                             infIsUpdate = false
                         )
-                        emailFocusRequester.requestFocus()
+                        scope.launch {
+                            delay(200)  // the delay of 0,2 seconds
+                            emailFocusRequester.requestFocus()
+                        }
                     }
                 },
                 focusRequester = emailFocusRequester,
