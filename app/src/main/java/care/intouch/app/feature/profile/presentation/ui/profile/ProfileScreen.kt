@@ -44,7 +44,6 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val viewsState by viewModel.viewsState.collectAsState()
     val scope = rememberCoroutineScope()
 
     val nameFocusRequester = remember { FocusRequester() }
@@ -65,21 +64,15 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(104.dp))
             PersonalData(
                 naming = StringVO.Resource(resId = care.intouch.app.R.string.name_info_profile),
-                value = state.name.data.value(),
-                textFieldEnabled = viewsState.nameTextFieldEnabled,
+                value = state.profileDataState.name.data.value(),
+                textFieldEnabled = state.viewsComponentsState.nameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
                     viewModel.updateState(ChangeProfileDataEvent.OnChangeName(name = it))
                 },
                 onIconClick = {
-                    if (state.dataIsValid) {
-                        viewModel.changeTextFieldsAndButtonsEnabled(
-                            name = true,
-                            lastName = false,
-                            email = false,
-                            saveChangesButton = true,
-                            infIsUpdate = false
-                        )
+                    if (state.profileDataState.dataIsValid) {
+                        viewModel.updateState(ChangeProfileDataEvent.OnEditNameButtonClick())
                         scope.launch {
                             delay(200)  // the delay of 0,2 seconds
                             nameFocusRequester.requestFocus()
@@ -87,29 +80,23 @@ fun ProfileScreen(
                     }
                 },
                 focusRequester = nameFocusRequester,
-                buttonEnabled = viewsState.nameButtonEnabled,
-                icon = if (viewsState.nameButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
+                buttonEnabled = state.viewsComponentsState.nameButtonEnabled,
+                icon = if (state.viewsComponentsState.nameButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
                     R.drawable.icon_edit_light
                 )
             )
             Spacer(modifier = Modifier.height(16.dp))
             PersonalData(
                 naming = StringVO.Resource(resId = care.intouch.app.R.string.last_name_info_profile),
-                value = state.lastName.data.value(),
-                textFieldEnabled = viewsState.lastNameTextFieldEnabled,
+                value = state.profileDataState.lastName.data.value(),
+                textFieldEnabled = state.viewsComponentsState.lastNameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
                     viewModel.updateState(ChangeProfileDataEvent.OnChangeLastName(lastName = it))
                 },
                 onIconClick = {
-                    if (state.dataIsValid) {
-                        viewModel.changeTextFieldsAndButtonsEnabled(
-                            name = false,
-                            lastName = true,
-                            email = false,
-                            saveChangesButton = true,
-                            infIsUpdate = false
-                        )
+                    if (state.profileDataState.dataIsValid) {
+                        viewModel.updateState(ChangeProfileDataEvent.OnEditLastNameButtonClick())
                         scope.launch {
                             delay(200)  // the delay of 0,2 seconds
                             lastNameFocusRequester.requestFocus()
@@ -117,29 +104,23 @@ fun ProfileScreen(
                     }
                 },
                 focusRequester = lastNameFocusRequester,
-                buttonEnabled = viewsState.lastNameButtonEnabled,
-                icon = if (viewsState.lastNameButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
+                buttonEnabled = state.viewsComponentsState.lastNameButtonEnabled,
+                icon = if (state.viewsComponentsState.lastNameButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
                     R.drawable.icon_edit_light
                 )
             )
             Spacer(modifier = Modifier.height(16.dp))
             PersonalData(
                 naming = StringVO.Resource(resId = care.intouch.app.R.string.email_info_profile),
-                value = state.email.data.value(),
-                textFieldEnabled = viewsState.emailTextFieldEnabled,
+                value = state.profileDataState.email.data.value(),
+                textFieldEnabled = state.viewsComponentsState.emailTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
                     viewModel.updateState(ChangeProfileDataEvent.OnChangeEmail(email = it))
                 },
                 onIconClick = {
-                    if (state.dataIsValid) {
-                        viewModel.changeTextFieldsAndButtonsEnabled(
-                            name = false,
-                            lastName = false,
-                            email = true,
-                            saveChangesButton = true,
-                            infIsUpdate = false
-                        )
+                    if (state.profileDataState.dataIsValid) {
+                        viewModel.updateState(ChangeProfileDataEvent.OnEditEmailButtonClick())
                         scope.launch {
                             delay(200)  // the delay of 0,2 seconds
                             emailFocusRequester.requestFocus()
@@ -147,44 +128,38 @@ fun ProfileScreen(
                     }
                 },
                 focusRequester = emailFocusRequester,
-                buttonEnabled = viewsState.emailButtonEnabled,
-                icon = if (viewsState.emailButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
+                buttonEnabled = state.viewsComponentsState.emailButtonEnabled,
+                icon = if (state.viewsComponentsState.emailButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
                     R.drawable.icon_edit_light
                 )
             )
-            if (state.dataIsValid) {  // Show or not a message about data incorrectness
+            if (state.profileDataState.dataIsValid) {  // Show or not a message about data incorrectness
                 Spacer(modifier = Modifier.height(22.dp))
             } else {
                 Spacer(modifier = Modifier.height(16.dp))
                 RowWithMessage(
-                    successOrError = state.dataIsValid,
-                    messageText = state.errorMessage,
+                    successOrError = state.profileDataState.dataIsValid,
+                    messageText = state.profileDataState.errorMessage,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            if (viewsState.informationIsUpdate) {    // Show message "Information successfully updated"
+            if (state.viewsComponentsState.informationIsUpdate) {    // Show message "Information successfully updated"
                 RowWithMessage(
-                    successOrError = state.dataIsValid,
-                    messageText = state.successMessage,
+                    successOrError = state.profileDataState.dataIsValid,
+                    messageText = state.profileDataState.successMessage,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            if (viewsState.saveChangesButtonVisibility) {
+            if (state.viewsComponentsState.saveChangesButtonVisibility) {
                 IntouchButton(
                     text = StringVO.Plain("Save changes").value(),
                     onClick = {
                         viewModel.sendDataInDomain()
-                        viewModel.changeTextFieldsAndButtonsEnabled(
-                            name = false,
-                            lastName = false,
-                            email = false,
-                            saveChangesButton = false,
-                            infIsUpdate = true
-                        )
+                        viewModel.updateState(ChangeProfileDataEvent.OnSaveChangesButtonClick())
                     },
-                    isEnabled = state.dataIsValid,
+                    isEnabled = state.profileDataState.dataIsValid,
                     contentPadding = PaddingValues(horizontal = 72.dp, vertical = 16.dp),
                     modifier = Modifier.align(CenterHorizontally),
                 )

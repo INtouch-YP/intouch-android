@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import care.intouch.app.R
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ChangeProfileDataEvent
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileInformationData
-import care.intouch.app.feature.profile.presentation.ui.profile.models.ResultOfCheckProfileData
+import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataState
+import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileState
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ViewsComponentsState
 import care.intouch.uikit.common.StringVO
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,23 +18,59 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
-    private var _state = MutableStateFlow(loadProfileData())
+    private var _state = MutableStateFlow(ProfileState(loadProfileData(), ViewsComponentsState()))
     val state = _state.asStateFlow()
-    private var _viewsState = MutableStateFlow(ViewsComponentsState())
-    val viewsState = _viewsState.asStateFlow()
 
-
-
-    fun updateState(event: ChangeProfileDataEvent){
+    fun updateState(event: ChangeProfileDataEvent) {
         when (event) {
-            is  ChangeProfileDataEvent.OnChangeName -> {
+            is ChangeProfileDataEvent.OnChangeName -> {
                 updateName(event)
             }
+
             is ChangeProfileDataEvent.OnChangeLastName -> {
                 updateLastName(event)
             }
+
             is ChangeProfileDataEvent.OnChangeEmail -> {
                 updateEmail(event)
+            }
+
+            is ChangeProfileDataEvent.OnEditEmailButtonClick -> {
+                changeTextFieldsAndButtonsEnabled(
+                    name = event.name,
+                    lastName = event.lastName,
+                    email = event.email,
+                    saveChangesButton = event.saveChangesButton,
+                    infIsUpdate = event.infIsUpdate,
+                )
+            }
+            is ChangeProfileDataEvent.OnEditLastNameButtonClick -> {
+                changeTextFieldsAndButtonsEnabled(
+                    name = event.name,
+                    lastName = event.lastName,
+                    email = event.email,
+                    saveChangesButton = event.saveChangesButton,
+                    infIsUpdate = event.infIsUpdate,
+                )
+            }
+            is ChangeProfileDataEvent.OnEditNameButtonClick -> {
+                changeTextFieldsAndButtonsEnabled(
+                    name = event.name,
+                    lastName = event.lastName,
+                    email = event.email,
+                    saveChangesButton = event.saveChangesButton,
+                    infIsUpdate = event.infIsUpdate,
+                )
+            }
+
+            is ChangeProfileDataEvent.OnSaveChangesButtonClick -> {
+                changeTextFieldsAndButtonsEnabled(
+                    name = event.name,
+                    lastName = event.lastName,
+                    email = event.email,
+                    saveChangesButton = event.saveChangesButton,
+                    infIsUpdate = event.infIsUpdate,
+                )
             }
         }
     }
@@ -50,13 +87,16 @@ class ProfileViewModel @Inject constructor(
                 errorMessage = event.errorLength
             }
             _state.update {
-                ResultOfCheckProfileData(
-                    dataIsValid = isNameValid,
-                    name = ProfileInformationData(StringVO.Plain(event.name), isNameValid),
-                    lastName = _state.value.lastName,
-                    email = _state.value.email,
-                    errorMessage = errorMessage,
-                    successMessage = _state.value.successMessage
+                ProfileState(
+                    profileDataState = ProfileDataState(
+                        dataIsValid = isNameValid,
+                        name = ProfileInformationData(StringVO.Plain(event.name), isNameValid),
+                        lastName = _state.value.profileDataState.lastName,
+                        email = _state.value.profileDataState.email,
+                        errorMessage = errorMessage,
+                        successMessage = _state.value.profileDataState.successMessage
+                    ),
+                    viewsComponentsState = _state.value.viewsComponentsState
                 )
             }
         }
@@ -74,18 +114,23 @@ class ProfileViewModel @Inject constructor(
                 errorMessage = event.errorLength
             }
             _state.update {
-                ResultOfCheckProfileData(
-                    dataIsValid = isLastNameValid,
-                    name = _state.value.name,
-                    lastName = ProfileInformationData(StringVO.Plain(event.lastName), isLastNameValid),
-                    email = _state.value.email,
-                    errorMessage = errorMessage,
-                    successMessage = _state.value.successMessage
+                ProfileState(
+                    profileDataState = ProfileDataState(
+                        dataIsValid = isLastNameValid,
+                        name = _state.value.profileDataState.name,
+                        lastName = ProfileInformationData(
+                            StringVO.Plain(event.lastName),
+                            isLastNameValid
+                        ),
+                        email = _state.value.profileDataState.email,
+                        errorMessage = errorMessage,
+                        successMessage = _state.value.profileDataState.successMessage
+                    ),
+                    viewsComponentsState = _state.value.viewsComponentsState
                 )
             }
         }
     }
-
 
     private fun updateEmail(event: ChangeProfileDataEvent.OnChangeEmail) {
         if (event.email.length <= MAX_EMAIL_LENGTH) {
@@ -95,13 +140,16 @@ class ProfileViewModel @Inject constructor(
                 errorMessage = event.errorEmailNotValid
             }
             _state.update {
-                ResultOfCheckProfileData(
-                    dataIsValid = isEmailValid,
-                    name = _state.value.name,
-                    lastName = _state.value.lastName,
-                    email = ProfileInformationData(StringVO.Plain(event.email), isEmailValid),
-                    errorMessage = errorMessage,
-                    successMessage = _state.value.successMessage
+                ProfileState(
+                    profileDataState = ProfileDataState(
+                        dataIsValid = isEmailValid,
+                        name = _state.value.profileDataState.name,
+                        lastName = _state.value.profileDataState.lastName,
+                        email = ProfileInformationData(StringVO.Plain(event.email), isEmailValid),
+                        errorMessage = errorMessage,
+                        successMessage = _state.value.profileDataState.successMessage
+                    ),
+                    viewsComponentsState = _state.value.viewsComponentsState
                 )
             }
         }
@@ -111,29 +159,32 @@ class ProfileViewModel @Inject constructor(
 
     }
 
-    fun changeTextFieldsAndButtonsEnabled(
+    private fun changeTextFieldsAndButtonsEnabled(
         name: Boolean,
         lastName: Boolean,
         email: Boolean,
         saveChangesButton: Boolean,
         infIsUpdate: Boolean
     ) {
-        _viewsState.update {
-            ViewsComponentsState(
-                saveChangesButtonVisibility = saveChangesButton,
-                informationIsUpdate = infIsUpdate,
-                nameTextFieldEnabled = name,
-                lastNameTextFieldEnabled = lastName,
-                emailTextFieldEnabled = email,
-                nameButtonEnabled = !name,
-                lastNameButtonEnabled = !lastName,
-                emailButtonEnabled = !email,
+        _state.update {
+            ProfileState(
+                profileDataState = _state.value.profileDataState,
+                ViewsComponentsState(
+                    saveChangesButtonVisibility = saveChangesButton,
+                    informationIsUpdate = infIsUpdate,
+                    nameTextFieldEnabled = name,
+                    lastNameTextFieldEnabled = lastName,
+                    emailTextFieldEnabled = email,
+                    nameButtonEnabled = !name,
+                    lastNameButtonEnabled = !lastName,
+                    emailButtonEnabled = !email,
+                )
             )
         }
     }
 
-    private fun loadProfileData(): ResultOfCheckProfileData {
-        return ResultOfCheckProfileData(
+    private fun loadProfileData(): ProfileDataState {
+        return ProfileDataState(
             dataIsValid = true,
             name = ProfileInformationData(StringVO.Plain("MyName"), true),
             lastName = ProfileInformationData(StringVO.Plain("MyLastName"), true),

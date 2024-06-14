@@ -21,4 +21,36 @@ sealed class ChangeProfileDataEvent {
         val email:String,
         val errorEmailNotValid: StringVO = StringVO.Resource(resId = R.string.email_not_valid_error)
     ): ChangeProfileDataEvent()
+
+    data class OnEditNameButtonClick(
+        val name: Boolean = true,
+        val lastName: Boolean = false,
+        val email: Boolean = false,
+        val saveChangesButton: Boolean = true,
+        val infIsUpdate: Boolean = false
+    ): ChangeProfileDataEvent()
+
+    data class OnEditLastNameButtonClick(
+        val name: Boolean = false,
+        val lastName: Boolean = true,
+        val email: Boolean = false,
+        val saveChangesButton: Boolean = true,
+        val infIsUpdate: Boolean = false
+    ): ChangeProfileDataEvent()
+
+    data class OnEditEmailButtonClick(
+        val name: Boolean = false,
+        val lastName: Boolean = false,
+        val email: Boolean = true,
+        val saveChangesButton: Boolean = true,
+        val infIsUpdate: Boolean = false
+    ): ChangeProfileDataEvent()
+
+    data class OnSaveChangesButtonClick(
+        val name: Boolean = false,
+        val lastName: Boolean = false,
+        val email: Boolean = false,
+        val saveChangesButton: Boolean = false,
+        val infIsUpdate: Boolean = true
+    ): ChangeProfileDataEvent()
 }
