@@ -32,7 +32,6 @@ fun SecuritySetPasswordScreen(
     modifier: Modifier = Modifier,
     errorPassword: PasswordInvalidType,
     isSuccessUpdate: Boolean? = null,
-    isEnabled: Boolean = false,
     onEvent: (SecurityEvent) -> Unit
 ) {
 
@@ -62,12 +61,7 @@ fun SecuritySetPasswordScreen(
         Spacer(modifier = Modifier.height(16.dp))
         PasswordTextField(
             modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged {
-                    if (!it.isFocused) {
-                        onEvent.invoke(SecurityEvent.OnVerifyCurrentPassword(currentPassword))
-                    }
-                },
+                .fillMaxWidth(),
             value = currentPassword,
             onValueChange = {
                 currentPassword = it
@@ -85,13 +79,7 @@ fun SecuritySetPasswordScreen(
             onPasswordVisibleIconClick = {
                 isVisibleCurrentPassword = !isVisibleCurrentPassword
             },
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    onEvent.invoke(SecurityEvent.OnVerifyCurrentPassword(currentPassword))
-                }
-            )
         )
-        Spacer(modifier = Modifier.height(16.dp))
         PasswordTextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -129,7 +117,6 @@ fun SecuritySetPasswordScreen(
                 }
             )
         )
-        Spacer(modifier = Modifier.height(16.dp))
         PasswordTextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -163,8 +150,8 @@ fun SecuritySetPasswordScreen(
                 onDone = {
                     isPasswordConfirmValid = when {
                         password.isBlank() || confirmPassword.isBlank() -> PasswordInvalidType.CORRECT
-                        password == confirmPassword -> PasswordInvalidType.NOT_MATCH
-                        else -> PasswordInvalidType.CORRECT
+                        password == confirmPassword -> PasswordInvalidType.CORRECT
+                        else -> PasswordInvalidType.NOT_MATCH
                     }
                 }
             )
@@ -185,14 +172,16 @@ fun SecuritySetPasswordScreen(
                 .width(176.dp)
                 .align(Alignment.CenterHorizontally),
             text = stringResource(id = R.string.save_button),
-            isEnabled = isEnabled,
+            isEnabled = isEnabled(
+                isPasswordValid, isPasswordConfirmValid, currentPassword
+            ),
             enableBackgroundColor = InTouchTheme.colors.mainGreen,
             disableBackgroundColor = InTouchTheme.colors.unableElementLight,
             enableTextColor = InTouchTheme.colors.input,
             disableTextColor = InTouchTheme.colors.textGreen40,
             onClick = {
                 onEvent.invoke(
-                    SecurityEvent.OnSavePassword(password, confirmPassword)
+                    SecurityEvent.OnSavePassword(currentPassword, password, confirmPassword)
                 )
             }
         )
@@ -263,4 +252,14 @@ private fun getTextByUpdate(isSuccessUpdate: Boolean?) = when (isSuccessUpdate) 
     else -> {
         ""
     }
+}
+
+private fun isEnabled(
+    passwordValid: PasswordInvalidType,
+    passwordConfirmValid: PasswordInvalidType,
+    currentPassword: String,
+): Boolean {
+    return passwordValid == PasswordInvalidType.CORRECT
+            && passwordConfirmValid == PasswordInvalidType.CORRECT
+            && currentPassword.isNotBlank()
 }

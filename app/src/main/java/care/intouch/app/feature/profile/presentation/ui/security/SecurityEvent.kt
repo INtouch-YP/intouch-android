@@ -6,6 +6,7 @@ sealed class SecurityEvent {
     data object OnCancelDeleteProfile: SecurityEvent()
     data class OnVerifyCurrentPassword(val password: String): SecurityEvent()
     data class OnSavePassword(
+        val currentPassword: String,
         val password: String,
         val confirmPassword: String
     ): SecurityEvent()

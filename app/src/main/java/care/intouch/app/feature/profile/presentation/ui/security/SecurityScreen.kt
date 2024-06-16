@@ -96,7 +96,6 @@ fun SecurityScreen(
                     SecuritySetPasswordScreen(
                         errorPassword = state.value.errorCurrentPassword,
                         isSuccessUpdate = state.value.isSuccessUpdate,
-                        isEnabled = state.value.isEnabled,
                         onEvent = viewModel::onEvent
                     )
                 }
