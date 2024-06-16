@@ -16,7 +16,7 @@ import care.intouch.app.core.navigation.ProfileRouteBranch
 import care.intouch.app.feature.diary.presentation.ui.DiaryNoteScreen
 import care.intouch.app.feature.home.presentation.ui.HomeScreen
 import care.intouch.app.feature.plan.presentation.ui.PlanScreen
-import care.intouch.app.feature.profile.presentation.ui.PasswordChangeScreen
+import care.intouch.app.feature.profile.presentation.ui.security.SecurityScreen
 import care.intouch.app.feature.profile.presentation.ui.ProfileScreen
 
 @Composable
@@ -63,7 +63,8 @@ fun AppNavHost(
         }
 
         composable(route = PasswordChange.route) {
-            PasswordChangeScreen(
+            SecurityScreen(
+                navController = navController,
                 onDeleteProfileForeverClick = {
                     navController.navigate(route = Authentication.route)
                 }

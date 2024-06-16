@@ -1,0 +1,126 @@
+package care.intouch.app.feature.profile.presentation.ui.security
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import care.intouch.app.R
+import care.intouch.uikit.theme.InTouchTheme
+
+@Composable
+fun SecurityScreen(
+    navController: NavController,
+    onDeleteProfileForeverClick: () -> Unit,
+    viewModel: SecurityViewModel = hiltViewModel()
+) {
+    val state = viewModel.state.collectAsStateWithLifecycle()
+    val scrollState = rememberScrollState()
+
+    Scaffold { paddingValues ->
+        when (state.value.uiState) {
+            SecurityUiState.Loading -> {
+
+            }
+
+            SecurityUiState.SetPassword -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(InTouchTheme.colors.white)
+                        .padding(paddingValues)
+                        .verticalScroll(scrollState),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(165.dp),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Image(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentScale = ContentScale.FillBounds,
+                            painter = painterResource(id = care.intouch.uikit.R.drawable.head_background_small),
+                            contentDescription = null
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 30.dp),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                modifier = Modifier.clickable {
+                                    navController.popBackStack()
+                                },
+                                painter = painterResource(id = care.intouch.uikit.R.drawable.icon_arrow_left),
+                                contentDescription = null
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = 24.dp),
+                                text = stringResource(id = R.string.security_title),
+                                textAlign = TextAlign.Center,
+                                color = InTouchTheme.colors.textBlue,
+                                style = InTouchTheme.typography.titleLarge,
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(40.dp))
+                    SecuritySetPasswordScreen(
+                        errorPassword = state.value.errorCurrentPassword,
+                        isSuccessUpdate = state.value.isSuccessUpdate,
+                        isEnabled = state.value.isEnabled,
+                        onEvent = viewModel::onEvent
+                    )
+                }
+            }
+
+            SecurityUiState.DeleteProfile -> {
+
+                Popup(
+                    alignment = Alignment.Center,
+                    onDismissRequest = {
+                        viewModel.onEvent(SecurityEvent.OnCancelDeleteProfile)
+                    }
+                ) {
+                    DeleteProfilePopUp(
+                        modifier = Modifier.width(334.dp).height(501.dp),
+                        onEvent =  viewModel::onEvent
+                    )
+                }
+            }
+
+            SecurityUiState.ProfileDeleted -> {
+                onDeleteProfileForeverClick.invoke()
+            }
+        }
+    }
+
+}
