@@ -76,7 +76,8 @@ fun PersonalData(
     modifier: Modifier = Modifier,
     naming: StringVO,
     value: String,
-    icon: ImageVO = ImageVO.Resource(R.drawable.icon_edit),
+    enabledIcon: ImageVO = ImageVO.Resource(R.drawable.icon_edit),
+    disabledIcon: ImageVO = ImageVO.Resource(R.drawable.icon_edit_light),
     onValueChange: (String) -> Unit,
     onIconClick:  () -> Unit,
     textFieldEnabled: Boolean,
@@ -129,7 +130,7 @@ fun PersonalData(
             interactionSource = NoRippleInteractionSource(),
         ) {
             Icon(
-                painter = icon.painter(),
+                painter = if (buttonEnabled) enabledIcon.painter() else disabledIcon.painter(),
                 contentDescription = null,
                 tint = iconTint,
                 modifier = Modifier.align(Alignment.CenterEnd)

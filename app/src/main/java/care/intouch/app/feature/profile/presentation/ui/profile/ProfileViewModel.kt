@@ -21,7 +21,7 @@ class ProfileViewModel @Inject constructor(
     private var _state = MutableStateFlow(ProfileState(loadProfileData(), ViewsComponentsState()))
     val state = _state.asStateFlow()
 
-    fun updateState(event: ChangeProfileDataEvent) {
+    fun onEvent(event: ChangeProfileDataEvent) {
         when (event) {
             is ChangeProfileDataEvent.OnChangeName -> {
                 updateName(event)
@@ -64,6 +64,7 @@ class ProfileViewModel @Inject constructor(
             }
 
             is ChangeProfileDataEvent.OnSaveChangesButtonClick -> {
+                sendDataInDomain()
                 changeTextFieldsAndButtonsEnabled(
                     name = event.name,
                     lastName = event.lastName,
@@ -155,7 +156,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun sendDataInDomain() {
+    private fun sendDataInDomain() {
 
     }
 

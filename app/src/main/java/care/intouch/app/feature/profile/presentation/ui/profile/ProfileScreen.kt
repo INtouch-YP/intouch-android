@@ -26,7 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ChangeProfileDataEvent
 import care.intouch.uikit.R
-import care.intouch.uikit.common.ImageVO
 import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.ui.buttons.IntouchButton
 import care.intouch.uikit.ui.buttons.PrimaryButtonWhite
@@ -68,11 +67,11 @@ fun ProfileScreen(
                 textFieldEnabled = state.viewsComponentsState.nameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    viewModel.updateState(ChangeProfileDataEvent.OnChangeName(name = it))
+                    viewModel.onEvent(ChangeProfileDataEvent.OnChangeName(name = it))
                 },
                 onIconClick = {
                     if (state.profileDataState.dataIsValid) {
-                        viewModel.updateState(ChangeProfileDataEvent.OnEditNameButtonClick())
+                        viewModel.onEvent(ChangeProfileDataEvent.OnEditNameButtonClick())
                         scope.launch {
                             delay(200)  // the delay of 0,2 seconds
                             nameFocusRequester.requestFocus()
@@ -81,9 +80,6 @@ fun ProfileScreen(
                 },
                 focusRequester = nameFocusRequester,
                 buttonEnabled = state.viewsComponentsState.nameButtonEnabled,
-                icon = if (state.viewsComponentsState.nameButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
-                    R.drawable.icon_edit_light
-                )
             )
             Spacer(modifier = Modifier.height(16.dp))
             PersonalData(
@@ -92,11 +88,11 @@ fun ProfileScreen(
                 textFieldEnabled = state.viewsComponentsState.lastNameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    viewModel.updateState(ChangeProfileDataEvent.OnChangeLastName(lastName = it))
+                    viewModel.onEvent(ChangeProfileDataEvent.OnChangeLastName(lastName = it))
                 },
                 onIconClick = {
                     if (state.profileDataState.dataIsValid) {
-                        viewModel.updateState(ChangeProfileDataEvent.OnEditLastNameButtonClick())
+                        viewModel.onEvent(ChangeProfileDataEvent.OnEditLastNameButtonClick())
                         scope.launch {
                             delay(200)  // the delay of 0,2 seconds
                             lastNameFocusRequester.requestFocus()
@@ -105,9 +101,6 @@ fun ProfileScreen(
                 },
                 focusRequester = lastNameFocusRequester,
                 buttonEnabled = state.viewsComponentsState.lastNameButtonEnabled,
-                icon = if (state.viewsComponentsState.lastNameButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
-                    R.drawable.icon_edit_light
-                )
             )
             Spacer(modifier = Modifier.height(16.dp))
             PersonalData(
@@ -116,11 +109,11 @@ fun ProfileScreen(
                 textFieldEnabled = state.viewsComponentsState.emailTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    viewModel.updateState(ChangeProfileDataEvent.OnChangeEmail(email = it))
+                    viewModel.onEvent(ChangeProfileDataEvent.OnChangeEmail(email = it))
                 },
                 onIconClick = {
                     if (state.profileDataState.dataIsValid) {
-                        viewModel.updateState(ChangeProfileDataEvent.OnEditEmailButtonClick())
+                        viewModel.onEvent(ChangeProfileDataEvent.OnEditEmailButtonClick())
                         scope.launch {
                             delay(200)  // the delay of 0,2 seconds
                             emailFocusRequester.requestFocus()
@@ -129,9 +122,6 @@ fun ProfileScreen(
                 },
                 focusRequester = emailFocusRequester,
                 buttonEnabled = state.viewsComponentsState.emailButtonEnabled,
-                icon = if (state.viewsComponentsState.emailButtonEnabled) ImageVO.Resource(R.drawable.icon_edit) else ImageVO.Resource(
-                    R.drawable.icon_edit_light
-                )
             )
             if (state.profileDataState.dataIsValid) {  // Show or not a message about data incorrectness
                 Spacer(modifier = Modifier.height(22.dp))
@@ -156,8 +146,7 @@ fun ProfileScreen(
                 IntouchButton(
                     text = StringVO.Plain("Save changes").value(),
                     onClick = {
-                        viewModel.sendDataInDomain()
-                        viewModel.updateState(ChangeProfileDataEvent.OnSaveChangesButtonClick())
+                        viewModel.onEvent(ChangeProfileDataEvent.OnSaveChangesButtonClick())
                     },
                     isEnabled = state.profileDataState.dataIsValid,
                     contentPadding = PaddingValues(horizontal = 72.dp, vertical = 16.dp),
