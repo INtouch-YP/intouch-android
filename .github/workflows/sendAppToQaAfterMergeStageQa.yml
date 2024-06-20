@@ -4,7 +4,7 @@ on:
   pull_request:
     types:
       - closed
-    branches: [ "dev" ]
+    branches: [ "83-creating-app-builds" ]
 
   workflow_dispatch:
 
@@ -28,17 +28,17 @@ jobs:
 
       - name: Build and send application stageQa to App Distribution
         env:
-          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          CREDENTIAL_FILE_CONTENT: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+#          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+#          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+#          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+#          CREDENTIAL_FILE_CONTENT: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           GITHUB_RUN_NUMBER: ${{ github.run_number }}
         run: |
-          echo "$CREDENTIAL_FILE_CONTENT" > ./app/serviceCredentialsFile.json
           echo "App type: stageQa" >> ./app/src/stage/qa/releaseNotes.txt
           echo "buildNumber=${GITHUB_RUN_NUMBER}" >> ./app/src/stage/qa/releaseNotes.txt
           echo "Pull Request Title: $PR_TITLE" >> ./app/src/stage/qa/releaseNotes.txt
           echo "Issue Numbers: $PR_ISSUES" >> ./app/src/stage/qa/releaseNotes.txt
+#          echo "$CREDENTIAL_FILE_CONTENT" > ./app/serviceCredentialsFile.json
           ./gradlew appDistributionToQaStageQa 
 
       - name: Print release notes
