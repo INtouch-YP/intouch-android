@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        Timber.tag("CheckAppBuild").d("Check App Build 004")
+        Timber.tag("CheckAppBuild").d("Check App Build 005")
     }
 
     override fun onResume() {
