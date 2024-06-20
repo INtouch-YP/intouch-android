@@ -22,7 +22,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_TITLE=$(gh pr view ${{ github.event.pull_request.number }} --json title)
+          PR_TITLE=$(gh pr view ${{ github.event.pull_request.number }} --json title --jq '.title')
           PR_ISSUES=$(gh pr view ${{ github.event.pull_request.number }} --json body)
           echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
           echo "PR_ISSUES=$PR_ISSUES" >> $GITHUB_ENV
