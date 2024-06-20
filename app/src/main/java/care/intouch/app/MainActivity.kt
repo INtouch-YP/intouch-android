@@ -41,6 +41,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
         Timber.tag("CHECK").d("Check app build 2")
     }
 
