@@ -1,7 +1,7 @@
-package care.intouch.app.feature.profile.di
+package care.intouch.app.feature.profile.di.profile
 
-import care.intouch.app.feature.profile.data.GetProfileDataRepositoryImpl
-import care.intouch.app.feature.profile.domain.repository.GetProfileDataRepository
+import care.intouch.app.feature.profile.data.profile.GetProfileDataRepositoryImpl
+import care.intouch.app.feature.profile.domain.profile.repository.GetProfileDataRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

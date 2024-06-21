@@ -1,4 +1,4 @@
-package care.intouch.app.feature.profile.presentation.ui.profile
+package care.intouch.app.feature.profile.presentation.ui.profile.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
