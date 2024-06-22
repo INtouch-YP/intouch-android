@@ -44,6 +44,7 @@ class ProfileViewModel @Inject constructor(
                     infIsUpdate = event.infIsUpdate,
                 )
             }
+
             is ChangeProfileDataEvent.OnEditLastNameButtonClick -> {
                 changeTextFieldsAndButtonsEnabled(
                     name = event.name,
@@ -53,6 +54,7 @@ class ProfileViewModel @Inject constructor(
                     infIsUpdate = event.infIsUpdate,
                 )
             }
+
             is ChangeProfileDataEvent.OnEditNameButtonClick -> {
                 changeTextFieldsAndButtonsEnabled(
                     name = event.name,
@@ -78,20 +80,21 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateName(event: ChangeProfileDataEvent.OnChangeName) {
         if (event.name.length <= MAX_NAME_LENGTH) {
-            val isTextValid = isTextValid(event.name)
-            val isNameValid = isTextValid && (event.name.length > 2)
+            val name = replaceChars(event.name)
+            val isTextValid = isTextValid(name)
+            val isNameValid = isTextValid && (name.length > 2)
             var errorMessage: StringVO = StringVO.Plain("")
             if (!isTextValid) {
                 errorMessage = event.errorInvalidChar
             }
-            if (event.name.length <= 2) {
+            if (name.length <= 2) {
                 errorMessage = event.errorLength
             }
             _state.update {
                 ProfileState(
                     profileDataState = ProfileDataState(
                         dataIsValid = isNameValid,
-                        name = ProfileInformationData(StringVO.Plain(event.name), isNameValid),
+                        name = ProfileInformationData(StringVO.Plain(name), isNameValid),
                         lastName = _state.value.profileDataState.lastName,
                         email = _state.value.profileDataState.email,
                         errorMessage = errorMessage,
@@ -105,13 +108,14 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateLastName(event: ChangeProfileDataEvent.OnChangeLastName) {
         if (event.lastName.length <= MAX_NAME_LENGTH) {
-            val isTextValid = isTextValid(event.lastName)
-            val isLastNameValid = isTextValid && (event.lastName.length > 2)
+            val lastName = replaceChars(event.lastName)
+            val isTextValid = isTextValid(lastName)
+            val isLastNameValid = isTextValid && (lastName.length > 2)
             var errorMessage: StringVO = StringVO.Plain("")
             if (!isTextValid) {
                 errorMessage = event.errorInvalidChar
             }
-            if (event.lastName.length <= 2) {
+            if (lastName.length <= 2) {
                 errorMessage = event.errorLength
             }
             _state.update {
@@ -120,7 +124,7 @@ class ProfileViewModel @Inject constructor(
                         dataIsValid = isLastNameValid,
                         name = _state.value.profileDataState.name,
                         lastName = ProfileInformationData(
-                            StringVO.Plain(event.lastName),
+                            StringVO.Plain(lastName),
                             isLastNameValid
                         ),
                         email = _state.value.profileDataState.email,
@@ -131,6 +135,12 @@ class ProfileViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun replaceChars(text: String): String {
+        return text.replace("  ", " ")
+            .replace("..", ".")
+            .replace("--", "-")
     }
 
     private fun updateEmail(event: ChangeProfileDataEvent.OnChangeEmail) {
