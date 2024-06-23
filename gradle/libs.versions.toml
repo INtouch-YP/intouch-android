@@ -33,6 +33,8 @@ constraintlayout = "1.0.1"
 uiTooling = "1.6.3"
 securityCrypto = "1.1.0-alpha06"
 navigationRuntimeKtx = "2.7.7"
+androidXCoreVersion = "1.13.1"
+androidXCoreSplashVersion = "1.0.1"
 
 [libraries]
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
@@ -75,7 +77,8 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 security-crypto = {group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto"}
-
+androidXCore = { module = "androidx.core:core", version.ref = "androidXCoreVersion" }
+androidXCoreSplash = { module = "androidx.core:core-splashscreen", version.ref = "androidXCoreSplashVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
