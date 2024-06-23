@@ -3,11 +3,12 @@ package care.intouch.app
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import care.intouch.app.feature.authorization.data.dto.AccountState
-import care.intouch.app.feature.authorization.domain.api.UserRepository
-import care.intouch.app.feature.authorization.domain.api.UserStorage
-import care.intouch.app.feature.authorization.domain.useCase.GetAccountStateUC
+import care.intouch.app.feature.authorization.domain.useCase.GetAccountStateFlowUC
 import care.intouch.app.feature.common.Resource
+import care.intouch.app.feature.common.domain.useCase.LogOutUseCase
+import care.intouch.app.feature.common.domain.useCase.UpdateUserProfileCacheUseCase
 import care.intouch.app.models.MainActivitySideEffect
+import care.intouch.uikit.common.StringVO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -16,42 +17,45 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getAccountStateUC: GetAccountStateUC,
-    private val userRepository: UserRepository,
-    private val userStorage: UserStorage
+    private val getAccountStateFlowUseCase: GetAccountStateFlowUC,
+    private val updateUserProfileCacheUseCase: UpdateUserProfileCacheUseCase,
+    private val logOutUseCase: LogOutUseCase
 ) : ViewModel() {
+
+    var isLoading: Boolean = true
 
     private val _sideEffect = MutableSharedFlow<MainActivitySideEffect>()
     val sideEffect = _sideEffect.asSharedFlow()
 
     init {
         viewModelScope.launch {
-            val accountState = getAccountStateUC.invoke()
-            when (accountState) {
-                is AccountState.Account -> {
-                    updateUserInfo()
-                }
+            getAccountStateFlowUseCase()
+                .collect { accountState ->
+                    when (accountState) {
+                        is AccountState.Account -> {
+                            updateUserInfo()
+                        }
 
-                AccountState.NoAccount -> {
-                    navigateToAuth()
+                        AccountState.NoAccount -> {
+                            logOutUseCase()
+                            navigateToAuth()
+                        }
+                    }
                 }
-            }
         }
     }
 
     private fun updateUserInfo() {
         viewModelScope.launch {
-            when (val userInfo = userRepository.getUser()) {
-                is Resource.Success -> {
-                    userStorage.save(userInfo.data)
-                }
-
+            when (val result = updateUserProfileCacheUseCase()) {
                 is Resource.Error -> {
-                    showErrorMessageWithAction(
-                        message = userInfo.error.message,
-                    ) {
+                    showErrorMessageWithAction(result.error.message) {
                         updateUserInfo()
                     }
+                }
+
+                is Resource.Success -> {
+                    isLoading = false
                 }
             }
         }
@@ -64,7 +68,8 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _sideEffect.emit(
                 MainActivitySideEffect.ShowToastWithAction(
-                    message = message,
+                    message = StringVO.Plain(message),
+                    actionMessage = StringVO.Resource(R.string.retry_button),
                     onActionClicked = onAction
                 )
             )
@@ -72,6 +77,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun navigateToAuth() {
+        isLoading = false
         viewModelScope.launch {
             _sideEffect.emit(
                 MainActivitySideEffect.NavigatedToAuth
