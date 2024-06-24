@@ -58,19 +58,17 @@ class PasswordRecoveryViewModel @Inject constructor(
                             )
                         }
                     }
-
                 }
             }
         }
     }
 
     private fun resetUiState() {
-
         _uiState.update { passwordRecoveryScreenState ->
             passwordRecoveryScreenState.copy(
                 recoveryErrorMessage = BLANC_STRING,
                 recoveryMove = RecoveryMove.UNDEFINED,
-                enableButton = passwordRecoveryScreenState.textFieldValue.isNotEmpty()
+                enableButton = true
             )
         }
     }

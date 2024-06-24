@@ -36,13 +36,15 @@ import care.intouch.uikit.ui.textFields.PasswordTextField
 
 @Composable
 fun PasswordRecoveryScreen(
-    onSendPasswordClick: () -> Unit
+    onSendPasswordClick: () -> Unit,
+    onCloseButtonClick: () -> Unit
 ) {
     val viewModel: PasswordRecoveryViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsState()
 
     PasswordRecoveryScreen(
         onSendPasswordClick = onSendPasswordClick,
+        onCloseButtonClick = onCloseButtonClick,
         state = state,
         onEvent = { viewModel.onEvent(it) }
     )
@@ -51,6 +53,7 @@ fun PasswordRecoveryScreen(
 @Composable
 fun PasswordRecoveryScreen(
     onSendPasswordClick: () -> Unit,
+    onCloseButtonClick: () -> Unit,
     state: PasswordRecoveryScreenState,
     onEvent: (PasswordRecoveryEvent) -> Unit
 ) {
@@ -63,7 +66,9 @@ fun PasswordRecoveryScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AuthorizationHeader(
-            onCloseButtonClick = {}
+            onCloseButtonClick = {
+                onCloseButtonClick.invoke()
+            }
         )
 
         Text(
@@ -128,6 +133,7 @@ fun PasswordRecoveryScreenPreview() {
     InTouchTheme {
         PasswordRecoveryScreen(
             onSendPasswordClick = {},
+            onCloseButtonClick = {},
             state = PasswordRecoveryScreenState(),
             onEvent = {}
         )

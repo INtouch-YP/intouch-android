@@ -107,6 +107,9 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
             PasswordRecoveryScreen(
                 onSendPasswordClick = {
                     navController.navigate(route = SendingNotification.route)
+                },
+                onCloseButtonClick = {
+                    navController.navigate(route = Authentication.route)
                 }
             )
         }
