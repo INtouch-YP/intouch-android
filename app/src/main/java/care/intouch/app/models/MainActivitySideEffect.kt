@@ -10,4 +10,5 @@ sealed interface MainActivitySideEffect {
     ) : MainActivitySideEffect
 
     data object NavigatedToAuth : MainActivitySideEffect
+    data object NavigatedToMainScreen : MainActivitySideEffect
 }

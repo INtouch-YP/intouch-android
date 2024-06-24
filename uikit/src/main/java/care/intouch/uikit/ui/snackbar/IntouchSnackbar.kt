@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import care.intouch.uikit.theme.InTouchTheme
-import care.intouch.uikit.ui.buttons.SecondaryButtonWhite
+import care.intouch.uikit.ui.buttons.TextButton
 
 @Composable
 fun IntouchSnackbar(
@@ -44,7 +44,7 @@ fun IntouchSnackbar(
             overflow = TextOverflow.Ellipsis
         )
         data.visuals.actionLabel?.let { actionLabel ->
-            SecondaryButtonWhite(
+            TextButton(
                 modifier = Modifier.padding(end = 4.dp),
                 text = actionLabel,
                 onClick = {

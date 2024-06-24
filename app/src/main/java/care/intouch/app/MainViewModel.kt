@@ -33,10 +33,12 @@ class MainViewModel @Inject constructor(
                 .collect { accountState ->
                     when (accountState) {
                         is AccountState.Account -> {
+                            isLoading = false
                             updateUserInfo()
                         }
 
-                        AccountState.NoAccount -> {
+                        is AccountState.NoAccount -> {
+                            isLoading = false
                             logOutUseCase()
                             navigateToAuth()
                         }
@@ -55,7 +57,7 @@ class MainViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    isLoading = false
+                    navigateToMainScreen()
                 }
             }
         }
@@ -77,6 +79,15 @@ class MainViewModel @Inject constructor(
     }
 
     private fun navigateToAuth() {
+        isLoading = false
+        viewModelScope.launch {
+            _sideEffect.emit(
+                MainActivitySideEffect.NavigatedToAuth
+            )
+        }
+    }
+
+    private fun navigateToMainScreen() {
         isLoading = false
         viewModelScope.launch {
             _sideEffect.emit(

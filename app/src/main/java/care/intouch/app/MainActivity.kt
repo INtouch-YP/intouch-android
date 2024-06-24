@@ -62,6 +62,10 @@ class MainActivity : ComponentActivity() {
                         MainActivitySideEffect.NavigatedToAuth -> {
                             isAuthenticate = false
                         }
+
+                        MainActivitySideEffect.NavigatedToMainScreen -> {
+                            isAuthenticate = true
+                        }
                     }
                 }
             }
