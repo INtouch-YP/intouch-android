@@ -25,7 +25,6 @@ import care.intouch.app.core.navigation.Registration
 import care.intouch.app.core.navigation.Sample
 import care.intouch.app.core.navigation.SliderSample
 import care.intouch.app.core.navigation.ToggleSample
-import care.intouch.app.feature.common.utill.extensions.Logger
 import care.intouch.app.ui.uiKitSamples.screens.DebugModeScreen
 import care.intouch.app.ui.uiKitSamples.screens.NavigationScreen
 import care.intouch.app.ui.uiKitSamples.screens.SampleScreen
@@ -49,8 +48,6 @@ fun MainNavHost(
                     navController.navigate(route = Navigation.route)
                 },
                 onApplicationFlowButtonClick = {
-                    Logger.realLogger?.d("MainNavHost isAuthenticate: $isAuthenticate")
-
                     if (isAuthenticate) {
                         navController.navigate(route = MainNav.route)
                     } else {
