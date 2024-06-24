@@ -58,6 +58,9 @@ fun AppNavHost(
                 },
                 onChangePinCode = {
                     navController.navigate(route = ProfileRouteBranch.route)
+                },
+                onSingOut = {
+                    // Go to start Screen
                 }
             )
         }

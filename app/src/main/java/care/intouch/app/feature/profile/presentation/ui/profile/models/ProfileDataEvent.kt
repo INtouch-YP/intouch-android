@@ -3,24 +3,24 @@ package care.intouch.app.feature.profile.presentation.ui.profile.models
 import care.intouch.app.R
 import care.intouch.uikit.common.StringVO
 
-sealed class ChangeProfileDataEvent {
+sealed class ProfileDataEvent {
 
-    data class OnChangeName(
+    data class OnName(
         val name:String,
         val errorLength: StringVO = StringVO.Resource(resId = R.string.profile_small_name_error),
         val errorInvalidChar: StringVO = StringVO.Resource(resId = R.string.profile_invalid_char_error)
-    ): ChangeProfileDataEvent()
+    ): ProfileDataEvent()
 
-    data class OnChangeLastName(
+    data class OnLastName(
         val lastName:String,
         val errorLength: StringVO = StringVO.Resource(resId = R.string.profile_small_last_name_error),
         val errorInvalidChar: StringVO = StringVO.Resource(resId = R.string.profile_invalid_char_error)
-    ): ChangeProfileDataEvent()
+    ): ProfileDataEvent()
 
-    data class OnChangeEmail(
+    data class OnEmail(
         val email:String,
         val errorEmailNotValid: StringVO = StringVO.Resource(resId = R.string.email_not_valid_error)
-    ): ChangeProfileDataEvent()
+    ): ProfileDataEvent()
 
     data class OnEditNameButtonClick(
         val name: Boolean = true,
@@ -28,7 +28,7 @@ sealed class ChangeProfileDataEvent {
         val email: Boolean = false,
         val saveChangesButton: Boolean = true,
         val infIsUpdate: Boolean = false
-    ): ChangeProfileDataEvent()
+    ): ProfileDataEvent()
 
     data class OnEditLastNameButtonClick(
         val name: Boolean = false,
@@ -36,7 +36,7 @@ sealed class ChangeProfileDataEvent {
         val email: Boolean = false,
         val saveChangesButton: Boolean = true,
         val infIsUpdate: Boolean = false
-    ): ChangeProfileDataEvent()
+    ): ProfileDataEvent()
 
     data class OnEditEmailButtonClick(
         val name: Boolean = false,
@@ -44,7 +44,7 @@ sealed class ChangeProfileDataEvent {
         val email: Boolean = true,
         val saveChangesButton: Boolean = true,
         val infIsUpdate: Boolean = false
-    ): ChangeProfileDataEvent()
+    ): ProfileDataEvent()
 
     data class OnSaveChangesButtonClick(
         val name: Boolean = false,
@@ -52,5 +52,7 @@ sealed class ChangeProfileDataEvent {
         val email: Boolean = false,
         val saveChangesButton: Boolean = false,
         val infIsUpdate: Boolean = true
-    ): ChangeProfileDataEvent()
+    ): ProfileDataEvent()
+
+    class OnSingOutButtonClick(): ProfileDataEvent()
 }

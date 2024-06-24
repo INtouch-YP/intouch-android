@@ -24,7 +24,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import care.intouch.app.feature.profile.presentation.ui.profile.models.ChangeProfileDataEvent
+import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataEvent
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataState
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileInformationData
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileState
@@ -44,12 +44,14 @@ import kotlinx.coroutines.launch
 fun ProfileScreen(
     onSecurityClick: () -> Unit,
     onChangePinCode: () -> Unit,
+    onSingOut: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     ProfileScreen(
         onSecurityClick = onSecurityClick,
         onChangePinCode = onChangePinCode,
+        onSingOut = onSingOut,
         onEvent = { viewModel.onEvent(it) },
         state = state
     )
@@ -59,7 +61,8 @@ fun ProfileScreen(
 private fun ProfileScreen(
     onSecurityClick: () -> Unit,
     onChangePinCode: () -> Unit,
-    onEvent: (ChangeProfileDataEvent) -> Unit,
+    onSingOut: () -> Unit,
+    onEvent: (ProfileDataEvent) -> Unit,
     state: ProfileState
 ) {
     val scope = rememberCoroutineScope()
@@ -86,11 +89,11 @@ private fun ProfileScreen(
                 textFieldEnabled = state.viewsComponentsState.nameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    onEvent(ChangeProfileDataEvent.OnChangeName(name = it))
+                    onEvent(ProfileDataEvent.OnName(name = it))
                 },
                 onIconClick = {
                     if (state.profileDataState.dataIsValid) {
-                        onEvent(ChangeProfileDataEvent.OnEditNameButtonClick())
+                        onEvent(ProfileDataEvent.OnEditNameButtonClick())
                         scope.launch {
                             delay(200)  // the delay of 0,2 seconds
                             nameFocusRequester.requestFocus()
@@ -107,11 +110,11 @@ private fun ProfileScreen(
                 textFieldEnabled = state.viewsComponentsState.lastNameTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    onEvent(ChangeProfileDataEvent.OnChangeLastName(lastName = it))
+                    onEvent(ProfileDataEvent.OnLastName(lastName = it))
                 },
                 onIconClick = {
                     if (state.profileDataState.dataIsValid) {
-                        onEvent(ChangeProfileDataEvent.OnEditLastNameButtonClick())
+                        onEvent(ProfileDataEvent.OnEditLastNameButtonClick())
                         scope.launch {
                             delay(200)  // the delay of 0,2 seconds
                             lastNameFocusRequester.requestFocus()
@@ -128,11 +131,11 @@ private fun ProfileScreen(
                 textFieldEnabled = state.viewsComponentsState.emailTextFieldEnabled,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 onValueChange = {
-                    onEvent(ChangeProfileDataEvent.OnChangeEmail(email = it))
+                    onEvent(ProfileDataEvent.OnEmail(email = it))
                 },
                 onIconClick = {
                     if (state.profileDataState.dataIsValid) {
-                        onEvent(ChangeProfileDataEvent.OnEditEmailButtonClick())
+                        onEvent(ProfileDataEvent.OnEditEmailButtonClick())
                         scope.launch {
                             delay(200)  // the delay of 0,2 seconds
                             emailFocusRequester.requestFocus()
@@ -163,9 +166,9 @@ private fun ProfileScreen(
 
             if (state.viewsComponentsState.saveChangesButtonVisibility) {
                 IntouchButton(
-                    text = StringVO.Plain("Save changes").value(),
+                    text = StringVO.Resource(resId = care.intouch.app.R.string.save_changes_button),
                     onClick = {
-                        onEvent(ChangeProfileDataEvent.OnSaveChangesButtonClick())
+                        onEvent(ProfileDataEvent.OnSaveChangesButtonClick())
                     },
                     isEnabled = state.profileDataState.dataIsValid,
                     contentPadding = PaddingValues(horizontal = 72.dp, vertical = 16.dp),
@@ -179,7 +182,7 @@ private fun ProfileScreen(
 
             ProfileButton(
                 onClick = { onSecurityClick.invoke() },
-                text = StringVO.Plain("Security"),
+                text = StringVO.Resource(resId = care.intouch.app.R.string.security_profile),
                 enableBackgroundColor = InTouchTheme.colors.input,
                 disableBackgroundColor = InTouchTheme.colors.input,
                 modifier = Modifier.padding(horizontal = 32.dp)
@@ -191,7 +194,7 @@ private fun ProfileScreen(
             )
             ProfileButton(
                 onClick = { onChangePinCode.invoke() },
-                text = StringVO.Plain("Create PIN code"),
+                text = StringVO.Resource(resId = care.intouch.app.R.string.create_pin_profile),
                 enableBackgroundColor = InTouchTheme.colors.input,
                 disableBackgroundColor = InTouchTheme.colors.input,
                 modifier = Modifier.padding(horizontal = 32.dp)
@@ -203,8 +206,11 @@ private fun ProfileScreen(
             )
         }
         PrimaryButtonWhite(
-            text = "Sing out",
-            onClick = {},
+            text = StringVO.Resource(resId = care.intouch.app.R.string.sing_out_button),
+            onClick = {
+                onEvent(ProfileDataEvent.OnSingOutButtonClick())
+                onSingOut.invoke()
+            },
             modifier = Modifier
                 .align(BottomCenter)
                 .padding(bottom = 96.dp)
@@ -229,6 +235,7 @@ fun ProfileScreenPreview() {
         ProfileScreen(
             onSecurityClick = {},
             onChangePinCode = {},
+            onSingOut = {},
             onEvent = {},
             state = state
         )

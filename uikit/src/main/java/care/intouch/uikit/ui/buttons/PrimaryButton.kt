@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.NoRippleInteractionSource
 
@@ -20,7 +21,7 @@ import care.intouch.uikit.ui.NoRippleInteractionSource
 fun IntouchButton(
     onClick: () -> Unit,
     modifier: Modifier,
-    text: String,
+    text: StringVO,
     textStyle: TextStyle = InTouchTheme.typography.titleMedium,
     isEnabled: Boolean = true,
     isHasStroke: Boolean = false,
@@ -55,7 +56,7 @@ fun IntouchButton(
         interactionSource = NoRippleInteractionSource(),
     )
     {
-        Text(text = text, style = textStyle)
+        Text(text = text.value(), style = textStyle)
     }
 }
 
@@ -63,7 +64,7 @@ fun IntouchButton(
 fun PrimaryButtonWhite(
     onClick: () -> Unit,
     modifier: Modifier,
-    text: String,
+    text: StringVO,
     textStyle: TextStyle = InTouchTheme.typography.titleMedium,
     isEnabled: Boolean = true,
 ) {
@@ -84,7 +85,7 @@ fun PrimaryButtonWhite(
 fun PrimaryButtonGreen(
     onClick: () -> Unit,
     modifier: Modifier,
-    text: String,
+    text: StringVO,
     isEnabled: Boolean = true,
 ) {
     IntouchButton(
@@ -99,7 +100,7 @@ fun PrimaryButtonGreen(
 fun PrimaryButtonStroke(
     onClick: () -> Unit,
     modifier: Modifier,
-    text: String,
+    text: StringVO,
     isEnabled: Boolean = true,
 ) {
     IntouchButton(
@@ -123,7 +124,7 @@ fun PrimaryButtonGreenPreview() {
         PrimaryButtonGreen(
             onClick = {},
             modifier = Modifier,
-            text = "Set Password",
+            text = StringVO.Plain("Set Password"),
             isEnabled = true
         )
     }
@@ -136,7 +137,7 @@ fun PrimaryButtonWhitePreview() {
         PrimaryButtonWhite(
             onClick = {},
             modifier = Modifier,
-            text = "Set Password",
+            text = StringVO.Plain("Set Password"),
             isEnabled = true
         )
     }
@@ -149,7 +150,7 @@ fun PrimaryButtonStrokePreview() {
         PrimaryButtonStroke(
             onClick = {},
             modifier = Modifier,
-            text = "Set Password",
+            text = StringVO.Plain("Set Password"),
             isEnabled = true
         )
     }

@@ -2,7 +2,8 @@ package care.intouch.app.feature.profile.presentation.ui.profile.ui
 
 import androidx.lifecycle.ViewModel
 import care.intouch.app.R
-import care.intouch.app.feature.profile.presentation.ui.profile.models.ChangeProfileDataEvent
+import care.intouch.app.feature.authorization.domain.api.UserStorage
+import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataEvent
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileInformationData
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataState
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileState
@@ -16,44 +17,27 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
+    private val userStorage: UserStorage
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(ProfileState(loadProfileData(), ViewsComponentsState()))
     val state = _state.asStateFlow()
 
-    fun onEvent(event: ChangeProfileDataEvent) {
+    fun onEvent(event: ProfileDataEvent) {
         when (event) {
-            is ChangeProfileDataEvent.OnChangeName -> {
+            is ProfileDataEvent.OnName -> {
                 updateName(event)
             }
 
-            is ChangeProfileDataEvent.OnChangeLastName -> {
+            is ProfileDataEvent.OnLastName -> {
                 updateLastName(event)
             }
 
-            is ChangeProfileDataEvent.OnChangeEmail -> {
+            is ProfileDataEvent.OnEmail -> {
                 updateEmail(event)
             }
 
-            is ChangeProfileDataEvent.OnEditEmailButtonClick -> {
-                changeTextFieldsAndButtonsEnabled(
-                    name = event.name,
-                    lastName = event.lastName,
-                    email = event.email,
-                    saveChangesButton = event.saveChangesButton,
-                    infIsUpdate = event.infIsUpdate,
-                )
-            }
-            is ChangeProfileDataEvent.OnEditLastNameButtonClick -> {
-                changeTextFieldsAndButtonsEnabled(
-                    name = event.name,
-                    lastName = event.lastName,
-                    email = event.email,
-                    saveChangesButton = event.saveChangesButton,
-                    infIsUpdate = event.infIsUpdate,
-                )
-            }
-            is ChangeProfileDataEvent.OnEditNameButtonClick -> {
+            is ProfileDataEvent.OnEditEmailButtonClick -> {
                 changeTextFieldsAndButtonsEnabled(
                     name = event.name,
                     lastName = event.lastName,
@@ -63,7 +47,27 @@ class ProfileViewModel @Inject constructor(
                 )
             }
 
-            is ChangeProfileDataEvent.OnSaveChangesButtonClick -> {
+            is ProfileDataEvent.OnEditLastNameButtonClick -> {
+                changeTextFieldsAndButtonsEnabled(
+                    name = event.name,
+                    lastName = event.lastName,
+                    email = event.email,
+                    saveChangesButton = event.saveChangesButton,
+                    infIsUpdate = event.infIsUpdate,
+                )
+            }
+
+            is ProfileDataEvent.OnEditNameButtonClick -> {
+                changeTextFieldsAndButtonsEnabled(
+                    name = event.name,
+                    lastName = event.lastName,
+                    email = event.email,
+                    saveChangesButton = event.saveChangesButton,
+                    infIsUpdate = event.infIsUpdate,
+                )
+            }
+
+            is ProfileDataEvent.OnSaveChangesButtonClick -> {
                 sendDataInDomain()
                 changeTextFieldsAndButtonsEnabled(
                     name = event.name,
@@ -73,10 +77,14 @@ class ProfileViewModel @Inject constructor(
                     infIsUpdate = event.infIsUpdate,
                 )
             }
+
+            is ProfileDataEvent.OnSingOutButtonClick -> {
+                singOut()
+            }
         }
     }
 
-    private fun updateName(event: ChangeProfileDataEvent.OnChangeName) {
+    private fun updateName(event: ProfileDataEvent.OnName) {
         if (event.name.length <= MAX_NAME_LENGTH) {
             val isTextValid = isTextValid(event.name)
             val isNameValid = isTextValid && (event.name.length > 2)
@@ -103,7 +111,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun updateLastName(event: ChangeProfileDataEvent.OnChangeLastName) {
+    private fun updateLastName(event: ProfileDataEvent.OnLastName) {
         if (event.lastName.length <= MAX_NAME_LENGTH) {
             val isTextValid = isTextValid(event.lastName)
             val isLastNameValid = isTextValid && (event.lastName.length > 2)
@@ -133,7 +141,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun updateEmail(event: ChangeProfileDataEvent.OnChangeEmail) {
+    private fun updateEmail(event: ProfileDataEvent.OnEmail) {
         if (event.email.length <= MAX_EMAIL_LENGTH) {
             val isEmailValid = isEmailValid(event.email)
             var errorMessage: StringVO = StringVO.Plain("")
@@ -157,6 +165,11 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun sendDataInDomain() {
+
+    }
+
+    private fun singOut() {
+        userStorage.clear()
 
     }
 

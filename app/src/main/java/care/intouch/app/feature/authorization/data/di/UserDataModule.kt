@@ -3,7 +3,9 @@ package care.intouch.app.feature.authorization.data.di
 import care.intouch.app.feature.authorization.data.api.UserRemoteDataSource
 import care.intouch.app.feature.authorization.data.impl.UserRemoteDataSourceImpl
 import care.intouch.app.feature.authorization.data.impl.UserRepositoryImpl
+import care.intouch.app.feature.authorization.data.impl.UserStorageImpl
 import care.intouch.app.feature.authorization.domain.api.UserRepository
+import care.intouch.app.feature.authorization.domain.api.UserStorage
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,6 +20,12 @@ interface UserDataModule {
     fun bindUserRemoteDataSource(
         impl: UserRemoteDataSourceImpl
     ): UserRemoteDataSource
+
+    @Singleton
+    @Binds
+    fun bindUserLocalDataSource(
+        impl: UserStorageImpl
+    ): UserStorage
 
     @Singleton
     @Binds
