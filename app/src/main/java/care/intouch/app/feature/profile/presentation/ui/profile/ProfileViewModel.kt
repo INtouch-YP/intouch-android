@@ -206,15 +206,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun isEmailValid(text: String): Boolean {
-        val regex = Regex(
-            "[a-zA-Z0-9\\.\\_\\-]{1,256}" +
-                "\\@" +
-                "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,64}" +
-                "(" +
-                "\\." +
-                "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,25}" +
-                ")+"
-        )
+        val regex = Regex(REGEX)
         return regex.matches(text)
     }
 
@@ -225,5 +217,12 @@ class ProfileViewModel @Inject constructor(
 
     private companion object {
         private const val MAX_NAME_LENGTH = 20
+        private const val REGEX = "[a-zA-Z0-9\\.\\_\\-]{1,256}" +
+                "\\@" +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,64}" +
+                "(" +
+                "\\." +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,25}" +
+                ")+"
     }
 }
