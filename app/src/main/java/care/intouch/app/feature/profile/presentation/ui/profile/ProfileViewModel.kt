@@ -143,13 +143,8 @@ class ProfileViewModel @Inject constructor(
             .replace("--", "-")
     }
 
-    private fun replaceCharsInEmail(text: String): String {
-        return text.replace("+","")
-            .replace("%","")
-    }
-
     private fun updateEmail(event: ChangeProfileDataEvent.OnChangeEmail) {
-        val email =  replaceCharsInEmail(event.email)
+        val email =  event.email
         val isEmailValid = isEmailValid(email)
         var errorMessage: StringVO = StringVO.Plain("")
         if (!isEmailValid) {
@@ -211,7 +206,16 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun isEmailValid(text: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches()
+        val regex = Regex(
+            "[a-zA-Z0-9\\.\\_\\-]{1,256}" +
+                "\\@" +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,64}" +
+                "(" +
+                "\\." +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,25}" +
+                ")+"
+        )
+        return regex.matches(text)
     }
 
     private fun isTextValid(text: String): Boolean {
