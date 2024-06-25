@@ -143,27 +143,32 @@ class ProfileViewModel @Inject constructor(
             .replace("--", "-")
     }
 
+    private fun replaceCharsInEmail(text: String): String {
+        return text.replace("+","")
+            .replace("%","")
+    }
+
     private fun updateEmail(event: ChangeProfileDataEvent.OnChangeEmail) {
-        if (event.email.length <= MAX_EMAIL_LENGTH) {
-            val isEmailValid = isEmailValid(event.email)
-            var errorMessage: StringVO = StringVO.Plain("")
-            if (!isEmailValid) {
-                errorMessage = event.errorEmailNotValid
-            }
-            _state.update {
-                ProfileState(
-                    profileDataState = ProfileDataState(
-                        dataIsValid = isEmailValid,
-                        name = _state.value.profileDataState.name,
-                        lastName = _state.value.profileDataState.lastName,
-                        email = ProfileInformationData(StringVO.Plain(event.email), isEmailValid),
-                        errorMessage = errorMessage,
-                        successMessage = _state.value.profileDataState.successMessage
-                    ),
-                    viewsComponentsState = _state.value.viewsComponentsState
-                )
-            }
+        val email =  replaceCharsInEmail(event.email)
+        val isEmailValid = isEmailValid(email)
+        var errorMessage: StringVO = StringVO.Plain("")
+        if (!isEmailValid) {
+            errorMessage = event.errorEmailNotValid
         }
+        _state.update {
+            ProfileState(
+                profileDataState = ProfileDataState(
+                    dataIsValid = isEmailValid,
+                    name = _state.value.profileDataState.name,
+                    lastName = _state.value.profileDataState.lastName,
+                    email = ProfileInformationData(StringVO.Plain(email), isEmailValid),
+                    errorMessage = errorMessage,
+                    successMessage = _state.value.profileDataState.successMessage
+                ),
+                viewsComponentsState = _state.value.viewsComponentsState
+            )
+        }
+
     }
 
     private fun sendDataInDomain() {
@@ -216,6 +221,5 @@ class ProfileViewModel @Inject constructor(
 
     private companion object {
         private const val MAX_NAME_LENGTH = 20
-        private const val MAX_EMAIL_LENGTH = 30
     }
 }
