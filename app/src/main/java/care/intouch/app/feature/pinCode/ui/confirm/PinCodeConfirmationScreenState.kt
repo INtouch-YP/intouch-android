@@ -6,7 +6,9 @@ import androidx.compose.runtime.Immutable
 sealed interface PinCodeConfirmationScreenState {
 
     @Immutable
-    data object Default : PinCodeConfirmationScreenState
+    data object Default : PinCodeConfirmationScreenState{
+        var isFullPinCode = false
+    }
 
     @Immutable
     data object Confirmed : PinCodeConfirmationScreenState

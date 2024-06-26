@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import care.intouch.app.feature.common.Resource
 import care.intouch.app.feature.pinCode.data.PinCodeRepository
+import care.intouch.app.feature.pinCode.ui.IsFullPinCode.IS_FULL_PIN_CODE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,14 +22,16 @@ class PinCodeConfirmationViewModel @Inject constructor(
 
     private val pinCodeInst: String = savedStateHandle["pinCodeInst"] ?: ""
 
+
     init {
         onEvent(PinCodeConfirmationEvent.Init(pinCodeInst))
     }
 
     private val _state = MutableStateFlow(PinCodeConfirmationScreenState.Initial)
-
     val state: StateFlow<PinCodeConfirmationScreenState> = _state.asStateFlow()
+
     private var tempPinCode: String? = null
+    private var enteringPinCode: String = ""
 
     fun onEvent(event: PinCodeConfirmationEvent) {
         when (event) {
@@ -48,6 +51,7 @@ class PinCodeConfirmationViewModel @Inject constructor(
                         }
                     }
                 } else {
+                    enteringPinCode = ""
                     _state.update { PinCodeConfirmationScreenState.NotConfirmed }
                 }
             }
@@ -55,6 +59,17 @@ class PinCodeConfirmationViewModel @Inject constructor(
             PinCodeConfirmationEvent.Skip -> {
                 viewModelScope.launch {
                     repository.skipPinCode()
+                }
+            }
+
+            is PinCodeConfirmationEvent.Entering -> {
+                enteringPinCode = event.pinCode
+                if (enteringPinCode.length == IS_FULL_PIN_CODE){
+                    _state.update {
+                        PinCodeConfirmationScreenState.Default.apply {
+                            isFullPinCode = true
+                        }
+                    }
                 }
             }
         }

@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import care.intouch.app.feature.pinCode.ui.IsFullPinCode.IS_FULL_PIN_CODE
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import care.intouch.uikit.R
 import care.intouch.uikit.common.ImageVO
 import care.intouch.uikit.common.StringVO
@@ -43,10 +43,22 @@ fun PinCodeInstallationScreen(
     modifier: Modifier = Modifier,
     viewModel: PinCodeInstallationViewModel = hiltViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     var pinCode by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
+    var isFullPinCode by rememberSaveable { mutableStateOf(false) }
+
+    when (state) {
+        is PinCodeInstallationScreenState.Default -> {
+            isFullPinCode = false
+        }
+
+        is PinCodeInstallationScreenState.FullPinCode -> {
+            isFullPinCode = true
+        }
+    }
 
     Column(
         modifier = modifier
@@ -96,20 +108,23 @@ fun PinCodeInstallationScreen(
             Spacer(modifier = Modifier.height(12.dp))
             PinCodeInputField(
                 value = pinCode,
-                onValueChange = { pinCode = it })
+                onValueChange = {
+                    pinCode = it
+                    viewModel.onEvent(PinCodeInstallationEvent.Entering(it))
+                })
 
             Spacer(modifier = Modifier.height(28.dp))
             IntouchButton(
                 onClick = { onSaveClick(pinCode) },
                 modifier = Modifier,
                 text = StringVO.Resource(care.intouch.app.R.string.save_button).value(),
-                isEnabled = pinCode.length == IS_FULL_PIN_CODE
+                isEnabled = isFullPinCode
             )
 
             Spacer(modifier = Modifier.height(2.dp))
             PrimaryButtonWhite(
                 onClick = {
-                    viewModel.skip()
+                    viewModel.onEvent(PinCodeInstallationEvent.Skip)
                     onSkipClick()
                 },
                 modifier = Modifier,
@@ -123,7 +138,3 @@ fun PinCodeInstallationScreen(
         keyboardController?.show()
     }
 }
-
-//object PinCodeInstallationScreen {
-//    const val IS_FULL_PIN_CODE = 4
-//}

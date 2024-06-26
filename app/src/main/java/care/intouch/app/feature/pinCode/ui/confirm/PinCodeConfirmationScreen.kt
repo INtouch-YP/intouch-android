@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import care.intouch.app.feature.pinCode.ui.IsFullPinCode.IS_FULL_PIN_CODE
 import care.intouch.uikit.R
 import care.intouch.uikit.common.ImageVO
 import care.intouch.uikit.common.StringVO
@@ -52,6 +51,7 @@ fun PinCodeConfirmationScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     var pinCode by rememberSaveable { mutableStateOf("") }
+    var isFullPinCode by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
 
@@ -103,20 +103,24 @@ fun PinCodeConfirmationScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             Column {
-                PinCodeInputField(value = pinCode, onValueChange = { pinCode = it })
+                PinCodeInputField(value = pinCode, onValueChange = {
+                    pinCode = it
+                    viewModel.onEvent(PinCodeConfirmationEvent.Entering(it))
+                })
 
                 when (state) {
 
-                    PinCodeConfirmationScreenState.Confirmed -> {
+                    is PinCodeConfirmationScreenState.Confirmed -> {
                         onSaveClick()
                         Spacer(modifier = Modifier.height(28.dp))
                     }
 
-                    PinCodeConfirmationScreenState.Default -> {
+                    is PinCodeConfirmationScreenState.Default -> {
+                        isFullPinCode = (state as PinCodeConfirmationScreenState.Default).isFullPinCode
                         Spacer(modifier = Modifier.height(28.dp))
                     }
 
-                    PinCodeConfirmationScreenState.NotConfirmed -> {
+                    is PinCodeConfirmationScreenState.NotConfirmed -> {
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
@@ -137,10 +141,11 @@ fun PinCodeConfirmationScreen(
                 onClick = {
                     viewModel.onEvent(PinCodeConfirmationEvent.Statement(pinCode))
                     pinCode = ""
+                    isFullPinCode = false
                 },
                 modifier = Modifier,
                 text = StringVO.Resource(care.intouch.app.R.string.save_button).value(),
-                isEnabled = pinCode.length == IS_FULL_PIN_CODE
+                isEnabled = isFullPinCode
             )
 
             Spacer(modifier = Modifier.height(2.dp))
