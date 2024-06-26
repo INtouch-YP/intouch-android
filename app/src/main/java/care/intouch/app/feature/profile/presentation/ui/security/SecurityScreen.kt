@@ -24,17 +24,28 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import care.intouch.app.R
 import care.intouch.uikit.theme.InTouchTheme
 
 @Composable
+fun SecurityScreenInit(
+    onPopBackStack: () -> Unit,
+    onDeleteProfileForeverClick: () -> Unit,
+) {
+    SecurityScreen(
+        onPopBackStack = onPopBackStack,
+        onDeleteProfileForeverClick = onDeleteProfileForeverClick
+    )
+}
+
+@Composable
 fun SecurityScreen(
-    navController: NavController,
+    onPopBackStack: () -> Unit,
     onDeleteProfileForeverClick: () -> Unit,
     viewModel: SecurityViewModel = hiltViewModel()
 ) {
@@ -58,7 +69,7 @@ fun SecurityScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(165.dp),
+                            .height(164.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Image(
@@ -76,7 +87,7 @@ fun SecurityScreen(
                         ) {
                             Image(
                                 modifier = Modifier.clickable {
-                                    navController.popBackStack()
+                                    onPopBackStack.invoke()
                                 },
                                 painter = painterResource(id = care.intouch.uikit.R.drawable.icon_arrow_left),
                                 contentDescription = null
@@ -96,6 +107,8 @@ fun SecurityScreen(
                     SecuritySetPasswordScreen(
                         errorPassword = state.value.errorCurrentPassword,
                         isSuccessUpdate = state.value.isSuccessUpdate,
+                        isPasswordValid = state.value.passwordValidType,
+                        isConfirmPasswordValid = state.value.confirmPasswordValidType,
                         onEvent = viewModel::onEvent
                     )
                 }
@@ -110,7 +123,9 @@ fun SecurityScreen(
                     }
                 ) {
                     DeleteProfilePopUp(
-                        modifier = Modifier.width(334.dp).height(501.dp),
+                        modifier = Modifier
+                            .width(334.dp)
+                            .height(501.dp),
                         onEvent =  viewModel::onEvent
                     )
                 }
@@ -122,4 +137,15 @@ fun SecurityScreen(
         }
     }
 
+}
+
+@Composable
+@Preview(showBackground = true)
+fun SecurityScreenPreview() {
+    InTouchTheme {
+        SecurityScreenInit(
+            onPopBackStack = {},
+            onDeleteProfileForeverClick = {},
+        )
+    }
 }

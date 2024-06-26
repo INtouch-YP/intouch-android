@@ -2,7 +2,7 @@ package care.intouch.app.feature.profile.presentation.ui.security
 
 import care.intouch.app.R
 
-enum class PasswordInvalidType(val stringId: Int) {
+enum class PasswordValidType(val stringId: Int) {
     CORRECT(-1),
     INCORRECT_CURRENT_PASSWORD(R.string.incorrect_error),
     SMALL_PASSWORD(R.string.password_lengths_small_error),

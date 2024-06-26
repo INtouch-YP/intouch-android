@@ -64,7 +64,9 @@ fun AppNavHost(
 
         composable(route = PasswordChange.route) {
             SecurityScreen(
-                navController = navController,
+                onPopBackStack = {
+                    navController.popBackStack()
+                },
                 onDeleteProfileForeverClick = {
                     navController.navigate(route = Authentication.route)
                 }

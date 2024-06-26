@@ -25,13 +25,15 @@ import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.buttons.DeleteButton
 import care.intouch.uikit.ui.buttons.IntouchButton
 import care.intouch.uikit.ui.textFields.PasswordTextField
-import java.util.regex.Pattern
 
 @Composable
 fun SecuritySetPasswordScreen(
     modifier: Modifier = Modifier,
-    errorPassword: PasswordInvalidType,
+    errorPassword: PasswordValidType,
     isSuccessUpdate: Boolean? = null,
+    isPasswordValid: PasswordValidType = PasswordValidType.CORRECT,
+    isConfirmPasswordValid: PasswordValidType = PasswordValidType.CORRECT,
+    isEnable: Boolean = false,
     onEvent: (SecurityEvent) -> Unit
 ) {
 
@@ -42,9 +44,6 @@ fun SecuritySetPasswordScreen(
     var isVisibleCurrentPassword by rememberSaveable { mutableStateOf(false) }
     var isVisiblePassword by rememberSaveable { mutableStateOf(false) }
     var isVisiblePasswordConfirm by rememberSaveable { mutableStateOf(false) }
-
-    var isPasswordValid by rememberSaveable { mutableStateOf(PasswordInvalidType.CORRECT) }
-    var isPasswordConfirmValid by rememberSaveable { mutableStateOf(PasswordInvalidType.CORRECT) }
 
     Column(
         modifier = modifier
@@ -61,15 +60,20 @@ fun SecuritySetPasswordScreen(
         Spacer(modifier = Modifier.height(16.dp))
         PasswordTextField(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .onFocusChanged {
+                    if (!it.isFocused && currentPassword.isNotBlank()) {
+                        onEvent(SecurityEvent.OnSetCurrentPassword(currentPassword))
+                    }
+                },
             value = currentPassword,
             onValueChange = {
                 currentPassword = it
             },
             title = StringVO.Resource(R.string.current_password_hint),
-            error = (errorPassword != PasswordInvalidType.CORRECT),
+            error = (errorPassword != PasswordValidType.CORRECT),
             caption = StringVO.Plain(
-                if (errorPassword != PasswordInvalidType.CORRECT) {
+                if (errorPassword != PasswordValidType.CORRECT) {
                     stringResource(id = errorPassword.getString())
                 } else ""
             ),
@@ -79,15 +83,18 @@ fun SecuritySetPasswordScreen(
             onPasswordVisibleIconClick = {
                 isVisibleCurrentPassword = !isVisibleCurrentPassword
             },
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    onEvent(SecurityEvent.OnSetCurrentPassword(currentPassword))
+                }
+            )
         )
         PasswordTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged {
                     if (!it.isFocused && password.isNotBlank()) {
-                        isPasswordValid = isValidPasswordFormat(password)
-                    } else if (password.isBlank()) {
-                        isPasswordValid = PasswordInvalidType.CORRECT
+                        onEvent(SecurityEvent.OnSetPassword(password))
                     }
                 },
             value = password,
@@ -95,9 +102,9 @@ fun SecuritySetPasswordScreen(
                 password = it
             },
             title = StringVO.Resource(R.string.new_password_hint),
-            error = (isPasswordValid != PasswordInvalidType.CORRECT),
+            error = (isPasswordValid != PasswordValidType.CORRECT),
             caption = StringVO.Plain(
-                if (isPasswordValid != PasswordInvalidType.CORRECT) {
+                if (isPasswordValid != PasswordValidType.CORRECT) {
                     stringResource(id = isPasswordValid.getString())
                 } else ""
             ),
@@ -109,11 +116,7 @@ fun SecuritySetPasswordScreen(
             },
             keyboardActions = KeyboardActions(
                 onDone = {
-                    isPasswordValid = if (password.isNotBlank()) {
-                        isValidPasswordFormat(password)
-                    } else {
-                        PasswordInvalidType.CORRECT
-                    }
+                    onEvent(SecurityEvent.OnSetPassword(password))
                 }
             )
         )
@@ -122,11 +125,7 @@ fun SecuritySetPasswordScreen(
                 .fillMaxWidth()
                 .onFocusChanged {
                     if (!it.isFocused) {
-                        isPasswordConfirmValid = when {
-                            password.isBlank() || confirmPassword.isBlank() -> PasswordInvalidType.CORRECT
-                            password == confirmPassword -> PasswordInvalidType.CORRECT
-                            else -> PasswordInvalidType.NOT_MATCH
-                        }
+                        onEvent(SecurityEvent.OnSetConfirmPassword(confirmPassword))
                     }
                 },
             value = confirmPassword,
@@ -134,10 +133,10 @@ fun SecuritySetPasswordScreen(
                 confirmPassword = it
             },
             title = StringVO.Resource(R.string.confirm_password_hint),
-            error = (isPasswordConfirmValid != PasswordInvalidType.CORRECT),
+            error = (isConfirmPasswordValid != PasswordValidType.CORRECT),
             caption = StringVO.Plain(
-                if (isPasswordConfirmValid != PasswordInvalidType.CORRECT) {
-                    stringResource(id = isPasswordConfirmValid.getString())
+                if (isConfirmPasswordValid != PasswordValidType.CORRECT) {
+                    stringResource(id = isConfirmPasswordValid.getString())
                 } else ""
             ),
             captionLinesAmount = 2,
@@ -148,11 +147,7 @@ fun SecuritySetPasswordScreen(
             },
             keyboardActions = KeyboardActions(
                 onDone = {
-                    isPasswordConfirmValid = when {
-                        password.isBlank() || confirmPassword.isBlank() -> PasswordInvalidType.CORRECT
-                        password == confirmPassword -> PasswordInvalidType.CORRECT
-                        else -> PasswordInvalidType.NOT_MATCH
-                    }
+                    onEvent(SecurityEvent.OnSetConfirmPassword(confirmPassword))
                 }
             )
         )
@@ -172,9 +167,7 @@ fun SecuritySetPasswordScreen(
                 .width(176.dp)
                 .align(Alignment.CenterHorizontally),
             text = stringResource(id = R.string.save_button),
-            isEnabled = isEnabled(
-                isPasswordValid, isPasswordConfirmValid, currentPassword
-            ),
+            isEnabled = isEnable,
             enableBackgroundColor = InTouchTheme.colors.mainGreen,
             disableBackgroundColor = InTouchTheme.colors.unableElementLight,
             enableTextColor = InTouchTheme.colors.input,
@@ -205,40 +198,6 @@ fun SecuritySetPasswordScreen(
     }
 }
 
-fun isValidPasswordFormat(password: String): PasswordInvalidType {
-    val smallPattern = "^.{8,}$"
-    val bigPattern = "^.{8,128}$"
-    val especialSymbol = "^[a-zA-Z\\d~!?@#\$%^&*_+\\-{}()\\[\\]<>\\/\\\\|\"'.,:;]*\$"
-
-    val missingPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}\$"
-    val spacePattern = "^\\S*\$"
-    return when {
-        !Pattern.compile(spacePattern).matcher(password).matches() -> {
-            PasswordInvalidType.EXIST_SPACE
-        }
-
-        !Pattern.compile(especialSymbol).matcher(password).matches() -> {
-            PasswordInvalidType.INVALID_SYMBOL
-        }
-
-        !Pattern.compile(smallPattern).matcher(password).matches() -> {
-            PasswordInvalidType.SMALL_PASSWORD
-        }
-
-        !Pattern.compile(bigPattern).matcher(password).matches() -> {
-            PasswordInvalidType.BIG_PASSWORD
-        }
-
-        !Pattern.compile(missingPattern).matcher(password).matches() -> {
-            PasswordInvalidType.MISSING_SYMBOL
-        }
-
-        else -> {
-            PasswordInvalidType.CORRECT
-        }
-    }
-}
-
 @Composable
 private fun getTextByUpdate(isSuccessUpdate: Boolean?) = when (isSuccessUpdate) {
     true -> {
@@ -252,14 +211,4 @@ private fun getTextByUpdate(isSuccessUpdate: Boolean?) = when (isSuccessUpdate) 
     else -> {
         ""
     }
-}
-
-private fun isEnabled(
-    passwordValid: PasswordInvalidType,
-    passwordConfirmValid: PasswordInvalidType,
-    currentPassword: String,
-): Boolean {
-    return passwordValid == PasswordInvalidType.CORRECT
-            && passwordConfirmValid == PasswordInvalidType.CORRECT
-            && currentPassword.isNotBlank()
 }
