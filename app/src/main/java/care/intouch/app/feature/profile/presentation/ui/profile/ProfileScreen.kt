@@ -211,7 +211,7 @@ private fun ProfileScreen(
             )
         }
         PrimaryButtonWhite(
-            text = "Sing out",
+            text = StringVO.Resource(resId = care.intouch.app.R.string.sign_out_button),
             onClick = {},
             modifier = Modifier
                 .align(BottomCenter)

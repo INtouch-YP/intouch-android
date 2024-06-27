@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.buttons.PrimaryButtonGreen
 import care.intouch.uikit.ui.buttons.PrimaryButtonStroke
@@ -47,7 +48,7 @@ fun ButtonSampleScreen() {
             PrimaryButtonWhite(
                 onClick = {},
                 modifier = Modifier.padding(top = 5.dp),
-                text = "Call to action"
+                text = StringVO.Plain("Call to action"),
             )
             SecondaryButtonDark(
                 onClick = { },

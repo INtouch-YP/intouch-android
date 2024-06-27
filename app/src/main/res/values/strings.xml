@@ -48,7 +48,7 @@
     <string name="save_in_progress_button">Save in progress</string>
     <string name="discard_close_button">Discard &amp; Close</string>
     <string name="make_note_button">Make a note</string>
-    <string name="sing_out_button">Sign out</string>
+    <string name="sign_out_button">Sign out</string>
     <string name="save_changes_button">Save changes</string>
     <string name="delete_profile_button">Delete Profile Forever</string>
     <string name="add_emotions_button">Add emotions</string>

@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.NoRippleInteractionSource
 
@@ -63,14 +64,14 @@ fun IntouchButton(
 fun PrimaryButtonWhite(
     onClick: () -> Unit,
     modifier: Modifier,
-    text: String,
+    text: StringVO,
     textStyle: TextStyle = InTouchTheme.typography.titleMedium,
     isEnabled: Boolean = true,
 ) {
     IntouchButton(
         onClick = onClick,
         modifier = modifier,
-        text = text,
+        text = text.value(),
         textStyle = textStyle,
         isEnabled = isEnabled,
         enableBackgroundColor = InTouchTheme.colors.input,
@@ -136,7 +137,7 @@ fun PrimaryButtonWhitePreview() {
         PrimaryButtonWhite(
             onClick = {},
             modifier = Modifier,
-            text = "Set Password",
+            text = StringVO.Plain("Set Password"),
             isEnabled = true
         )
     }
