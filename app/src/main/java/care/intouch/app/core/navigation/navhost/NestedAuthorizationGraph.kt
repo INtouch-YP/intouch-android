@@ -3,11 +3,13 @@ package care.intouch.app.core.navigation.navhost
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import care.intouch.app.core.navigation.Authentication
 import care.intouch.app.core.navigation.AuthorizationRouteBranch
 import care.intouch.app.core.navigation.MainNav
 import care.intouch.app.core.navigation.AppNavScreen
+import care.intouch.app.core.navigation.Authorization
 import care.intouch.app.core.navigation.Home
 import care.intouch.app.core.navigation.PasswordRecovery
 import care.intouch.app.core.navigation.PinCodeConfirmation
@@ -15,6 +17,7 @@ import care.intouch.app.core.navigation.PinCodeEnter
 import care.intouch.app.core.navigation.PinCodeInstallation
 import care.intouch.app.core.navigation.Registration
 import care.intouch.app.core.navigation.SendingNotification
+import care.intouch.app.feature.authorization.presentation.AuthorizationScreen
 import care.intouch.app.feature.authorization.presentation.ui.AuthenticationScreen
 import care.intouch.app.feature.authorization.presentation.ui.EnterPinCodeScreen
 import care.intouch.app.feature.authorization.presentation.ui.PasswordRecoveryScreen
@@ -119,6 +122,24 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
         composable(route = MainNav.route) {
             AppNavScreen(
                 startDestination = Home.route
+            )
+        }
+
+        composable(
+            route = Authorization.route,
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "https://app.intouch.care/activate-client/{clientId}/{token}/"
+            })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("clientId")
+            val token = backStackEntry.arguments?.getString("token")
+            AuthorizationScreen(
+                navController = navController,
+                userId = userId,
+                token = token,
+                onGoPinCodeInstallationScreen = {
+                    navController.navigate(route = PinCodeInstallation.route)
+                }
             )
         }
     }
