@@ -19,7 +19,7 @@
             android:screenOrientation="portrait"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.InTouch">
+            android:theme="@style/IntouchSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
