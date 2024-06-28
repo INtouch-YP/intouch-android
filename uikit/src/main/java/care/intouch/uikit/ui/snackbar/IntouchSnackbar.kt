@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.buttons.TextButton
 
@@ -46,7 +47,7 @@ fun IntouchSnackbar(
         data.visuals.actionLabel?.let { actionLabel ->
             TextButton(
                 modifier = Modifier.padding(end = 4.dp),
-                text = actionLabel,
+                text = StringVO.Plain(actionLabel),
                 onClick = {
                     data.performAction()
                 }

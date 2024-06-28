@@ -117,7 +117,7 @@ fun PinCodeInstallationScreen(
             IntouchButton(
                 onClick = { onSaveClick(pinCode) },
                 modifier = Modifier,
-                text = StringVO.Resource(care.intouch.app.R.string.save_button).value(),
+                text = StringVO.Resource(care.intouch.app.R.string.save_button),
                 isEnabled = isFullPinCode
             )
 
@@ -128,7 +128,7 @@ fun PinCodeInstallationScreen(
                     onSkipClick()
                 },
                 modifier = Modifier,
-                text = StringVO.Resource(care.intouch.app.R.string.skip_button).value()
+                text = StringVO.Resource(care.intouch.app.R.string.skip_button)
             )
         }
     }

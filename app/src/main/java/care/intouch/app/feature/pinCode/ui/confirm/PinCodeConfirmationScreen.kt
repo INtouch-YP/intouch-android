@@ -144,7 +144,7 @@ fun PinCodeConfirmationScreen(
                     isFullPinCode = false
                 },
                 modifier = Modifier,
-                text = StringVO.Resource(care.intouch.app.R.string.save_button).value(),
+                text = StringVO.Resource(care.intouch.app.R.string.save_button),
                 isEnabled = isFullPinCode
             )
 
@@ -155,7 +155,7 @@ fun PinCodeConfirmationScreen(
                     onSkipClick()
                 },
                 modifier = Modifier,
-                text = StringVO.Resource(care.intouch.app.R.string.skip_button).value()
+                text = StringVO.Resource(care.intouch.app.R.string.skip_button)
             )
         }
     }

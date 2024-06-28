@@ -152,7 +152,7 @@ fun SetPasswordScreen(
         Spacer(modifier = Modifier.height(64.dp))
         IntouchButton(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.set_password_button),
+            text = StringVO.Resource(R.string.set_password_button),
             isEnabled = isEnableButton,
             enableBackgroundColor = InTouchTheme.colors.mainGreen,
             disableBackgroundColor = InTouchTheme.colors.unableElementLight,
