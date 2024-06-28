@@ -11,6 +11,7 @@ class UserStorageImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     private val json: Json
 ) : UserStorage {
+
     override fun save(user: User): Boolean {
         val data = json.encodeToString(user)
         return sharedPreferences.edit().putString(KEY, data).commit()

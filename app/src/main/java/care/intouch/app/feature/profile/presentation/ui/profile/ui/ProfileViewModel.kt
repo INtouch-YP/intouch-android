@@ -3,6 +3,7 @@ package care.intouch.app.feature.profile.presentation.ui.profile.ui
 import androidx.lifecycle.ViewModel
 import care.intouch.app.R
 import care.intouch.app.feature.authorization.domain.api.UserStorage
+import care.intouch.app.feature.authorization.domain.models.User
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataEvent
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileInformationData
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataState
@@ -22,6 +23,7 @@ class ProfileViewModel @Inject constructor(
 
     private var _state = MutableStateFlow(ProfileState(loadProfileData(), ViewsComponentsState()))
     val state = _state.asStateFlow()
+    private var userData: User = readUserDataFromSharedPreferences()
 
     fun onEvent(event: ProfileDataEvent) {
         when (event) {
@@ -68,7 +70,7 @@ class ProfileViewModel @Inject constructor(
             }
 
             is ProfileDataEvent.OnSaveChangesButtonClick -> {
-                sendDataInDomain()
+                saveUserDataInSharedPreferences()
                 changeTextFieldsAndButtonsEnabled(
                     name = event.name,
                     lastName = event.lastName,
@@ -164,8 +166,24 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun sendDataInDomain() {
+    private fun readUserDataFromSharedPreferences(): User {
+//        val dataFromSharedPreferences: User? = userStorage.read()
+//        if (dataFromSharedPreferences != null) {
+//            return dataFromSharedPreferences
+//        }
+//        return User(
+//            id = 0,
+//            firstName = "",
+//            lastName = "",
+//            email = "",
+//            acceptPolicy = true,
+//            newEmailChanging = true,
+//            newEmailTemp = ""
+//        )
+    }
 
+    private fun saveUserDataInSharedPreferences() {
+        userStorage.save(userData)
     }
 
     private fun singOut() {
