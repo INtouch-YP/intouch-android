@@ -86,7 +86,9 @@ fun NavBottomComplexElement(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
-                    onClick.invoke()
+                    if (!selected) {
+                        onClick.invoke()
+                    }
                 }
             ),
         horizontalAlignment = Alignment.CenterHorizontally,

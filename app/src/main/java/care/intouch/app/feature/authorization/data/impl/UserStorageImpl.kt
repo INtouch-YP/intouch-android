@@ -10,14 +10,14 @@ import javax.inject.Inject
 class UserStorageImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     private val json: Json
-): UserStorage {
+) : UserStorage {
     override fun save(user: User): Boolean {
         val data = json.encodeToString(user)
         return sharedPreferences.edit().putString(KEY, data).commit()
     }
 
-    override fun raed(): User? {
-        return sharedPreferences.getString(KEY, null)?.let {
+    override fun read(): User? {
+       return  sharedPreferences.getString(KEY, null)?.let {
             json.decodeFromString<User>(it)
         }
     }

@@ -36,7 +36,7 @@ sealed class NetworkException(
 
 
     companion object {
-        const val NO_INTERNET_CONNECTION = "No internet connection NetworkException"
+        const val NO_INTERNET_CONNECTION = "No internet connection"
         const val RESPONSE_BODY_IS_NULL = "Response body is null"
         const val NO_INTERNET_CONNECTION_CODE = -1
         const val UNDEFINED_MESSAGE = "Undefined"

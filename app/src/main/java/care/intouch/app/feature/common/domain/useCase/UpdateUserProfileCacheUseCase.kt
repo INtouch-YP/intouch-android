@@ -7,6 +7,7 @@ import care.intouch.app.feature.common.domain.errors.ErrorEntity
 import javax.inject.Inject
 
 interface UpdateUserProfileCacheUseCase {
+
     suspend operator fun invoke(): Resource<Boolean, ErrorEntity>
 
     class Base @Inject constructor(

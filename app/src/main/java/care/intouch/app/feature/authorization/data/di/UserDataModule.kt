@@ -1,6 +1,8 @@
 package care.intouch.app.feature.authorization.data.di
 
+import care.intouch.app.feature.authorization.domain.api.UserStorage
 import care.intouch.app.feature.authorization.data.api.UserRemoteDataSource
+import care.intouch.app.feature.authorization.data.impl.UserStorageImpl
 import care.intouch.app.feature.authorization.data.impl.UserRemoteDataSourceImpl
 import care.intouch.app.feature.authorization.data.impl.UserRepositoryImpl
 import care.intouch.app.feature.authorization.data.impl.UserStorageImpl

@@ -1,8 +1,9 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">InTouch</string>
     //UiKitSample
     <string name="uikit_sample_button">UiKitSample</string>
     <string name="main_screen_button">MainScreen</string>
+    <string name="registration_screen_button">RegistrationScreen</string>
 
     <string name="home_bottom_nav_bar">Home</string>
     <string name="my_progress_bottom_nav_bar">My progress</string>
@@ -19,6 +20,7 @@
     <string name="diary_title">Diary</string>
     <string name="profile_title">Profile</string>
     <string name="security_title">Security</string>
+    <string name="passwords_do_not_match" >Passwords don\'t match. Please try again</string>
 
     <string name="my_diary_sub_title">My diary</string>
     <string name="my_plan_sub_title">My plan</string>
@@ -73,7 +75,7 @@
 
     <string name="info_delete_task_question">Are you sure you want to delete this task?</string>
     <string name="info_delete_node_question">Are you sure you want to delete this note?</string>
-    <string name="info_about_setup_pin">Secure your data with a PIN code or set it up later in your Profile</string>
+    <string name="info_about_setup_pin">Secure your data with a PIN code or \n set it up later in your Profile</string>
     <string name="info_about_password_recovery">If your account exists, you\'ll receive an email with a link to reset your password. Please check your spam folder if you don\'t receive it within a few minutes.</string>
     <string name="info_about_delete_account">Are you certain you wish to delete your account?</string>
     <string name="info_about_change_password">You have successfully changed your password</string>
@@ -81,7 +83,9 @@
     <string name="warning_delete">All your entered data will be permanently removed.</string>
     <string name="warning_delete_account">This action will permanently erase all your data, and there\'s no way to recover it later.</string>
 
-    <string name="agreement_to_terms">I agree with the terms and conditions</string>
+    <string name="agreement_to_terms">I agree with</string>
+    <string name="terms_and_condition">the terms and conditions</string>
+    <string name="terms_and_condition_link">https://intouch.care/terms-conditions</string>
     <string name="forgot_password">Forgot password?</string>
 
     <string name="password_lengths_small_error">Your password must be at least 8 characters long.</string>
@@ -101,6 +105,7 @@
 
     <string name="email_hint">E-mail</string>
     <string name="password_hint">Password</string>
+    <string name="password_confirm_hint">Confirm Password</string>
     <string name="current_password_hint">Current Password</string>
     <string name="new_password_hint">New Password</string>
     <string name="confirm_password_hint">Confirm New Password</string>

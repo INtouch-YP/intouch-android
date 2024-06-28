@@ -54,4 +54,5 @@ data class InTouchColors(
     val errorRed: Color = errorRedColor,
     val errorMaroonColor: Color = Color(0xFFA61B34),
     val green: Color = greenColor,
+    val white: Color = Color.White
 )
