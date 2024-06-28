@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -107,9 +108,8 @@ Password text field with the title.
 fun PasswordTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    isPasswordVisible: Boolean,
     isPasswordVisibleIconVisible: Boolean,
-    onPasswordVisibleIconClick: () -> Unit,
+    onPasswordVisibleIconClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     hint: StringVO = StringVO.Plain(BLANC_STRING),
     caption: StringVO = StringVO.Plain(BLANC_STRING),
@@ -142,6 +142,7 @@ fun PasswordTextField(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = modifier.width(MinWidth)
@@ -227,6 +228,7 @@ fun PasswordTextField(
                         modifier = Modifier
                             .padding(start = 8.dp, end = 14.dp)
                             .clickable {
+                                isPasswordVisible = !isPasswordVisible
                                 onPasswordVisibleIconClick.invoke()
                             },
                         tint = passwordIconTint
@@ -252,15 +254,13 @@ fun PasswordTextField(
 fun PasswordInputPreview() {
     InTouchTheme {
         var text by remember { mutableStateOf("") }
-        var isPasswordVisible by remember { mutableStateOf(false) }
         PasswordTextField(
             value = text,
             onValueChange = {
                 text = it
             },
-            isPasswordVisible = isPasswordVisible,
             isPasswordVisibleIconVisible = true,
-            onPasswordVisibleIconClick = { isPasswordVisible = !isPasswordVisible },
+            onPasswordVisibleIconClick = {  },
             hint = StringVO.Plain("Enter password"),
             caption = StringVO.Plain("Password must contain letters, numbers, and no more than 3 consecutive identical characters"),
             error = false,

@@ -36,14 +36,9 @@ fun SecuritySetPasswordScreen(
     isEnable: Boolean = false,
     onEvent: (SecurityEvent) -> Unit
 ) {
-
     var currentPassword by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
-
-    var isVisibleCurrentPassword by rememberSaveable { mutableStateOf(false) }
-    var isVisiblePassword by rememberSaveable { mutableStateOf(false) }
-    var isVisiblePasswordConfirm by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -78,11 +73,7 @@ fun SecuritySetPasswordScreen(
                 } else ""
             ),
             captionLinesAmount = 2,
-            isPasswordVisible = isVisibleCurrentPassword,
             isPasswordVisibleIconVisible = true,
-            onPasswordVisibleIconClick = {
-                isVisibleCurrentPassword = !isVisibleCurrentPassword
-            },
             keyboardActions = KeyboardActions(
                 onDone = {
                     onEvent(SecurityEvent.OnSetCurrentPassword(currentPassword))
@@ -109,11 +100,7 @@ fun SecuritySetPasswordScreen(
                 } else ""
             ),
             captionLinesAmount = 2,
-            isPasswordVisible = isVisiblePassword,
             isPasswordVisibleIconVisible = true,
-            onPasswordVisibleIconClick = {
-                isVisiblePassword = !isVisiblePassword
-            },
             keyboardActions = KeyboardActions(
                 onDone = {
                     onEvent(SecurityEvent.OnSetPassword(password))
@@ -140,11 +127,7 @@ fun SecuritySetPasswordScreen(
                 } else ""
             ),
             captionLinesAmount = 2,
-            isPasswordVisible = isVisiblePasswordConfirm,
             isPasswordVisibleIconVisible = true,
-            onPasswordVisibleIconClick = {
-                isVisiblePasswordConfirm = !isVisiblePasswordConfirm
-            },
             keyboardActions = KeyboardActions(
                 onDone = {
                     onEvent(SecurityEvent.OnSetConfirmPassword(confirmPassword))
