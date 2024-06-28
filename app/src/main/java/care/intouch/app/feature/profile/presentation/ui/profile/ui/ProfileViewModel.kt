@@ -167,19 +167,19 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun readUserDataFromSharedPreferences(): User {
-//        val dataFromSharedPreferences: User? = userStorage.read()
-//        if (dataFromSharedPreferences != null) {
-//            return dataFromSharedPreferences
-//        }
-//        return User(
-//            id = 0,
-//            firstName = "",
-//            lastName = "",
-//            email = "",
-//            acceptPolicy = true,
-//            newEmailChanging = true,
-//            newEmailTemp = ""
-//        )
+        val dataFromSharedPreferences: User? = userStorage.read()
+        if (dataFromSharedPreferences != null) {
+            return dataFromSharedPreferences
+        }
+        return User(
+            id = 0,
+            firstName = "",
+            lastName = "",
+            email = "",
+            acceptPolicy = true,
+            newEmailChanging = true,
+            newEmailTemp = ""
+        )
     }
 
     private fun saveUserDataInSharedPreferences() {
