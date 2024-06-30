@@ -4,7 +4,7 @@ data class SecurityState(
     val uiState: SecurityUiState = SecurityUiState.SetPassword,
     val errorCurrentPassword: PasswordValidType = PasswordValidType.CORRECT,
     val isSuccessUpdate: Boolean? = null,
-    val isEnabled: Boolean = false,
+    val isEnable: Boolean = false,
     val currentPassword: String = "",
     val currentPasswordValidType: PasswordValidType = PasswordValidType.CORRECT,
     val password: String = "",

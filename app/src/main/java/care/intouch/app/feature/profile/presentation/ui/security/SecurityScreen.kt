@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -36,20 +37,24 @@ import care.intouch.uikit.theme.InTouchTheme
 fun SecurityScreenInit(
     onPopBackStack: () -> Unit,
     onDeleteProfileForeverClick: () -> Unit,
+    viewModel: SecurityViewModel = hiltViewModel()
 ) {
+    val state = viewModel.state.collectAsStateWithLifecycle()
     SecurityScreen(
         onPopBackStack = onPopBackStack,
-        onDeleteProfileForeverClick = onDeleteProfileForeverClick
+        onDeleteProfileForeverClick = onDeleteProfileForeverClick,
+        onEvent = { viewModel.onEvent(it) },
+        state = state
     )
 }
 
 @Composable
-fun SecurityScreen(
+private fun SecurityScreen(
     onPopBackStack: () -> Unit,
     onDeleteProfileForeverClick: () -> Unit,
-    viewModel: SecurityViewModel = hiltViewModel()
+    onEvent: (SecurityEvent) -> Unit,
+    state: State<SecurityState>
 ) {
-    val state = viewModel.state.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
 
     Scaffold { paddingValues ->
@@ -69,7 +74,7 @@ fun SecurityScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(164.dp),
+                            .height(120.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Image(
@@ -109,7 +114,8 @@ fun SecurityScreen(
                         isSuccessUpdate = state.value.isSuccessUpdate,
                         isPasswordValid = state.value.passwordValidType,
                         isConfirmPasswordValid = state.value.confirmPasswordValidType,
-                        onEvent = viewModel::onEvent
+                        isEnable = state.value.isEnable,
+                        onEvent = onEvent
                     )
                 }
             }
@@ -119,14 +125,14 @@ fun SecurityScreen(
                 Popup(
                     alignment = Alignment.Center,
                     onDismissRequest = {
-                        viewModel.onEvent(SecurityEvent.OnCancelDeleteProfile)
+                        onEvent(SecurityEvent.OnCancelDeleteProfile)
                     }
                 ) {
                     DeleteProfilePopUp(
                         modifier = Modifier
                             .width(334.dp)
                             .height(501.dp),
-                        onEvent =  viewModel::onEvent
+                        onEvent =  onEvent
                     )
                 }
             }

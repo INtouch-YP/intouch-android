@@ -240,8 +240,8 @@ fun PasswordTextField(
             text = caption.value(),
             style = captionTextStyle,
             color = if (error && enabled) borderStrokeErrorColor else captionTextColor,
-            minLines = captionLinesAmount,
-            maxLines = captionLinesAmount,
+            minLines = 1,
+            maxLines = if(caption.value().isNotBlank()) captionLinesAmount else 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .padding(top = captionTextPadding)

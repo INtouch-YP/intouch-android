@@ -37,13 +37,7 @@ class SecurityViewModel @Inject constructor(
             }
 
             is SecurityEvent.OnSetCurrentPassword -> {
-                viewModelScope.launch(context = Dispatchers.IO) {
-                    _state.update { securityState ->
-                        securityState.copy(
-                            currentPassword = event.password
-                        )
-                    }
-                }
+                setCurrentPassword(event.password)
             }
 
             is SecurityEvent.OnSetPassword -> {
@@ -57,14 +51,26 @@ class SecurityViewModel @Inject constructor(
     }
 
     private fun savePassword() {
-
-    }
-
-    private fun verifyCurrentPassword(password: String) {
         viewModelScope.launch(context = Dispatchers.IO) {
             _state.update { securityState ->
+                //todo request to backend
                 securityState.copy(
-                    errorCurrentPassword = PasswordValidType.CORRECT,
+                    errorCurrentPassword = PasswordValidType.INCORRECT_CURRENT_PASSWORD,
+                )
+            }
+        }
+    }
+
+    private fun setCurrentPassword(password: String) {
+        viewModelScope.launch {
+            _state.update { securityState ->
+                securityState.copy(
+                    currentPassword = password,
+                    isEnable = isEnabled(
+                        passwordValid = state.value.passwordValidType,
+                        confirmPasswordValid = state.value.confirmPasswordValidType,
+                        currentPassword = password
+                    )
                 )
             }
         }
@@ -73,6 +79,7 @@ class SecurityViewModel @Inject constructor(
     private fun deleteProfile() {
         viewModelScope.launch(context = Dispatchers.IO) {
             _state.update { securityState ->
+                //todo request to backend
                 securityState.copy(
                     uiState = SecurityUiState.ProfileDeleted
                 )
@@ -81,7 +88,7 @@ class SecurityViewModel @Inject constructor(
     }
 
     private fun callFormForDelete() {
-        viewModelScope.launch(context = Dispatchers.IO) {
+        viewModelScope.launch {
             _state.update { securityState ->
                 securityState.copy(
                     uiState = SecurityUiState.DeleteProfile
@@ -91,7 +98,7 @@ class SecurityViewModel @Inject constructor(
     }
 
     private fun cancelDeleteProfile() {
-        viewModelScope.launch(context = Dispatchers.IO) {
+        viewModelScope.launch {
             _state.update { securityState ->
                 securityState.copy(
                     uiState = SecurityUiState.SetPassword
@@ -101,32 +108,18 @@ class SecurityViewModel @Inject constructor(
     }
 
     private fun checkPassword(password: String) {
-        viewModelScope.launch(context = Dispatchers.IO) {
+        viewModelScope.launch {
+            val validType = if (password.isNotBlank()) {
+                checkPasswordFormat(password)
+            } else {
+                PasswordValidType.CORRECT
+            }
             _state.update { securityState ->
                 securityState.copy(
                     password = password,
-                    passwordValidType = if (password.isNotBlank()) {
-                        isValidPasswordFormat(password)
-                    } else {
-                        PasswordValidType.CORRECT
-                    }
-                )
-            }
-        }
-    }
-
-    private fun checkConfirmPassword(password: String) {
-        viewModelScope.launch(context = Dispatchers.IO) {
-            _state.update { securityState ->
-                securityState.copy(
-                    confirmPassword = password,
-                    confirmPasswordValidType = when {
-                        state.value.password.isBlank() || password.isBlank() -> PasswordValidType.CORRECT
-                        state.value.password == password -> PasswordValidType.CORRECT
-                        else -> PasswordValidType.NOT_MATCH
-                    },
-                    isEnabled = isEnabled(
-                        passwordValid = state.value.passwordValidType,
+                    passwordValidType = validType,
+                    isEnable = isEnabled(
+                        passwordValid = validType,
                         confirmPasswordValid = state.value.confirmPasswordValidType,
                         currentPassword = state.value.currentPassword
                     )
@@ -135,7 +128,28 @@ class SecurityViewModel @Inject constructor(
         }
     }
 
-    private fun isValidPasswordFormat(password: String): PasswordValidType {
+    private fun checkConfirmPassword(password: String) {
+        viewModelScope.launch {
+            val validType = when {
+                state.value.password.isBlank() || password.isBlank() -> PasswordValidType.CORRECT
+                state.value.password == password -> PasswordValidType.CORRECT
+                else -> PasswordValidType.NOT_MATCH
+            }
+            _state.update { securityState ->
+                securityState.copy(
+                    confirmPassword = password,
+                    confirmPasswordValidType = validType,
+                    isEnable = isEnabled(
+                        passwordValid = state.value.passwordValidType,
+                        confirmPasswordValid = validType,
+                        currentPassword = state.value.currentPassword
+                    )
+                )
+            }
+        }
+    }
+
+    private fun checkPasswordFormat(password: String): PasswordValidType {
         val smallPattern = "^.{8,}$"
         val bigPattern = "^.{8,128}$"
         val especialSymbol = "^[a-zA-Z\\d~!?@#\$%^&*_+\\-{}()\\[\\]<>\\/\\\\|\"'.,:;]*\$"

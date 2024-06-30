@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -25,6 +26,7 @@ import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.buttons.DeleteButton
 import care.intouch.uikit.ui.buttons.IntouchButton
 import care.intouch.uikit.ui.textFields.PasswordTextField
+import kotlinx.coroutines.delay
 
 @Composable
 fun SecuritySetPasswordScreen(
@@ -39,6 +41,15 @@ fun SecuritySetPasswordScreen(
     var currentPassword by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(
+        key1 = confirmPassword
+    ) {
+        if (confirmPassword.isBlank()) return@LaunchedEffect
+
+        delay(1000)
+        onEvent(SecurityEvent.OnSetConfirmPassword(confirmPassword))
+    }
 
     Column(
         modifier = modifier
@@ -57,7 +68,7 @@ fun SecuritySetPasswordScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged {
-                    if (!it.isFocused && currentPassword.isNotBlank()) {
+                    if (!it.isFocused) {
                         onEvent(SecurityEvent.OnSetCurrentPassword(currentPassword))
                     }
                 },
@@ -67,11 +78,9 @@ fun SecuritySetPasswordScreen(
             },
             title = StringVO.Resource(R.string.current_password_hint),
             error = (errorPassword != PasswordValidType.CORRECT),
-            caption = StringVO.Plain(
-                if (errorPassword != PasswordValidType.CORRECT) {
-                    stringResource(id = errorPassword.getString())
-                } else ""
-            ),
+            caption = if (errorPassword != PasswordValidType.CORRECT) {
+                errorPassword.getString()
+            } else StringVO.Plain(""),
             captionLinesAmount = 2,
             isPasswordVisibleIconVisible = true,
             keyboardActions = KeyboardActions(
@@ -83,9 +92,11 @@ fun SecuritySetPasswordScreen(
         PasswordTextField(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 8.dp)
                 .onFocusChanged {
                     if (!it.isFocused && password.isNotBlank()) {
                         onEvent(SecurityEvent.OnSetPassword(password))
+                        onEvent(SecurityEvent.OnSetConfirmPassword(confirmPassword))
                     }
                 },
             value = password,
@@ -94,45 +105,33 @@ fun SecuritySetPasswordScreen(
             },
             title = StringVO.Resource(R.string.new_password_hint),
             error = (isPasswordValid != PasswordValidType.CORRECT),
-            caption = StringVO.Plain(
-                if (isPasswordValid != PasswordValidType.CORRECT) {
-                    stringResource(id = isPasswordValid.getString())
-                } else ""
-            ),
+            caption = if (isPasswordValid != PasswordValidType.CORRECT) {
+                isPasswordValid.getString()
+            } else StringVO.Plain(""),
             captionLinesAmount = 2,
             isPasswordVisibleIconVisible = true,
             keyboardActions = KeyboardActions(
                 onDone = {
                     onEvent(SecurityEvent.OnSetPassword(password))
+                    onEvent(SecurityEvent.OnSetConfirmPassword(confirmPassword))
                 }
             )
         )
         PasswordTextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .onFocusChanged {
-                    if (!it.isFocused) {
-                        onEvent(SecurityEvent.OnSetConfirmPassword(confirmPassword))
-                    }
-                },
+                .padding(top = 8.dp),
             value = confirmPassword,
             onValueChange = {
                 confirmPassword = it
             },
             title = StringVO.Resource(R.string.confirm_password_hint),
             error = (isConfirmPasswordValid != PasswordValidType.CORRECT),
-            caption = StringVO.Plain(
-                if (isConfirmPasswordValid != PasswordValidType.CORRECT) {
-                    stringResource(id = isConfirmPasswordValid.getString())
-                } else ""
-            ),
+            caption = if (isConfirmPasswordValid != PasswordValidType.CORRECT) {
+                isConfirmPasswordValid.getString()
+            } else StringVO.Plain(""),
             captionLinesAmount = 2,
             isPasswordVisibleIconVisible = true,
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    onEvent(SecurityEvent.OnSetConfirmPassword(confirmPassword))
-                }
-            )
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(
