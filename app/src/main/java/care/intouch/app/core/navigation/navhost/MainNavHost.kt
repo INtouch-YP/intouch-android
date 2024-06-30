@@ -32,6 +32,7 @@ import care.intouch.app.ui.uiKitSamples.screens.SampleScreen
 @Composable
 fun MainNavHost(
     navController: NavHostController,
+    isAuthenticate: Boolean = false
 ) {
     NavHost(
         navController = navController,
@@ -45,6 +46,13 @@ fun MainNavHost(
                 },
                 onNavigationButtonClick = {
                     navController.navigate(route = Navigation.route)
+                },
+                onApplicationFlowButtonClick = {
+                    if (isAuthenticate) {
+                        navController.navigate(route = MainNav.route)
+                    } else {
+                        navController.navigate(route = Authentication.route)
+                    }
                 }
             )
         }
