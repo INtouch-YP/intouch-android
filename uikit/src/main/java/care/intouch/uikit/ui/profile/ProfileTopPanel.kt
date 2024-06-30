@@ -25,7 +25,6 @@ fun TopPanel(
 ) {
     Box(
         modifier = modifier
-            .height(32.dp)
             .fillMaxWidth()
             .padding(horizontal = 32.dp)
     ) {
