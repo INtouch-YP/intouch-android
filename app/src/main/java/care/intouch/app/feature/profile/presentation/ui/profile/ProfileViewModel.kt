@@ -7,6 +7,7 @@ import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileIn
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataState
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileState
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ViewsComponentsState
+import care.intouch.app.feature.profile.presentation.ui.profile.string_extension.replaceChars
 import care.intouch.uikit.common.StringVO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -80,7 +81,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateName(event: ChangeProfileDataEvent.OnChangeName) {
         if (event.name.length <= MAX_NAME_LENGTH) {
-            val name = replaceChars(event.name)
+            val name = event.name.replaceChars()
             val isTextValid = isTextValid(name)
             val isNameValid = isTextValid && (name.length > 2)
             var errorMessage: StringVO = StringVO.Plain("")
@@ -108,7 +109,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateLastName(event: ChangeProfileDataEvent.OnChangeLastName) {
         if (event.lastName.length <= MAX_NAME_LENGTH) {
-            val lastName = replaceChars(event.lastName)
+            val lastName = event.lastName.replaceChars()
             val isTextValid = isTextValid(lastName)
             val isLastNameValid = isTextValid && (lastName.length > 2)
             var errorMessage: StringVO = StringVO.Plain("")
@@ -137,12 +138,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun replaceChars(text: String): String {
-        return text.replace("  ", " ")
-            .replace("..", ".")
-            .replace("--", "-")
-    }
-
     private fun updateEmail(event: ChangeProfileDataEvent.OnChangeEmail) {
         val email =  event.email
         val isEmailValid = isEmailValid(email)
@@ -163,7 +158,6 @@ class ProfileViewModel @Inject constructor(
                 viewsComponentsState = _state.value.viewsComponentsState
             )
         }
-
     }
 
     private fun sendDataInDomain() {
@@ -206,23 +200,24 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun isEmailValid(text: String): Boolean {
-        val regex = Regex(REGEX)
+        val regex = Regex(REGEX_EMAIL_ADDRESS)
         return regex.matches(text)
     }
 
     private fun isTextValid(text: String): Boolean {
-        val regex = Regex("[a-zA-Z- \\.]*")
+        val regex = Regex(NAME_REGEX)
         return regex.matches(text)
     }
 
     private companion object {
         private const val MAX_NAME_LENGTH = 20
-        private const val REGEX = "[a-zA-Z0-9\\.\\_\\-]{1,256}" +
+        private const val REGEX_EMAIL_ADDRESS = "[a-zA-Z0-9\\.\\_\\-]{1,256}" +
                 "\\@" +
                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,64}" +
                 "(" +
                 "\\." +
                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,25}" +
                 ")+"
+        private const val NAME_REGEX = "[a-zA-Z- \\.]*"
     }
 }

@@ -32,18 +32,18 @@ fun ButtonSampleScreen() {
             PrimaryButtonGreen(
                 onClick = { },
                 modifier = Modifier.padding(top = 5.dp),
-                text = "Call to action"
+                text = StringVO.Plain("Call to action")
             )
             PrimaryButtonGreen(
                 onClick = { },
                 modifier = Modifier.padding(top = 5.dp),
-                text = "Call to action",
+                text = StringVO.Plain("Call to action"),
                 isEnabled = false
             )
             PrimaryButtonStroke(
                 onClick = {},
                 modifier = Modifier.padding(top = 5.dp),
-                text = "Call to action"
+                text = StringVO.Plain("Call to action")
             )
             PrimaryButtonWhite(
                 onClick = {},
@@ -53,17 +53,17 @@ fun ButtonSampleScreen() {
             SecondaryButtonDark(
                 onClick = { },
                 modifier = Modifier.padding(top = 5.dp),
-                text = "Call to action"
+                text = StringVO.Plain("Call to action")
             )
             SecondaryButtonWhite(
                 onClick = { },
                 modifier = Modifier.padding(top = 5.dp),
-                text = "Call to action"
+                text = StringVO.Plain("Call to action")
             )
             SecondaryButtonDark(
                 onClick = {},
                 modifier = Modifier.padding(top = 5.dp),
-                text = "Call to action",
+                text = StringVO.Plain("Call to action"),
                 isEnabled = false
             )
         }

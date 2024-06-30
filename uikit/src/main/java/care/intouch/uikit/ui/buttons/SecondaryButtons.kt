@@ -4,13 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 
 @Composable
 fun SecondaryButtonDark(
     onClick: () -> Unit,
     modifier: Modifier,
-    text: String,
+    text: StringVO,
     textStyle: TextStyle = InTouchTheme.typography.subTitle,
     isEnabled: Boolean = true,
 ) {
@@ -31,7 +32,7 @@ fun SecondaryButtonDark(
 fun SecondaryButtonWhite(
     onClick: () -> Unit,
     modifier: Modifier,
-    text: String,
+    text: StringVO,
     textStyle: TextStyle = InTouchTheme.typography.subTitle,
     isEnabled: Boolean = true,
 ) {
@@ -55,7 +56,7 @@ fun SecondaryButtonDarkPreview() {
         SecondaryButtonDark(
             onClick = {},
             modifier = Modifier,
-            text = "Call to action",
+            text = StringVO.Plain("Call to action"),
             isEnabled = true
         )
     }
@@ -68,7 +69,7 @@ fun SecondaryButtonWhitePreview() {
         SecondaryButtonWhite(
             onClick = {},
             modifier = Modifier,
-            text = "Call to action",
+            text = StringVO.Plain("Call to action"),
             isEnabled = true
         )
     }

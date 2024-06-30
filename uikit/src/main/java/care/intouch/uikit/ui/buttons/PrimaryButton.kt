@@ -21,7 +21,7 @@ import care.intouch.uikit.ui.NoRippleInteractionSource
 fun IntouchButton(
     onClick: () -> Unit,
     modifier: Modifier,
-    text: String,
+    text: StringVO,
     textStyle: TextStyle = InTouchTheme.typography.titleMedium,
     isEnabled: Boolean = true,
     isHasStroke: Boolean = false,
@@ -56,7 +56,7 @@ fun IntouchButton(
         interactionSource = NoRippleInteractionSource(),
     )
     {
-        Text(text = text, style = textStyle)
+        Text(text = text.value(), style = textStyle)
     }
 }
 
@@ -71,7 +71,7 @@ fun PrimaryButtonWhite(
     IntouchButton(
         onClick = onClick,
         modifier = modifier,
-        text = text.value(),
+        text = text,
         textStyle = textStyle,
         isEnabled = isEnabled,
         enableBackgroundColor = InTouchTheme.colors.input,
@@ -85,7 +85,7 @@ fun PrimaryButtonWhite(
 fun PrimaryButtonGreen(
     onClick: () -> Unit,
     modifier: Modifier,
-    text: String,
+    text: StringVO,
     isEnabled: Boolean = true,
 ) {
     IntouchButton(
@@ -100,7 +100,7 @@ fun PrimaryButtonGreen(
 fun PrimaryButtonStroke(
     onClick: () -> Unit,
     modifier: Modifier,
-    text: String,
+    text: StringVO,
     isEnabled: Boolean = true,
 ) {
     IntouchButton(
@@ -124,7 +124,7 @@ fun PrimaryButtonGreenPreview() {
         PrimaryButtonGreen(
             onClick = {},
             modifier = Modifier,
-            text = "Set Password",
+            text = StringVO.Plain("Set Password"),
             isEnabled = true
         )
     }
@@ -150,7 +150,7 @@ fun PrimaryButtonStrokePreview() {
         PrimaryButtonStroke(
             onClick = {},
             modifier = Modifier,
-            text = "Set Password",
+            text = StringVO.Plain("Set Password"),
             isEnabled = true
         )
     }

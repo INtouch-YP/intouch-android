@@ -11,14 +11,11 @@ import androidx.compose.ui.unit.dp
 import care.intouch.uikit.theme.InTouchTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -28,7 +25,6 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextRange
 import androidx.hilt.navigation.compose.hiltViewModel
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ChangeProfileDataEvent
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataState
@@ -171,7 +167,7 @@ private fun ProfileScreen(
 
             if (state.viewsComponentsState.saveChangesButtonVisibility) {
                 IntouchButton(
-                    text = StringVO.Plain("Save changes").value(),
+                    text = StringVO.Resource(resId = care.intouch.app.R.string.save_changes_button),  //save_changes_button
                     onClick = {
                         onEvent(ChangeProfileDataEvent.OnSaveChangesButtonClick())
                     },
@@ -187,7 +183,7 @@ private fun ProfileScreen(
 
             ProfileButton(
                 onClick = { onSecurityClick.invoke() },
-                text = StringVO.Plain("Security"),
+                text = StringVO.Resource(resId = care.intouch.app.R.string.security_profile),
                 enableBackgroundColor = InTouchTheme.colors.input,
                 disableBackgroundColor = InTouchTheme.colors.input,
                 modifier = Modifier.padding(horizontal = 32.dp)
@@ -199,7 +195,7 @@ private fun ProfileScreen(
             )
             ProfileButton(
                 onClick = { onChangePinCode.invoke() },
-                text = StringVO.Plain("Create PIN code"),
+                text = StringVO.Resource(resId = care.intouch.app.R.string.create_pin_profile),
                 enableBackgroundColor = InTouchTheme.colors.input,
                 disableBackgroundColor = InTouchTheme.colors.input,
                 modifier = Modifier.padding(horizontal = 32.dp)
