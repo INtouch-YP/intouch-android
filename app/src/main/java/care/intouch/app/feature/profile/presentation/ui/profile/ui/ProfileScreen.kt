@@ -206,7 +206,7 @@ private fun ProfileScreen(
             )
         }
         PrimaryButtonWhite(
-            text = StringVO.Resource(resId = care.intouch.app.R.string.sing_out_button),
+            text = StringVO.Resource(resId = care.intouch.app.R.string.sign_out_button),
             onClick = {
                 onEvent(ProfileDataEvent.OnSingOutButtonClick())
                 onSingOut.invoke()
