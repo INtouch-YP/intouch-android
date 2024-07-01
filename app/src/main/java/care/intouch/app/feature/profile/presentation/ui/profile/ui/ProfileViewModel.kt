@@ -1,9 +1,12 @@
 package care.intouch.app.feature.profile.presentation.ui.profile.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import care.intouch.app.R
 import care.intouch.app.feature.authorization.domain.api.UserStorage
 import care.intouch.app.feature.authorization.domain.models.User
+import care.intouch.app.feature.profile.domain.profile.models.ProfileData
+import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserDataUseCase
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataEvent
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileInformationData
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataState
@@ -11,19 +14,24 @@ import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileSt
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ViewsComponentsState
 import care.intouch.uikit.common.StringVO
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val userStorage: UserStorage
+    private val userStorage: UserStorage,
+    private val redactUserDataUseCase: RedactUserDataUseCase
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(ProfileState(loadProfileData(), ViewsComponentsState()))
     val state = _state.asStateFlow()
     private var userData: User = readUserDataFromSharedPreferences()
+    private var profileData = makeProfileData()
+
 
     fun onEvent(event: ProfileDataEvent) {
         when (event) {
@@ -70,7 +78,7 @@ class ProfileViewModel @Inject constructor(
             }
 
             is ProfileDataEvent.OnSaveChangesButtonClick -> {
-                saveUserDataInSharedPreferences()
+                doPatchUserData()
                 changeTextFieldsAndButtonsEnabled(
                     name = event.name,
                     lastName = event.lastName,
@@ -81,7 +89,7 @@ class ProfileViewModel @Inject constructor(
             }
 
             is ProfileDataEvent.OnSingOutButtonClick -> {
-                singOut()
+                signOut()
             }
         }
     }
@@ -97,6 +105,9 @@ class ProfileViewModel @Inject constructor(
             if (event.name.length <= 2) {
                 errorMessage = event.errorLength
             }
+            profileData = profileData.copy(
+                name = event.name
+            )
             _state.update {
                 ProfileState(
                     profileDataState = ProfileDataState(
@@ -124,6 +135,9 @@ class ProfileViewModel @Inject constructor(
             if (event.lastName.length <= 2) {
                 errorMessage = event.errorLength
             }
+            profileData = profileData.copy(
+                lastName = event.lastName
+            )
             _state.update {
                 ProfileState(
                     profileDataState = ProfileDataState(
@@ -150,6 +164,9 @@ class ProfileViewModel @Inject constructor(
             if (!isEmailValid) {
                 errorMessage = event.errorEmailNotValid
             }
+            profileData = profileData.copy(
+                email = event.email
+            )
             _state.update {
                 ProfileState(
                     profileDataState = ProfileDataState(
@@ -182,11 +199,18 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
+    private fun doPatchUserData(){
+        viewModelScope.launch(Dispatchers.IO) {
+            redactUserDataUseCase.invoke(profileData, userData.id)
+            saveUserDataInSharedPreferences()
+        }
+    }
+
     private fun saveUserDataInSharedPreferences() {
         userStorage.save(userData)
     }
 
-    private fun singOut() {
+    private fun signOut() {
         userStorage.clear()
 
     }
@@ -233,6 +257,14 @@ class ProfileViewModel @Inject constructor(
     private fun isTextValid(text: String): Boolean {
         val regex = Regex("[a-zA-Z- \\.]*")
         return regex.matches(text)
+    }
+
+    private fun makeProfileData(): ProfileData{
+        return ProfileData(
+            name = userData.firstName,
+            lastName = userData.lastName,
+            email = userData.email
+        )
     }
 
     private companion object {

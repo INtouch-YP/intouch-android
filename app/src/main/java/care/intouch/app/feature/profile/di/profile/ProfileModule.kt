@@ -1,5 +1,7 @@
 package care.intouch.app.feature.profile.di.profile
 
+import care.intouch.app.feature.profile.data.profile.api.RedactUserDataPatchRepositoryImpl
+import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserDataPatchRepository
 import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserDataUseCase
 import dagger.Binds
 import dagger.Module
@@ -12,5 +14,8 @@ interface ProfileModule {
 
     @Binds
     fun bindRedactUserDataUseCase(impl: RedactUserDataUseCase.Base): RedactUserDataUseCase
+
+    @Binds
+    fun bindRedactUserDataPatchRepository(impl: RedactUserDataPatchRepositoryImpl): RedactUserDataPatchRepository
 }
 
