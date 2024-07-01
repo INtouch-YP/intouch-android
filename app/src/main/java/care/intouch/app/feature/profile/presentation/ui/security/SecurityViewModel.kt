@@ -2,6 +2,9 @@ package care.intouch.app.feature.profile.presentation.ui.security
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import care.intouch.app.feature.common.Resource
+import care.intouch.app.feature.profile.domain.useCase.DeleteProfileUseCase
+import care.intouch.app.feature.profile.domain.useCase.UpdatePasswordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SecurityViewModel @Inject constructor(
-
+    private val updatePasswordUseCase: UpdatePasswordUseCase,
+    private val deleteProfileUseCase: DeleteProfileUseCase
 ): ViewModel() {
     private var _state = MutableStateFlow(SecurityState())
     val state = _state.asStateFlow()
@@ -52,11 +56,32 @@ class SecurityViewModel @Inject constructor(
 
     private fun savePassword() {
         viewModelScope.launch(context = Dispatchers.IO) {
-            _state.update { securityState ->
-                //todo request to backend
-                securityState.copy(
-                    errorCurrentPassword = PasswordValidType.INCORRECT_CURRENT_PASSWORD,
-                )
+            val updatePassword = updatePasswordUseCase.invoke(
+                currentPassword = state.value.currentPassword,
+                newPassword = state.value.password,
+                newConfirmationPassword = state.value.confirmPassword
+            )
+            when (updatePassword) {
+                is Resource.Success -> {
+                    _state.update { securityState ->
+                        securityState.copy(
+                            currentPasswordValidType = PasswordValidType.CORRECT,
+                            password = "",
+                            confirmPassword = "",
+                            currentPassword = "",
+                            passwordValidType = PasswordValidType.CORRECT,
+                            confirmPasswordValidType = PasswordValidType.CORRECT,
+                        )
+                    }
+                }
+
+                is Resource.Error -> {
+                    _state.update { securityState ->
+                        securityState.copy(
+                            currentPasswordValidType = PasswordValidType.INCORRECT_CURRENT_PASSWORD
+                        )
+                    }
+                }
             }
         }
     }
@@ -78,11 +103,22 @@ class SecurityViewModel @Inject constructor(
 
     private fun deleteProfile() {
         viewModelScope.launch(context = Dispatchers.IO) {
-            _state.update { securityState ->
-                //todo request to backend
-                securityState.copy(
-                    uiState = SecurityUiState.ProfileDeleted
-                )
+            val deleteProfile = deleteProfileUseCase.invoke()
+            when (deleteProfile) {
+                is Resource.Success -> {
+                    _state.update { securityState ->
+                        securityState.copy(
+                            uiState = SecurityUiState.ProfileDeleted
+                        )
+                    }
+                }
+                is Resource.Error -> {
+                    _state.update { securityState ->
+                        securityState.copy(
+                            uiState = SecurityUiState.ProfileDeleted
+                        )
+                    }
+                }
             }
         }
     }

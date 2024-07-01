@@ -31,7 +31,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SecuritySetPasswordScreen(
     modifier: Modifier = Modifier,
-    errorPassword: PasswordValidType,
+    currentPasswordValid: PasswordValidType,
     isSuccessUpdate: Boolean? = null,
     isPasswordValid: PasswordValidType = PasswordValidType.CORRECT,
     isConfirmPasswordValid: PasswordValidType = PasswordValidType.CORRECT,
@@ -77,9 +77,9 @@ fun SecuritySetPasswordScreen(
                 currentPassword = it
             },
             title = StringVO.Resource(R.string.current_password_hint),
-            error = (errorPassword != PasswordValidType.CORRECT),
-            caption = if (errorPassword != PasswordValidType.CORRECT) {
-                errorPassword.getString()
+            error = (currentPasswordValid != PasswordValidType.CORRECT),
+            caption = if (currentPasswordValid != PasswordValidType.CORRECT) {
+                currentPasswordValid.getString()
             } else StringVO.Plain(""),
             captionLinesAmount = 2,
             isPasswordVisibleIconVisible = true,

@@ -110,7 +110,7 @@ private fun SecurityScreen(
                     }
                     Spacer(modifier = Modifier.height(40.dp))
                     SecuritySetPasswordScreen(
-                        errorPassword = state.value.errorCurrentPassword,
+                        currentPasswordValid = state.value.currentPasswordValidType,
                         isSuccessUpdate = state.value.isSuccessUpdate,
                         isPasswordValid = state.value.passwordValidType,
                         isConfirmPasswordValid = state.value.confirmPasswordValidType,
