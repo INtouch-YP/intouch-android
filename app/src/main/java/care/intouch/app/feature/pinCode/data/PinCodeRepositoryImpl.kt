@@ -1,4 +1,4 @@
-package care.intouch.app.feature.authorization.pinCode.data
+package care.intouch.app.feature.pinCode.data
 
 import android.content.SharedPreferences
 import androidx.core.content.edit

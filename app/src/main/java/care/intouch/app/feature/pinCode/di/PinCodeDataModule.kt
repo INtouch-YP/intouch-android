@@ -1,4 +1,4 @@
-package care.intouch.app.feature.authorization.pinCode.di
+package care.intouch.app.feature.pinCode.di
 
 import dagger.Module
 import dagger.Provides

@@ -1,4 +1,4 @@
-package care.intouch.app.feature.authorization.pinCode.data
+package care.intouch.app.feature.pinCode.data
 
 import care.intouch.app.feature.common.Resource
 import care.intouch.app.feature.common.domain.errors.ErrorEntity
