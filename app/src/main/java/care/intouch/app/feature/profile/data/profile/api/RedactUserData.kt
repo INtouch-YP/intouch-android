@@ -9,5 +9,5 @@ interface RedactUserData {
     suspend fun updateUserData(
         @Path("id") id: Int,
         profileData: ProfileData
-    )
+    ): Boolean
 }
