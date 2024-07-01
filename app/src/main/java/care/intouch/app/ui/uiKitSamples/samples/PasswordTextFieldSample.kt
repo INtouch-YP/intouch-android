@@ -31,7 +31,6 @@ fun PasswordTextFieldSampleScreen() {
     var isIconVisible by rememberSaveable { mutableStateOf(true) }
 
     var text by rememberSaveable { mutableStateOf("") }
-    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     Surface(
         color = InTouchTheme.colors.mainBlue,
@@ -47,11 +46,7 @@ fun PasswordTextFieldSampleScreen() {
                 onValueChange = {
                     text = it
                 },
-                isPasswordVisible = isPasswordVisible,
                 isPasswordVisibleIconVisible = isIconVisible,
-                onPasswordVisibleIconClick = {
-                    isPasswordVisible = !isPasswordVisible
-                },
                 hint = StringVO.Plain("Password"),
                 caption = StringVO.Plain("Passwords must be at least 8 characters long"),
                 error = isError,

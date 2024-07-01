@@ -18,27 +18,43 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import care.intouch.app.R
 import care.intouch.uikit.theme.InTouchTheme
 
 @Composable
-fun SecurityScreen(
-    navController: NavController,
+fun SecurityScreenInit(
+    onPopBackStack: () -> Unit,
     onDeleteProfileForeverClick: () -> Unit,
     viewModel: SecurityViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
+    SecurityScreen(
+        onPopBackStack = onPopBackStack,
+        onDeleteProfileForeverClick = onDeleteProfileForeverClick,
+        onEvent = { viewModel.onEvent(it) },
+        state = state
+    )
+}
+
+@Composable
+private fun SecurityScreen(
+    onPopBackStack: () -> Unit,
+    onDeleteProfileForeverClick: () -> Unit,
+    onEvent: (SecurityEvent) -> Unit,
+    state: State<SecurityState>
+) {
     val scrollState = rememberScrollState()
 
     Scaffold { paddingValues ->
@@ -58,7 +74,7 @@ fun SecurityScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(165.dp),
+                            .height(120.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Image(
@@ -76,7 +92,7 @@ fun SecurityScreen(
                         ) {
                             Image(
                                 modifier = Modifier.clickable {
-                                    navController.popBackStack()
+                                    onPopBackStack.invoke()
                                 },
                                 painter = painterResource(id = care.intouch.uikit.R.drawable.icon_arrow_left),
                                 contentDescription = null
@@ -96,8 +112,10 @@ fun SecurityScreen(
                     SecuritySetPasswordScreen(
                         errorPassword = state.value.errorCurrentPassword,
                         isSuccessUpdate = state.value.isSuccessUpdate,
-                        isEnabled = state.value.isEnabled,
-                        onEvent = viewModel::onEvent
+                        isPasswordValid = state.value.passwordValidType,
+                        isConfirmPasswordValid = state.value.confirmPasswordValidType,
+                        isEnable = state.value.isEnable,
+                        onEvent = onEvent
                     )
                 }
             }
@@ -107,12 +125,14 @@ fun SecurityScreen(
                 Popup(
                     alignment = Alignment.Center,
                     onDismissRequest = {
-                        viewModel.onEvent(SecurityEvent.OnCancelDeleteProfile)
+                        onEvent(SecurityEvent.OnCancelDeleteProfile)
                     }
                 ) {
                     DeleteProfilePopUp(
-                        modifier = Modifier.width(334.dp).height(501.dp),
-                        onEvent =  viewModel::onEvent
+                        modifier = Modifier
+                            .width(334.dp)
+                            .height(501.dp),
+                        onEvent =  onEvent
                     )
                 }
             }
@@ -123,4 +143,15 @@ fun SecurityScreen(
         }
     }
 
+}
+
+@Composable
+@Preview(showBackground = true)
+fun SecurityScreenPreview() {
+    InTouchTheme {
+        SecurityScreenInit(
+            onPopBackStack = {},
+            onDeleteProfileForeverClick = {},
+        )
+    }
 }

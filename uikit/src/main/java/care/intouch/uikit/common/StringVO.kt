@@ -1,5 +1,6 @@
 package care.intouch.uikit.common
 
+import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -8,11 +9,16 @@ sealed class StringVO {
 
     @Composable
     abstract fun value(): String
+    abstract fun value(context: Context): String
 
     data class Plain(val text: String) : StringVO() {
 
         @Composable
         override fun value(): String {
+            return text
+        }
+
+        override fun value(context: Context): String {
             return text
         }
     }
@@ -25,6 +31,10 @@ sealed class StringVO {
         @Composable
         override fun value(): String {
             return stringResource(id = resId, formatArgs = *params)
+        }
+
+        override fun value(context: Context): String {
+            return context.getString(resId, *params)
         }
 
         override fun equals(other: Any?): Boolean {

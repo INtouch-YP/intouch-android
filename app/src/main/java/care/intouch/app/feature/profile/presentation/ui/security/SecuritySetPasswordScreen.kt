@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -25,27 +26,30 @@ import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.buttons.DeleteButton
 import care.intouch.uikit.ui.buttons.IntouchButton
 import care.intouch.uikit.ui.textFields.PasswordTextField
-import java.util.regex.Pattern
+import kotlinx.coroutines.delay
 
 @Composable
 fun SecuritySetPasswordScreen(
     modifier: Modifier = Modifier,
-    errorPassword: PasswordInvalidType,
+    errorPassword: PasswordValidType,
     isSuccessUpdate: Boolean? = null,
-    isEnabled: Boolean = false,
+    isPasswordValid: PasswordValidType = PasswordValidType.CORRECT,
+    isConfirmPasswordValid: PasswordValidType = PasswordValidType.CORRECT,
+    isEnable: Boolean = false,
     onEvent: (SecurityEvent) -> Unit
 ) {
-
     var currentPassword by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
 
-    var isVisibleCurrentPassword by rememberSaveable { mutableStateOf(false) }
-    var isVisiblePassword by rememberSaveable { mutableStateOf(false) }
-    var isVisiblePasswordConfirm by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(
+        key1 = confirmPassword
+    ) {
+        if (confirmPassword.isBlank()) return@LaunchedEffect
 
-    var isPasswordValid by rememberSaveable { mutableStateOf(PasswordInvalidType.CORRECT) }
-    var isPasswordConfirmValid by rememberSaveable { mutableStateOf(PasswordInvalidType.CORRECT) }
+        delay(1000)
+        onEvent(SecurityEvent.OnSetConfirmPassword(confirmPassword))
+    }
 
     Column(
         modifier = modifier
@@ -65,7 +69,7 @@ fun SecuritySetPasswordScreen(
                 .fillMaxWidth()
                 .onFocusChanged {
                     if (!it.isFocused) {
-                        onEvent.invoke(SecurityEvent.OnVerifyCurrentPassword(currentPassword))
+                        onEvent(SecurityEvent.OnSetCurrentPassword(currentPassword))
                     }
                 },
             value = currentPassword,
@@ -73,33 +77,26 @@ fun SecuritySetPasswordScreen(
                 currentPassword = it
             },
             title = StringVO.Resource(R.string.current_password_hint),
-            error = (errorPassword != PasswordInvalidType.CORRECT),
-            caption = StringVO.Plain(
-                if (errorPassword != PasswordInvalidType.CORRECT) {
-                    stringResource(id = errorPassword.getString())
-                } else ""
-            ),
+            error = (errorPassword != PasswordValidType.CORRECT),
+            caption = if (errorPassword != PasswordValidType.CORRECT) {
+                errorPassword.getString()
+            } else StringVO.Plain(""),
             captionLinesAmount = 2,
-            isPasswordVisible = isVisibleCurrentPassword,
             isPasswordVisibleIconVisible = true,
-            onPasswordVisibleIconClick = {
-                isVisibleCurrentPassword = !isVisibleCurrentPassword
-            },
             keyboardActions = KeyboardActions(
                 onDone = {
-                    onEvent.invoke(SecurityEvent.OnVerifyCurrentPassword(currentPassword))
+                    onEvent(SecurityEvent.OnSetCurrentPassword(currentPassword))
                 }
             )
         )
-        Spacer(modifier = Modifier.height(16.dp))
         PasswordTextField(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 8.dp)
                 .onFocusChanged {
                     if (!it.isFocused && password.isNotBlank()) {
-                        isPasswordValid = isValidPasswordFormat(password)
-                    } else if (password.isBlank()) {
-                        isPasswordValid = PasswordInvalidType.CORRECT
+                        onEvent(SecurityEvent.OnSetPassword(password))
+                        onEvent(SecurityEvent.OnSetConfirmPassword(confirmPassword))
                     }
                 },
             value = password,
@@ -107,67 +104,34 @@ fun SecuritySetPasswordScreen(
                 password = it
             },
             title = StringVO.Resource(R.string.new_password_hint),
-            error = (isPasswordValid != PasswordInvalidType.CORRECT),
-            caption = StringVO.Plain(
-                if (isPasswordValid != PasswordInvalidType.CORRECT) {
-                    stringResource(id = isPasswordValid.getString())
-                } else ""
-            ),
+            error = (isPasswordValid != PasswordValidType.CORRECT),
+            caption = if (isPasswordValid != PasswordValidType.CORRECT) {
+                isPasswordValid.getString()
+            } else StringVO.Plain(""),
             captionLinesAmount = 2,
-            isPasswordVisible = isVisiblePassword,
             isPasswordVisibleIconVisible = true,
-            onPasswordVisibleIconClick = {
-                isVisiblePassword = !isVisiblePassword
-            },
             keyboardActions = KeyboardActions(
                 onDone = {
-                    isPasswordValid = if (password.isNotBlank()) {
-                        isValidPasswordFormat(password)
-                    } else {
-                        PasswordInvalidType.CORRECT
-                    }
+                    onEvent(SecurityEvent.OnSetPassword(password))
+                    onEvent(SecurityEvent.OnSetConfirmPassword(confirmPassword))
                 }
             )
         )
-        Spacer(modifier = Modifier.height(16.dp))
         PasswordTextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .onFocusChanged {
-                    if (!it.isFocused) {
-                        isPasswordConfirmValid = when {
-                            password.isBlank() || confirmPassword.isBlank() -> PasswordInvalidType.CORRECT
-                            password == confirmPassword -> PasswordInvalidType.CORRECT
-                            else -> PasswordInvalidType.NOT_MATCH
-                        }
-                    }
-                },
+                .padding(top = 8.dp),
             value = confirmPassword,
             onValueChange = {
                 confirmPassword = it
             },
             title = StringVO.Resource(R.string.confirm_password_hint),
-            error = (isPasswordConfirmValid != PasswordInvalidType.CORRECT),
-            caption = StringVO.Plain(
-                if (isPasswordConfirmValid != PasswordInvalidType.CORRECT) {
-                    stringResource(id = isPasswordConfirmValid.getString())
-                } else ""
-            ),
+            error = (isConfirmPasswordValid != PasswordValidType.CORRECT),
+            caption = if (isConfirmPasswordValid != PasswordValidType.CORRECT) {
+                isConfirmPasswordValid.getString()
+            } else StringVO.Plain(""),
             captionLinesAmount = 2,
-            isPasswordVisible = isVisiblePasswordConfirm,
             isPasswordVisibleIconVisible = true,
-            onPasswordVisibleIconClick = {
-                isVisiblePasswordConfirm = !isVisiblePasswordConfirm
-            },
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    isPasswordConfirmValid = when {
-                        password.isBlank() || confirmPassword.isBlank() -> PasswordInvalidType.CORRECT
-                        password == confirmPassword -> PasswordInvalidType.NOT_MATCH
-                        else -> PasswordInvalidType.CORRECT
-                    }
-                }
-            )
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(
@@ -185,14 +149,14 @@ fun SecuritySetPasswordScreen(
                 .width(176.dp)
                 .align(Alignment.CenterHorizontally),
             text = stringResource(id = R.string.save_button),
-            isEnabled = isEnabled,
+            isEnabled = isEnable,
             enableBackgroundColor = InTouchTheme.colors.mainGreen,
             disableBackgroundColor = InTouchTheme.colors.unableElementLight,
             enableTextColor = InTouchTheme.colors.input,
             disableTextColor = InTouchTheme.colors.textGreen40,
             onClick = {
                 onEvent.invoke(
-                    SecurityEvent.OnSavePassword(password, confirmPassword)
+                    SecurityEvent.OnSavePassword(currentPassword, password, confirmPassword)
                 )
             }
         )
@@ -213,40 +177,6 @@ fun SecuritySetPasswordScreen(
             text = stringResource(id = R.string.delete_profile_button)
         )
         Spacer(modifier = Modifier.height(44.dp))
-    }
-}
-
-fun isValidPasswordFormat(password: String): PasswordInvalidType {
-    val smallPattern = "^.{8,}$"
-    val bigPattern = "^.{8,128}$"
-    val especialSymbol = "^[a-zA-Z\\d~!?@#\$%^&*_+\\-{}()\\[\\]<>\\/\\\\|\"'.,:;]*\$"
-
-    val missingPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}\$"
-    val spacePattern = "^\\S*\$"
-    return when {
-        !Pattern.compile(spacePattern).matcher(password).matches() -> {
-            PasswordInvalidType.EXIST_SPACE
-        }
-
-        !Pattern.compile(especialSymbol).matcher(password).matches() -> {
-            PasswordInvalidType.INVALID_SYMBOL
-        }
-
-        !Pattern.compile(smallPattern).matcher(password).matches() -> {
-            PasswordInvalidType.SMALL_PASSWORD
-        }
-
-        !Pattern.compile(bigPattern).matcher(password).matches() -> {
-            PasswordInvalidType.BIG_PASSWORD
-        }
-
-        !Pattern.compile(missingPattern).matcher(password).matches() -> {
-            PasswordInvalidType.MISSING_SYMBOL
-        }
-
-        else -> {
-            PasswordInvalidType.CORRECT
-        }
     }
 }
 

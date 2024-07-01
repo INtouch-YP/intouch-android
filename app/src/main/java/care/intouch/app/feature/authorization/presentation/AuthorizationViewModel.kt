@@ -2,7 +2,7 @@ package care.intouch.app.feature.authorization.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import care.intouch.app.feature.authorization.domain.useCase.GetUserNameUseCase
+import care.intouch.app.feature.authorization.domain.useCase.GetUserFullNameUseCase
 import care.intouch.app.feature.common.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,15 +15,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthorizationViewModel @Inject constructor(
-    private val getUserNameUseCase: GetUserNameUseCase,
+    private val getUserFullNameUseCase: GetUserFullNameUseCase,
 ) : ViewModel() {
+
     private var _state = MutableStateFlow(AuthorizationState())
     val state = _state.asStateFlow()
 
     fun onEvent(event: AuthorizationEvent) {
         when (event) {
             is AuthorizationEvent.OnGetUserInfo -> {
-                getUserInfo(event.userId, event.token)
+                getUserInfo()
             }
 
             is AuthorizationEvent.OnSetPassword -> {
@@ -32,21 +33,21 @@ class AuthorizationViewModel @Inject constructor(
         }
     }
 
-    private fun getUserInfo(userId: String?, token: String?) {
+    private fun getUserInfo() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-//                val userInfo = getUserNameUseCase.invoke()
-
-//                if(userInfo is Resource.Success) {
+            when (val userInfo = getUserFullNameUseCase.invoke()) {
+                is Resource.Success -> {
                     _state.update { registrationState ->
                         registrationState.copy(
                             uiState = AuthorizationUiState.SetPassword,
-                            userName = "UserName"
+                            userName = userInfo.data
                         )
                     }
-//                } else {
-//
-//                }
+                }
+
+                is Resource.Error -> {
+                   // handle error
+                }
             }
         }
     }
@@ -65,6 +66,7 @@ class AuthorizationViewModel @Inject constructor(
                             )
                         }
                     }
+
                     else -> {
                         //TODO send password for save
                         _state.update { registrationState ->

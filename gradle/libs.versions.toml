@@ -2,6 +2,7 @@
 agp = "8.3.0-rc02"
 coilCompose = "2.5.0"
 constraintlayoutCompose = "1.0.1"
+firebaseAppdistributionApi = "16.0.0-beta13"
 firebaseBomVersion = "32.7.2"
 hiltAndroid = "2.50"
 hiltNavigationCompose = "1.2.0"
@@ -31,7 +32,10 @@ kotlinx-serialization = "1.9.22"
 androidLibrary = "8.2.2"
 constraintlayout = "1.0.1"
 uiTooling = "1.6.3"
+securityCrypto = "1.1.0-alpha06"
 navigationRuntimeKtx = "2.7.7"
+androidXCoreVersion = "1.13.1"
+androidXCoreSplashVersion = "1.0.1"
 
 [libraries]
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
@@ -44,6 +48,7 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRunt
 androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+firebase-appdistribution-api = { module = "com.google.firebase:firebase-appdistribution-api", version.ref = "firebaseAppdistributionApi" }
 google-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
@@ -73,8 +78,9 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
-
-
+security-crypto = {group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto"}
+androidXCore = { module = "androidx.core:core", version.ref = "androidXCoreVersion" }
+androidXCoreSplash = { module = "androidx.core:core-splashscreen", version.ref = "androidXCoreSplashVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
