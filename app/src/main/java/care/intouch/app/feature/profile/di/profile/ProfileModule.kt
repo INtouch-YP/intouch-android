@@ -5,6 +5,7 @@ import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserDataPat
 import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserDataUseCase
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 
@@ -17,5 +18,6 @@ interface ProfileModule {
 
     @Binds
     fun bindRedactUserDataPatchRepository(impl: RedactUserDataPatchRepositoryImpl): RedactUserDataPatchRepository
+
 }
 

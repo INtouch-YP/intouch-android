@@ -55,4 +55,5 @@ sealed class ProfileDataEvent {
     ): ProfileDataEvent()
 
     class OnSingOutButtonClick(): ProfileDataEvent()
+    class OnCreate(): ProfileDataEvent()
 }

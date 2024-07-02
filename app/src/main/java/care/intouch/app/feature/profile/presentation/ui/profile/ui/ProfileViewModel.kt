@@ -15,6 +15,7 @@ import care.intouch.app.feature.profile.presentation.ui.profile.models.ViewsComp
 import care.intouch.uikit.common.StringVO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -29,9 +30,8 @@ class ProfileViewModel @Inject constructor(
 
     private var _state = MutableStateFlow(ProfileState(loadProfileData(), ViewsComponentsState()))
     val state = _state.asStateFlow()
-    private var userData: User = readUserDataFromSharedPreferences()
-    private var profileData = makeProfileData()
-
+    private var userData: User? = null
+    private var profileData: ProfileData = ProfileData("", "", "")
 
     fun onEvent(event: ProfileDataEvent) {
         when (event) {
@@ -91,7 +91,15 @@ class ProfileViewModel @Inject constructor(
             is ProfileDataEvent.OnSingOutButtonClick -> {
                 signOut()
             }
+
+            is ProfileDataEvent.OnCreate -> {
+                onCreate()
+            }
         }
+    }
+
+    private fun onCreate(){
+        readUserDataFromSharedPreferences()
     }
 
     private fun updateName(event: ProfileDataEvent.OnName) {
@@ -183,31 +191,27 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun readUserDataFromSharedPreferences(): User {
-        val dataFromSharedPreferences: User? = userStorage.read()
-        if (dataFromSharedPreferences != null) {
-            return dataFromSharedPreferences
+    private fun readUserDataFromSharedPreferences() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val dataFromSharedPreferences: User = userStorage.read()
+            profileData = ProfileData(
+                name = dataFromSharedPreferences.firstName,
+                lastName = dataFromSharedPreferences.lastName,
+                email = dataFromSharedPreferences.email
+            )
+            userData = dataFromSharedPreferences
         }
-        return User(
-            id = 0,
-            firstName = "",
-            lastName = "",
-            email = "",
-            acceptPolicy = true,
-            newEmailChanging = true,
-            newEmailTemp = ""
-        )
     }
 
-    private fun doPatchUserData(){
+    private fun doPatchUserData() {
         viewModelScope.launch(Dispatchers.IO) {
-            redactUserDataUseCase.invoke(profileData, userData.id)
+            redactUserDataUseCase.invoke(profileData, userData!!.id)
             saveUserDataInSharedPreferences()
         }
     }
 
     private fun saveUserDataInSharedPreferences() {
-        userStorage.save(userData)
+        userStorage.save(userData!!)
     }
 
     private fun signOut() {
@@ -257,14 +261,6 @@ class ProfileViewModel @Inject constructor(
     private fun isTextValid(text: String): Boolean {
         val regex = Regex("[a-zA-Z- \\.]*")
         return regex.matches(text)
-    }
-
-    private fun makeProfileData(): ProfileData{
-        return ProfileData(
-            name = userData.firstName,
-            lastName = userData.lastName,
-            email = userData.email
-        )
     }
 
     private companion object {

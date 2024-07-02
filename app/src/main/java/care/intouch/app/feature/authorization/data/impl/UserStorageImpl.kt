@@ -17,9 +17,9 @@ class UserStorageImpl @Inject constructor(
         return sharedPreferences.edit().putString(KEY, data).commit()
     }
 
-    override fun read(): User? {
-       return  sharedPreferences.getString(KEY, null)?.let {
-            json.decodeFromString<User>(it)
+    override suspend fun read(): User {
+       return  sharedPreferences.getString(KEY, null).let {
+            json.decodeFromString<User>(it!!)
         }
     }
 
