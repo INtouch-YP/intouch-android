@@ -1,8 +1,6 @@
 package care.intouch.app.feature.profile.presentation.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -14,15 +12,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import care.intouch.uikit.theme.InTouchTheme
 
+
 @Composable
-fun ProfileScreen(
-    onSecurityClick: () -> Unit,
-    onChangePinCode: () -> Unit
+fun PinCodeConfirmScreen(
+    pinCodeConfirm: () -> Unit,
+    exit: () -> Unit
 ) {
+
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(InTouchTheme.colors.accentYellow),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
 
@@ -30,41 +28,27 @@ fun ProfileScreen(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 24.dp),
-            text = "ProfileScreen",
+            text = "PasswordChangeScreen",
             style = InTouchTheme.typography.titleMedium
         )
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+        Button(
+            onClick = {
+                pinCodeConfirm.invoke()
+            }
         ) {
-
-            Button(
-                onClick = {
-                    onSecurityClick.invoke()
-                }
-            ) {
-                Text(text = "Security")
-            }
-
-            Button(
-                onClick = {
-                    onChangePinCode.invoke()
-                }
-            ) {
-                Text(text = "Change Pin Code")
-            }
-
+            Text(text = "Pin code confirmed")
         }
     }
 }
 
 @Composable
 @Preview(showBackground = true)
-fun ProfileScreenPreview() {
+fun PinCodeConfirmationScreenPreview() {
     InTouchTheme {
-        ProfileScreen(
-            onSecurityClick = {},
-            onChangePinCode = {}
+        PinCodeConfirmScreen(
+            pinCodeConfirm = {},
+            exit = {}
         )
     }
 }

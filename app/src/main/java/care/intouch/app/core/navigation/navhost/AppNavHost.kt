@@ -17,7 +17,7 @@ import care.intouch.app.feature.diary.presentation.ui.DiaryNoteScreen
 import care.intouch.app.feature.home.presentation.ui.HomeScreen
 import care.intouch.app.feature.plan.presentation.ui.PlanScreen
 import care.intouch.app.feature.profile.presentation.ui.PasswordChangeScreen
-import care.intouch.app.feature.profile.presentation.ui.ProfileScreen
+import care.intouch.app.feature.profile.presentation.ui.profile.ProfileScreen
 
 @Composable
 fun AppNavHost(

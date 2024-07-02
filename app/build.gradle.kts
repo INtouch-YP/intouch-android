@@ -16,11 +16,22 @@ android {
     namespace = "care.intouch.app"
     compileSdk = 34
 
+    applicationVariants.all {
+        val variant = this
+        variant.outputs
+            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+            .forEach { output ->
+                val newApkName =  "${variant.applicationId}-${variant.versionName}" +
+                        "-${variant.versionCode}.apk"
+                output.outputFileName = newApkName
+            }
+    }
+
     defaultConfig {
         applicationId = "care.intouch.app"
         minSdk = 23
         targetSdk = 34
-        versionCode = 1
+        versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -181,6 +192,7 @@ dependencies {
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.appdistribution.api)
 
     //Network
     implementation(libs.retrofit)
@@ -190,6 +202,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
 
+    //Security-crypto
+    implementation(libs.security.crypto)
+
+
     //Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -198,4 +214,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // AndroidX
+    implementation(libs.androidXCore)
+    implementation(libs.androidXCoreSplash)
 }

@@ -17,7 +17,8 @@ import care.intouch.uikit.theme.InTouchTheme
 @Composable
 fun DebugModeScreen(
     onUISamplesButtonClick: () -> Unit,
-    onNavigationButtonClick: () -> Unit
+    onNavigationButtonClick: () -> Unit,
+    onApplicationFlowButtonClick: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
@@ -42,6 +43,12 @@ fun DebugModeScreen(
         ) {
             Text(text = "Go to Navigation Screen")
         }
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {onApplicationFlowButtonClick.invoke()}
+        ) {
+            Text(text = "ApplicationFlow")
+        }
     }
 }
 
@@ -51,7 +58,8 @@ fun ToolkitScreenPreview() {
     InTouchTheme {
         DebugModeScreen(
             onUISamplesButtonClick = {},
-            onNavigationButtonClick = {}
+            onNavigationButtonClick = {},
+            onApplicationFlowButtonClick = {}
         )
     }
 }

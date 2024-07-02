@@ -2,15 +2,17 @@ package care.intouch.app.core.navigation.navhost
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
-import care.intouch.app.core.navigation.Authentication
-import care.intouch.app.core.navigation.AuthorizationRouteBranch
-import care.intouch.app.core.navigation.MainNav
 import care.intouch.app.core.navigation.AppNavScreen
+import care.intouch.app.core.navigation.Authentication
 import care.intouch.app.core.navigation.Authorization
+import care.intouch.app.core.navigation.AuthorizationRouteBranch
 import care.intouch.app.core.navigation.Home
+import care.intouch.app.core.navigation.MainNav
 import care.intouch.app.core.navigation.PasswordRecovery
 import care.intouch.app.core.navigation.PinCodeConfirmation
 import care.intouch.app.core.navigation.PinCodeEnter
@@ -21,10 +23,10 @@ import care.intouch.app.feature.authorization.presentation.AuthorizationScreen
 import care.intouch.app.feature.authorization.presentation.ui.AuthenticationScreen
 import care.intouch.app.feature.authorization.presentation.ui.EnterPinCodeScreen
 import care.intouch.app.feature.authorization.presentation.ui.PasswordRecoveryScreen
-import care.intouch.app.feature.authorization.presentation.ui.PinCodeConfirmationScreen
-import care.intouch.app.feature.authorization.presentation.ui.PinCodeInstallationScreen
 import care.intouch.app.feature.authorization.presentation.ui.RegistrationScreen
 import care.intouch.app.feature.authorization.presentation.ui.SendingNotificationScreen
+import care.intouch.app.feature.pinCode.ui.confirm.PinCodeConfirmationScreen
+import care.intouch.app.feature.pinCode.ui.install.PinCodeInstallationScreen
 
 fun NavGraphBuilder.addNestedAuthorizationGraph(
     navController: NavHostController,
@@ -44,36 +46,37 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
         }
 
         composable(route = PinCodeInstallation.route) {
-            PinCodeInstallationScreen(
-                onSaveClick = {
-                    navController.navigate(route = PinCodeConfirmation.route)
-                },
-                onSkipClick = {
-                    navController.navigate(route = MainNav.route) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            inclusive = true
-                        }
+            PinCodeInstallationScreen(onSaveClick = { argument ->
+                navController.navigate(route = PinCodeConfirmation.route + "/$argument")
+            }, onSkipClick = {
+                navController.navigate(route = MainNav.route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
                     }
                 }
-            )
+            })
         }
 
-        composable(route = PinCodeConfirmation.route) {
-            PinCodeConfirmationScreen(
-                onSaveClick = {
-                    navController.navigate(route = MainNav.route) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            inclusive = true
-                        }
-                    }
-                },
-                onSkipClick = {
-                    navController.navigate(route = MainNav.route) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            inclusive = true
-                        }
+        composable(
+            route = PinCodeConfirmation.route + "/{pinCodeInst}",
+            arguments = listOf(navArgument("pinCodeInst") { type = NavType.StringType })
+        ) {
+            PinCodeConfirmationScreen(onSaveClick = {
+                navController.navigate(route = MainNav.route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
                     }
                 }
+            }, onSkipClick = {
+                navController.navigate(route = MainNav.route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
+                    }
+                }
+            }, onBackClick = {
+                navController.popBackStack()
+            }
+
             )
         }
 

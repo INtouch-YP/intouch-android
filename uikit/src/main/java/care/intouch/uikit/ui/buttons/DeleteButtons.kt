@@ -6,13 +6,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 
 @Composable
 fun DeleteButton(
     onClick: () -> Unit,
     modifier: Modifier,
-    text: String,
+    text: StringVO,
     textStyle: TextStyle = InTouchTheme.typography.bodyBold,
     isEnabled: Boolean = true,
     isActive: Boolean = false,
@@ -42,7 +43,7 @@ fun DeleteButtonDefaultPreview() {
         DeleteButton(
             onClick = {},
             modifier = Modifier,
-            text = "Delete Profile Forever",
+            text = StringVO.Plain("Delete Profile Forever"),
             isActive = false
         )
     }
@@ -55,7 +56,7 @@ fun DeleteButtonActivePreview() {
         DeleteButton(
             onClick = {},
             modifier = Modifier,
-            text = "Delete Profile Forever",
+            text = StringVO.Plain("Delete Profile Forever"),
             isActive = true
         )
     }
