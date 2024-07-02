@@ -47,7 +47,6 @@ class MainActivity : ComponentActivity() {
 
     private var deepLinkResultWrapper: DeepLinkResultWrapper = DeepLinkResultWrapper.AbsentDeepLink
 
-
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +60,6 @@ class MainActivity : ComponentActivity() {
         if (intent?.action == Intent.ACTION_VIEW) {
             deepLinkResultWrapper = deepLinksMapper.handleDeepLink(data = intent?.data)
         }
-
 
         enableEdgeToEdge()
         setContent {
@@ -132,14 +130,13 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-        }
-
-        SnackbarHost(
-            hostState = snackBarHostState
-        ) { snackBarData ->
-            IntouchSnackbar(
-                data = snackBarData
-            )
+            SnackbarHost(
+                hostState = snackBarHostState
+            ) { snackBarData ->
+                IntouchSnackbar(
+                    data = snackBarData
+                )
+            }
         }
     }
 

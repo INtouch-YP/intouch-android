@@ -49,7 +49,7 @@ fun SendingNotificationScreen(
             onClick = {
                 onGoBackClick.invoke()
             },
-            text = StringVO.Resource(resId = R.string.back_button).value(),
+            text = StringVO.Resource(resId = R.string.back_button),
             isEnabled = true,
         )
     }

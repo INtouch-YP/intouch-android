@@ -1,8 +1,7 @@
 package care.intouch.app.feature.authorization.domain.di
 
-import care.intouch.app.feature.authorization.domain.useCase.GetUserNameUseCase
-import care.intouch.app.feature.authorization.domain.useCase.ResetPasswordUseCase
 import care.intouch.app.feature.authorization.domain.useCase.GetUserFullNameUseCase
+import care.intouch.app.feature.authorization.domain.useCase.ResetPasswordUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
