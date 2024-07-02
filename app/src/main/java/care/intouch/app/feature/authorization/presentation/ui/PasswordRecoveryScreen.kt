@@ -119,7 +119,7 @@ fun PasswordRecoveryScreen(
             onClick = {
                 onEvent.invoke(PasswordRecoveryEvent.OnPasswordRecovery(email = state.textFieldValue))
             },
-            text = StringVO.Resource(resId = R.string.send_password_uppercase_button).value(),
+            text = StringVO.Resource(resId = R.string.send_password_uppercase_button),
             isEnabled = state.enableButton,
         )
     }
