@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,7 +24,7 @@ import care.intouch.app.R
 import care.intouch.app.core.utils.BLANC_STRING
 import care.intouch.app.feature.authorization.presentation.ui.models.PasswordRecoveryEvent
 import care.intouch.app.feature.authorization.presentation.ui.models.PasswordRecoveryScreenState
-import care.intouch.app.feature.authorization.presentation.ui.models.RecoveryMove
+import care.intouch.app.feature.authorization.presentation.ui.models.PasswordRecoverySideEffect
 import care.intouch.app.feature.authorization.presentation.viewModel.PasswordRecoveryViewModel
 import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
@@ -39,11 +37,24 @@ fun PasswordRecoveryScreen(
     onSendPasswordClick: () -> Unit,
     onCloseButtonClick: () -> Unit
 ) {
+    val context = LocalContext.current
+
     val viewModel: PasswordRecoveryViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsState()
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.sideEffect.collect { sideEffect ->
+            when(sideEffect) {
+                PasswordRecoverySideEffect.Success,
+                PasswordRecoverySideEffect.UserNotExist -> onSendPasswordClick.invoke()
+                PasswordRecoverySideEffect.Failure -> {
+                    Toast.makeText(context, state.recoveryErrorMessage, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     PasswordRecoveryScreen(
-        onSendPasswordClick = onSendPasswordClick,
         onCloseButtonClick = onCloseButtonClick,
         state = state,
         onEvent = { viewModel.onEvent(it) }
@@ -52,13 +63,10 @@ fun PasswordRecoveryScreen(
 
 @Composable
 fun PasswordRecoveryScreen(
-    onSendPasswordClick: () -> Unit,
     onCloseButtonClick: () -> Unit,
     state: PasswordRecoveryScreenState,
     onEvent: (PasswordRecoveryEvent) -> Unit
 ) {
-    val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,14 +80,14 @@ fun PasswordRecoveryScreen(
         )
 
         Text(
-            modifier = Modifier.padding(top = 71.dp),
+            modifier = Modifier.padding(top = 72.dp),
             text = StringVO.Resource(R.string.welcome_to_intouch).value(),
             style = InTouchTheme.typography.titleLarge,
             color = InTouchTheme.colors.textGreen
         )
 
         Text(
-            modifier = Modifier.padding(top = 59.dp),
+            modifier = Modifier.padding(top = 60.dp),
             text = StringVO.Resource(R.string.enter_email_password_recover).value(),
             style = InTouchTheme.typography.bodySemibold,
             color = InTouchTheme.colors.textGreen
@@ -115,16 +123,6 @@ fun PasswordRecoveryScreen(
             isEnabled = state.enableButton,
         )
     }
-
-    when(state.recoveryMove) {
-        RecoveryMove.SUCCESS -> onSendPasswordClick.invoke()
-        RecoveryMove.USER_NOT_EXIST -> onSendPasswordClick.invoke()
-        RecoveryMove.FAILURE -> {
-            Toast.makeText(context, state.recoveryErrorMessage, Toast.LENGTH_SHORT).show()
-            onEvent(PasswordRecoveryEvent.ResetUiState)
-        }
-        RecoveryMove.UNDEFINED -> {}
-    }
 }
 
 @Composable
@@ -132,7 +130,6 @@ fun PasswordRecoveryScreen(
 fun PasswordRecoveryScreenPreview() {
     InTouchTheme {
         PasswordRecoveryScreen(
-            onSendPasswordClick = {},
             onCloseButtonClick = {},
             state = PasswordRecoveryScreenState(),
             onEvent = {}

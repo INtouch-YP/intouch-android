@@ -2,14 +2,17 @@ package care.intouch.app.feature.authorization.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import care.intouch.app.core.utils.BLANC_STRING
 import care.intouch.app.feature.authorization.domain.useCase.ResetPasswordUseCase
 import care.intouch.app.feature.authorization.presentation.ui.models.PasswordRecoveryEvent
 import care.intouch.app.feature.authorization.presentation.ui.models.PasswordRecoveryScreenState
-import care.intouch.app.feature.authorization.presentation.ui.models.RecoveryMove
+import care.intouch.app.feature.authorization.presentation.ui.models.PasswordRecoverySideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,56 +23,42 @@ class PasswordRecoveryViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PasswordRecoveryScreenState())
-    val uiState: StateFlow<PasswordRecoveryScreenState> = _uiState
+    val uiState: StateFlow<PasswordRecoveryScreenState> = _uiState.asStateFlow()
+
+    private val _sideEffect = MutableSharedFlow<PasswordRecoverySideEffect>()
+    val sideEffect: SharedFlow<PasswordRecoverySideEffect> = _sideEffect.asSharedFlow()
 
     fun onEvent(event: PasswordRecoveryEvent) {
         when (event) {
             is PasswordRecoveryEvent.OnPasswordRecovery -> recoverPassword(event.email)
-            is PasswordRecoveryEvent.ResetUiState -> resetUiState()
             is PasswordRecoveryEvent.OnTextFieldChange -> onTextFieldChange(event.text)
         }
     }
 
     private fun recoverPassword(email: String) {
         viewModelScope.launch {
-            val result = resetPasswordUseCase(email)
+            val passwordRecoveryResult = resetPasswordUseCase(email)
 
             when {
-                result.isSuccess -> {
-                    _uiState.update { passwordRecoveryScreenState ->
-                        passwordRecoveryScreenState.copy(recoveryMove = RecoveryMove.SUCCESS)
-                    }
+                passwordRecoveryResult.isSuccess -> {
+                    _sideEffect.emit(PasswordRecoverySideEffect.Success)
                 }
 
-                result.isFailure -> {
-                    val response = result.exceptionOrNull()
+                passwordRecoveryResult.isFailure -> {
+                    val passwordRecoveryError = passwordRecoveryResult.exceptionOrNull()
 
-                    if (response?.message == USER_NOT_EXIST) {
-                        _uiState.update { passwordRecoveryScreenState ->
-                            passwordRecoveryScreenState.copy(
-                                recoveryMove = RecoveryMove.USER_NOT_EXIST
-                            )
-                        }
+                    if (passwordRecoveryError?.message == USER_NOT_EXIST) {
+                        _sideEffect.emit(PasswordRecoverySideEffect.UserNotExist)
                     } else {
                         _uiState.update { passwordRecoveryScreenState ->
                             passwordRecoveryScreenState.copy(
-                                recoveryErrorMessage = "${response?.message}",
-                                recoveryMove = RecoveryMove.FAILURE
+                                recoveryErrorMessage = "${passwordRecoveryError?.message}",
                             )
                         }
+                        _sideEffect.emit(PasswordRecoverySideEffect.Failure)
                     }
                 }
             }
-        }
-    }
-
-    private fun resetUiState() {
-        _uiState.update { passwordRecoveryScreenState ->
-            passwordRecoveryScreenState.copy(
-                recoveryErrorMessage = BLANC_STRING,
-                recoveryMove = RecoveryMove.UNDEFINED,
-                enableButton = true
-            )
         }
     }
 

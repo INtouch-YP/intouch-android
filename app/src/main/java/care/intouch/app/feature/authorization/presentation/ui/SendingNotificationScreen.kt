@@ -30,14 +30,14 @@ fun SendingNotificationScreen(
         )
 
         Text(
-            modifier = Modifier.padding(top = 71.dp),
+            modifier = Modifier.padding(top = 72.dp),
             text = StringVO.Resource(R.string.welcome_to_intouch).value(),
             style = InTouchTheme.typography.titleLarge,
             color = InTouchTheme.colors.textGreen
         )
 
         Text(
-            modifier = Modifier.padding(top = 59.dp, start = 28.dp, end = 28.dp),
+            modifier = Modifier.padding(top = 60.dp, start = 28.dp, end = 28.dp),
             text = StringVO.Resource(R.string.if_account_exist).value(),
             style = InTouchTheme.typography.bodySemibold,
             color = InTouchTheme.colors.textGreen,
@@ -45,7 +45,7 @@ fun SendingNotificationScreen(
         )
 
         PrimaryButtonGreen(
-            modifier = Modifier.padding(top = 47.dp),
+            modifier = Modifier.padding(top = 48.dp),
             onClick = {
                 onGoBackClick.invoke()
             },
