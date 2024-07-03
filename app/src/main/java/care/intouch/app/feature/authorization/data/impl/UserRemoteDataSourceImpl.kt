@@ -34,8 +34,6 @@ class UserRemoteDataSourceImpl @Inject constructor(
             try {
                 val response = userUtilsApiService.resetPassword(PasswordResetRequest(email))
                 Result.success(response)
-            } catch (e: NetworkException) {
-                Result.failure(e)
             } catch (e: Exception) {
                 Result.failure(e)
             }
