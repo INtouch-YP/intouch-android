@@ -10,4 +10,5 @@ import retrofit2.http.POST
 interface UserApiService {
     @GET("/api/v1/get-user")
     suspend fun getUser(): List<UserResponse>
+
 }

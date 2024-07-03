@@ -1,5 +1,6 @@
 package care.intouch.app.core.navigation.navhost
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -102,7 +103,8 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
                 },
                 onLoginClick = {
                     navController.navigate(route = PinCodeInstallation.route)
-                }
+                },
+                viewModel = hiltViewModel()
             )
         }
 
