@@ -177,4 +177,5 @@
     <string name="login">LOGIN</string>
     <string name="sign_in_to_continue">Sign in to continue</string>
     <string name="if_account_exist">If your account exists, you\'ll receive an email with a link to reset your password. \nPlease check your spam folder if you don\'t receive it within a few minutes.</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>

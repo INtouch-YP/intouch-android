@@ -24,7 +24,7 @@ fun AuthorizationHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(219.dp),
+            .height(220.dp),
         contentAlignment = Alignment.TopCenter
     ) {
         Image(
@@ -35,14 +35,14 @@ fun AuthorizationHeader(
         )
 
         Image(
-            modifier = Modifier.padding(top = 89.dp),
+            modifier = Modifier.padding(top = 88.dp),
             painter = ImageVO.Resource(res = R.drawable.head_logo).painter(),
             contentDescription = null,
         )
         if (isVisibleTopBar) {
             Box(
                 modifier = Modifier
-                    .padding(top = 57.dp)
+                    .padding(top = 56.dp)
             ) {
                 CustomTopBar(
                     onBackArrowClick = {},

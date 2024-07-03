@@ -45,10 +45,15 @@ fun PasswordRecoveryScreen(
     LaunchedEffect(key1 = Unit) {
         viewModel.sideEffect.collect { sideEffect ->
             when(sideEffect) {
-                PasswordRecoverySideEffect.Success,
-                PasswordRecoverySideEffect.UserNotExist -> onSendPasswordClick.invoke()
-                PasswordRecoverySideEffect.Failure -> {
-                    Toast.makeText(context, state.recoveryErrorMessage, Toast.LENGTH_SHORT).show()
+                PasswordRecoverySideEffect.NavigateToPasswordSendInformation -> {
+                    onSendPasswordClick.invoke()
+                }
+                is PasswordRecoverySideEffect.ShowToast -> {
+                    Toast.makeText(
+                        context,
+                        sideEffect.message.value(context),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -117,7 +122,7 @@ fun PasswordRecoveryScreen(
         PrimaryButtonGreen(
             modifier = Modifier.padding(top = 20.dp),
             onClick = {
-                onEvent.invoke(PasswordRecoveryEvent.OnPasswordRecovery(email = state.textFieldValue))
+                onEvent.invoke(PasswordRecoveryEvent.OnPasswordRecovery)
             },
             text = StringVO.Resource(resId = R.string.send_password_uppercase_button),
             isEnabled = state.enableButton,

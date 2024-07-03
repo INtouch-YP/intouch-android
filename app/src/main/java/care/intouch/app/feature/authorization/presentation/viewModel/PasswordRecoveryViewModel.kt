@@ -2,10 +2,13 @@ package care.intouch.app.feature.authorization.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import care.intouch.app.R
 import care.intouch.app.feature.authorization.domain.useCase.ResetPasswordUseCase
 import care.intouch.app.feature.authorization.presentation.ui.models.PasswordRecoveryEvent
 import care.intouch.app.feature.authorization.presentation.ui.models.PasswordRecoveryScreenState
 import care.intouch.app.feature.authorization.presentation.ui.models.PasswordRecoverySideEffect
+import care.intouch.app.feature.common.data.models.exception.NetworkException
+import care.intouch.uikit.common.StringVO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,35 +33,20 @@ class PasswordRecoveryViewModel @Inject constructor(
 
     fun onEvent(event: PasswordRecoveryEvent) {
         when (event) {
-            is PasswordRecoveryEvent.OnPasswordRecovery -> recoverPassword(event.email)
+            is PasswordRecoveryEvent.OnPasswordRecovery -> recoverPassword(uiState.value.textFieldValue)
             is PasswordRecoveryEvent.OnTextFieldChange -> onTextFieldChange(event.text)
         }
     }
 
     private fun recoverPassword(email: String) {
         viewModelScope.launch {
-            val passwordRecoveryResult = resetPasswordUseCase(email)
-
-            when {
-                passwordRecoveryResult.isSuccess -> {
-                    _sideEffect.emit(PasswordRecoverySideEffect.Success)
+            resetPasswordUseCase(email)
+                .onSuccess {
+                    handleRecoveryPasswordSuccess()
                 }
-
-                passwordRecoveryResult.isFailure -> {
-                    val passwordRecoveryError = passwordRecoveryResult.exceptionOrNull()
-
-                    if (passwordRecoveryError?.message == USER_NOT_EXIST) {
-                        _sideEffect.emit(PasswordRecoverySideEffect.UserNotExist)
-                    } else {
-                        _uiState.update { passwordRecoveryScreenState ->
-                            passwordRecoveryScreenState.copy(
-                                recoveryErrorMessage = "${passwordRecoveryError?.message}",
-                            )
-                        }
-                        _sideEffect.emit(PasswordRecoverySideEffect.Failure)
-                    }
+                .onFailure { throwable ->
+                    handleRecoveryPasswordFailure(throwable)
                 }
-            }
         }
     }
 
@@ -93,11 +81,28 @@ class PasswordRecoveryViewModel @Inject constructor(
 
     }
 
-    private  fun isEmailValid(text: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches()
+    private suspend fun handleRecoveryPasswordSuccess() {
+        _sideEffect.emit(PasswordRecoverySideEffect.NavigateToPasswordSendInformation)
     }
 
-    companion object {
-        const val USER_NOT_EXIST = "User with this email does not exist."
+    private suspend fun handleRecoveryPasswordFailure(throwable: Throwable) {
+        when (throwable) {
+            is NetworkException.BadRequest -> {
+                _sideEffect.emit(PasswordRecoverySideEffect.NavigateToPasswordSendInformation)
+            }
+            else -> {
+                val message = throwable.message
+                val errorMessage = if (message.isNullOrEmpty()) {
+                    StringVO.Resource(R.string.unknown_error)
+                } else {
+                    StringVO.Plain(message)
+                }
+                _sideEffect.emit(PasswordRecoverySideEffect.ShowToast(message = errorMessage))
+            }
+        }
+    }
+
+    private  fun isEmailValid(text: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches()
     }
 }
