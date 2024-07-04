@@ -3,6 +3,7 @@ package care.intouch.app.feature.authorization.domain.useCase
 import care.intouch.app.feature.authorization.domain.api.AccountStateRepository
 import care.intouch.app.feature.authorization.domain.api.AuthenticationRepository
 import care.intouch.app.feature.authorization.domain.api.UserRepository
+import care.intouch.app.feature.authorization.domain.api.UserStorage
 import care.intouch.app.feature.common.Resource
 import care.intouch.app.feature.common.domain.errors.ErrorEntity
 import javax.inject.Inject
@@ -14,6 +15,7 @@ interface LoginByEmailUC {
         private val authenticationRepository: AuthenticationRepository,
         private val accountRepository: AccountStateRepository,
         private val userRepository: UserRepository,
+        private val userStorage: UserStorage,
     ) : LoginByEmailUC {
         override suspend fun invoke(
             username: String,
@@ -23,18 +25,12 @@ interface LoginByEmailUC {
                 val result = authenticationRepository.getToken(username, password)) {
                 is Resource.Success -> {
                     accountRepository.createAccount(
-                        1,
                         result.data.accessToken,
                         result.data.refreshToken
                     )
                     when (val userInformation = userRepository.getUser()) {
                         is Resource.Success -> {
-                            accountRepository.clearAccount()
-                            accountRepository.createAccount(
-                                userInformation.data.id,
-                                result.data.accessToken,
-                                result.data.refreshToken
-                            )
+                            userStorage.save(userInformation.data)
                         }
 
                         is Resource.Error -> {
