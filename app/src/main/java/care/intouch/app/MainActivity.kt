@@ -1,42 +1,52 @@
 package care.intouch.app
 
- import android.os.Bundle
- import androidx.activity.ComponentActivity
- import androidx.activity.compose.setContent
- import androidx.activity.enableEdgeToEdge
- import androidx.activity.viewModels
- import androidx.compose.foundation.layout.Column
- import androidx.compose.foundation.layout.fillMaxSize
- import androidx.compose.foundation.layout.navigationBarsPadding
- import androidx.compose.material3.SnackbarDuration
- import androidx.compose.material3.SnackbarHost
- import androidx.compose.material3.SnackbarHostState
- import androidx.compose.material3.SnackbarResult
- import androidx.compose.material3.Surface
- import androidx.compose.runtime.LaunchedEffect
- import androidx.compose.runtime.getValue
- import androidx.compose.runtime.mutableStateOf
- import androidx.compose.runtime.remember
- import androidx.compose.runtime.setValue
- import androidx.compose.ui.Modifier
- import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
- import androidx.navigation.compose.rememberNavController
- import care.intouch.app.core.navigation.AppNavScreen
- import care.intouch.app.core.navigation.Authentication
- import care.intouch.app.core.navigation.AuthorizationRouteBranch
- import care.intouch.app.core.navigation.Home
- import care.intouch.app.core.navigation.navhost.MainNavHost
- import care.intouch.app.models.MainActivitySideEffect
- import care.intouch.uikit.common.StringVO
- import care.intouch.uikit.theme.InTouchTheme
- import care.intouch.uikit.ui.snackbar.IntouchSnackbar
- import com.google.firebase.appdistribution.FirebaseAppDistribution
- import com.google.firebase.appdistribution.FirebaseAppDistributionException
- import dagger.hilt.android.AndroidEntryPoint
- import timber.log.Timber
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.compose.rememberNavController
+import care.intouch.app.core.navigation.AppNavScreen
+import care.intouch.app.core.navigation.Authentication
+import care.intouch.app.core.navigation.AuthorizationRouteBranch
+import care.intouch.app.core.navigation.Home
+import care.intouch.app.core.navigation.Registration
+import care.intouch.app.core.navigation.navhost.MainNavHost
+import care.intouch.app.core.utils.mappers.DeepLinkResultWrapper
+import care.intouch.app.core.utils.mappers.DeepLinksMapper
+import care.intouch.app.models.MainActivitySideEffect
+import care.intouch.uikit.common.StringVO
+import care.intouch.uikit.theme.InTouchTheme
+import care.intouch.uikit.ui.snackbar.IntouchSnackbar
+import com.google.firebase.appdistribution.FirebaseAppDistribution
+import com.google.firebase.appdistribution.FirebaseAppDistributionException
+import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var deepLinksMapper: DeepLinksMapper
+
+    private var deepLinkResultWrapper: DeepLinkResultWrapper = DeepLinkResultWrapper.AbsentDeepLink
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -47,6 +57,10 @@ class MainActivity : ComponentActivity() {
             }
         }
         super.onCreate(savedInstanceState)
+
+        if (intent?.action == Intent.ACTION_VIEW) {
+            deepLinkResultWrapper = deepLinksMapper.handleDeepLink(data = intent?.data)
+        }
 
         enableEdgeToEdge()
         setContent {
@@ -78,36 +92,45 @@ class MainActivity : ComponentActivity() {
 
             InTouchTheme {
                 Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .navigationBarsPadding(),
+                    modifier = Modifier.fillMaxSize().navigationBarsPadding(),
                     color = InTouchTheme.colors.mainBlue
                 ) {
                     Column {
-                        when {
-                            BuildConfig.DEBUG -> {
-                                MainNavHost(
-                                    navController = rememberNavController(),
-                                    isAuthenticate = isAuthenticate
-                                )
+                        if (BuildConfig.DEBUG) {
+                            when(deepLinkResultWrapper) {
+                                is DeepLinkResultWrapper.ResetPasswordDeepLink -> {
+                                    AppNavScreen(
+                                        startDestination = AuthorizationRouteBranch.route,
+                                        authStartDestination = Registration.route
+                                    )
+                                }
+                                is DeepLinkResultWrapper.AbsentDeepLink -> {
+                                    MainNavHost(
+                                        navController = rememberNavController(),
+                                        isAuthenticate = isAuthenticate
+                                    )
+                                }
+                            }
+                        } else {
+                            val currentRoute = when(deepLinkResultWrapper) {
+                                DeepLinkResultWrapper.ResetPasswordDeepLink -> Registration.route
+                                DeepLinkResultWrapper.AbsentDeepLink -> Authentication.route
                             }
 
-                            else -> {
-                                val startDestination = if (isAuthenticate) {
-                                    Home.route
-                                } else {
-                                    AuthorizationRouteBranch.route
-                                }
-                                AppNavScreen(
-                                    startDestination = startDestination,
-                                    authStartDestination = Authentication.route
-                                )
+                            val startDestination = if (isAuthenticate) {
+                                Home.route
+                            } else {
+                                AuthorizationRouteBranch.route
                             }
+
+                            AppNavScreen(
+                                startDestination = startDestination,
+                                authStartDestination = currentRoute
+                            )
                         }
                     }
                 }
             }
-
             SnackbarHost(
                 hostState = snackBarHostState
             ) { snackBarData ->

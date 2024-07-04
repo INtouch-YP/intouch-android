@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.buttons.DeleteButton
 import care.intouch.uikit.ui.buttons.IconicButtonCircle
@@ -68,13 +69,13 @@ fun ButtonSampleScreenSecond() {
             DeleteButton(
                 onClick = {},
                 modifier = Modifier.padding(top = 5.dp),
-                text = "Delete Profile",
+                text = StringVO.Plain("Delete Profile"),
                 isActive = false
             )
             DeleteButton(
                 onClick = {},
                 modifier = Modifier.padding(top = 5.dp),
-                text = "Delete Profile",
+                text = StringVO.Plain("Delete Profile"),
                 isActive = true,
             )
         }
