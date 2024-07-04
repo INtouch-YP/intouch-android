@@ -79,7 +79,7 @@ fun CustomTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(InTouchTheme.colors.input),
+            .background(InTouchTheme.colors.transparent),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {

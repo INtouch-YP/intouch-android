@@ -1,5 +1,6 @@
 package care.intouch.app.core.navigation.navhost
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -20,8 +21,9 @@ import care.intouch.app.core.navigation.PinCodeInstallation
 import care.intouch.app.core.navigation.Registration
 import care.intouch.app.core.navigation.SendingNotification
 import care.intouch.app.feature.authorization.presentation.AuthorizationScreenInit
+import care.intouch.app.feature.pinCode.ui.enter.PinCodeEnterScreen
+import care.intouch.app.feature.authorization.presentation.AuthorizationScreen
 import care.intouch.app.feature.authorization.presentation.ui.AuthenticationScreen
-import care.intouch.app.feature.authorization.presentation.ui.EnterPinCodeScreen
 import care.intouch.app.feature.authorization.presentation.ui.PasswordRecoveryScreen
 import care.intouch.app.feature.authorization.presentation.ui.RegistrationScreen
 import care.intouch.app.feature.authorization.presentation.ui.SendingNotificationScreen
@@ -81,7 +83,7 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
         }
 
         composable(route = PinCodeEnter.route) {
-            EnterPinCodeScreen(
+            PinCodeEnterScreen(
                 onNextClick = {
                     navController.navigate(route = MainNav.route) {
                         popUpTo(navController.graph.startDestinationId) {
@@ -90,7 +92,11 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
                     }
                 },
                 onForgotPicCodeClick = {
-                    navController.navigate(route = Authentication.route)
+                    navController.navigate(route = Authentication.route){
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
@@ -102,7 +108,8 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
                 },
                 onLoginClick = {
                     navController.navigate(route = PinCodeInstallation.route)
-                }
+                },
+                viewModel = hiltViewModel()
             )
         }
 
@@ -110,6 +117,9 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
             PasswordRecoveryScreen(
                 onSendPasswordClick = {
                     navController.navigate(route = SendingNotification.route)
+                },
+                onCloseButtonClick = {
+                    navController.navigate(route = Authentication.route)
                 }
             )
         }
