@@ -1,6 +1,7 @@
 package care.intouch.app.feature.profile.di
 
 import care.intouch.app.feature.profile.domain.impl.DeleteProfileUseCaseImpl
+import care.intouch.app.feature.profile.domain.impl.UpdatePasswordUseCaseImpl
 import care.intouch.app.feature.profile.domain.useCase.DeleteProfileUseCase
 import care.intouch.app.feature.profile.domain.useCase.UpdatePasswordUseCase
 import dagger.Binds
@@ -14,5 +15,5 @@ interface SecurityDomainModule {
     @Binds
     fun bindDeleteProfileUseCase(useCase: DeleteProfileUseCaseImpl): DeleteProfileUseCase
     @Binds
-    fun bindUpdatePasswordUseCase(useCase: UpdatePasswordUseCase): UpdatePasswordUseCase
+    fun bindUpdatePasswordUseCase(useCase: UpdatePasswordUseCaseImpl): UpdatePasswordUseCase
 }
