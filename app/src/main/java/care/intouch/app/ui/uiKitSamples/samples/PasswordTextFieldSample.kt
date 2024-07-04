@@ -46,6 +46,7 @@ fun PasswordTextFieldSampleScreen() {
                 onValueChange = {
                     text = it
                 },
+                isPasswordVisible = false,
                 isPasswordVisibleIconVisible = isIconVisible,
                 hint = StringVO.Plain("Password"),
                 caption = StringVO.Plain("Passwords must be at least 8 characters long"),

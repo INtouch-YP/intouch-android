@@ -71,10 +71,6 @@ private fun SecurityScreen(
 
     Scaffold { paddingValues ->
         when (state.value.uiState) {
-            SecurityUiState.Loading -> {
-
-            }
-
             SecurityUiState.SetPassword -> {
                 Column(
                     modifier = Modifier
