@@ -22,7 +22,6 @@ import care.intouch.app.core.navigation.Registration
 import care.intouch.app.core.navigation.SendingNotification
 import care.intouch.app.feature.authorization.presentation.AuthorizationScreenInit
 import care.intouch.app.feature.pinCode.ui.enter.PinCodeEnterScreen
-import care.intouch.app.feature.authorization.presentation.AuthorizationScreen
 import care.intouch.app.feature.authorization.presentation.ui.AuthenticationScreen
 import care.intouch.app.feature.authorization.presentation.ui.PasswordRecoveryScreen
 import care.intouch.app.feature.authorization.presentation.ui.RegistrationScreen
