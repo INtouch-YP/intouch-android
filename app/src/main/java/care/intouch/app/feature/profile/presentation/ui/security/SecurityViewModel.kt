@@ -7,7 +7,9 @@ import care.intouch.app.feature.profile.domain.useCase.DeleteProfileUseCase
 import care.intouch.app.feature.profile.domain.useCase.UpdatePasswordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,6 +23,9 @@ class SecurityViewModel @Inject constructor(
 ): ViewModel() {
     private var _state = MutableStateFlow(SecurityState())
     val state = _state.asStateFlow()
+
+    private val _sideEffect = MutableSharedFlow<SecuritySideEffect>()
+    val sideEffect = _sideEffect.asSharedFlow()
 
     fun onEvent(event: SecurityEvent) {
         when(event) {
@@ -50,6 +55,18 @@ class SecurityViewModel @Inject constructor(
 
             is SecurityEvent.OnSetConfirmPassword -> {
                 checkConfirmPassword(event.confirmPassword)
+            }
+
+            SecurityEvent.OnBackButtonClick -> {
+                viewModelScope.launch {
+                    _sideEffect.emit(SecuritySideEffect.NavigateBack)
+                }
+            }
+
+            SecurityEvent.OnDeleteProfileButtonClick -> {
+                viewModelScope.launch {
+                    _sideEffect.emit(SecuritySideEffect.NavigateToDeleteProfile)
+                }
             }
         }
     }

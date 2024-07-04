@@ -13,4 +13,7 @@ sealed class SecurityEvent {
     data class OnSetCurrentPassword(val password: String): SecurityEvent()
     data class OnSetPassword(val password: String): SecurityEvent()
     data class OnSetConfirmPassword(val confirmPassword: String): SecurityEvent()
+
+    data object OnDeleteProfileButtonClick : SecurityEvent()
+    data object OnBackButtonClick : SecurityEvent()
 }

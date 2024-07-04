@@ -17,11 +17,9 @@ fun AppNavScreen(
     startDestination: String,
     authStartDestination: String? = null
 ) {
-
     val screensWithBottomBar = listOf(
         Home.route, Plan.route, Diary.route, Profile.route
     )
-
     val navController = rememberNavController()
 
     Scaffold(
@@ -31,13 +29,11 @@ fun AppNavScreen(
             }
         }
     ) {
-
-        Modifier.padding(it)
-
         AppNavHost(
             navController = navController,
             startDestination = startDestination,
-            authStartDestination = authStartDestination
+            authStartDestination = authStartDestination,
+            modifier = Modifier.padding(it)
         )
     }
 }
@@ -46,7 +42,6 @@ fun AppNavScreen(
 fun BottomBar(
     navController: NavHostController
 ) {
-
     CustomBottomNavBar(
         screenRoute1 = Home.route,
         screenRoute2 = Plan.route,
@@ -55,19 +50,19 @@ fun BottomBar(
         screenRoute5 = Profile.route,
         currentRoute = currentRoute(navController = navController),
         firstItemClick = {
-            navController.navigate(Home.route)  {
+            navController.navigate(Home.route) {
                 popUpTo(navController.graph.findStartDestination().id)
                 launchSingleTop = true
             }
         },
         secondItemClick = {
-            navController.navigate(Plan.route)  {
+            navController.navigate(Plan.route) {
                 popUpTo(navController.graph.findStartDestination().id)
                 launchSingleTop = true
             }
         },
         thirdItemClick = {
-            navController.navigate(Diary.route)  {
+            navController.navigate(Diary.route) {
                 popUpTo(navController.graph.findStartDestination().id)
                 launchSingleTop = true
             }

@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,9 +41,22 @@ fun SecurityScreenInit(
     viewModel: SecurityViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.sideEffect.collect {
+            when (it) {
+                SecuritySideEffect.NavigateBack -> {
+                    onPopBackStack.invoke()
+                }
+
+                SecuritySideEffect.NavigateToDeleteProfile -> {
+                    onDeleteProfileForeverClick.invoke()
+                }
+            }
+        }
+    }
+
     SecurityScreen(
-        onPopBackStack = onPopBackStack,
-        onDeleteProfileForeverClick = onDeleteProfileForeverClick,
         onEvent = { viewModel.onEvent(it) },
         state = state
     )
@@ -50,8 +64,6 @@ fun SecurityScreenInit(
 
 @Composable
 private fun SecurityScreen(
-    onPopBackStack: () -> Unit,
-    onDeleteProfileForeverClick: () -> Unit,
     onEvent: (SecurityEvent) -> Unit,
     state: State<SecurityState>
 ) {
@@ -59,10 +71,6 @@ private fun SecurityScreen(
 
     Scaffold { paddingValues ->
         when (state.value.uiState) {
-            SecurityUiState.Loading -> {
-
-            }
-
             SecurityUiState.SetPassword -> {
                 Column(
                     modifier = Modifier
@@ -92,7 +100,7 @@ private fun SecurityScreen(
                         ) {
                             Image(
                                 modifier = Modifier.clickable {
-                                    onPopBackStack.invoke()
+                                    onEvent(SecurityEvent.OnBackButtonClick)
                                 },
                                 painter = painterResource(id = care.intouch.uikit.R.drawable.icon_arrow_left),
                                 contentDescription = null
@@ -138,7 +146,7 @@ private fun SecurityScreen(
             }
 
             SecurityUiState.ProfileDeleted -> {
-                onDeleteProfileForeverClick.invoke()
+                onEvent(SecurityEvent.OnDeleteProfileButtonClick)
             }
         }
     }

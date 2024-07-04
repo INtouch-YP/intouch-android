@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import care.intouch.app.R
+import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.buttons.IntouchButton
 
@@ -61,7 +62,7 @@ fun DeleteProfilePopUp(
         IntouchButton(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
-            text = stringResource(id = R.string.cancel_button),
+            text = StringVO.Resource(R.string.cancel_button),
             enableBackgroundColor = InTouchTheme.colors.mainGreen,
             disableBackgroundColor = InTouchTheme.colors.unableElementLight,
             enableTextColor = InTouchTheme.colors.input,
@@ -73,7 +74,7 @@ fun DeleteProfilePopUp(
         IntouchButton(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
-            text = stringResource(id = R.string.confirm_button),
+            text = StringVO.Resource(R.string.confirm_button),
             enableBackgroundColor = InTouchTheme.colors.transparent,
             disableBackgroundColor = InTouchTheme.colors.transparent,
             enableTextColor = InTouchTheme.colors.textGreen40,

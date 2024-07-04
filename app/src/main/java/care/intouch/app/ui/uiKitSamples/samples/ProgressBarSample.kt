@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.ProgressBar
 import care.intouch.uikit.ui.buttons.IntouchButton
@@ -54,7 +55,7 @@ fun ProgressBarSample() {
                 }
                 loading = false
             }
-        }, isEnabled = !loading, text = "Start loading", modifier = Modifier)
+        }, isEnabled = !loading, text = StringVO.Plain("Start loading"), modifier = Modifier)
     }
 
 }

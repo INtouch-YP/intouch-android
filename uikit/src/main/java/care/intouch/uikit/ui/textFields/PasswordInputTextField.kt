@@ -108,6 +108,7 @@ Password text field with the title.
 fun PasswordTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    isPasswordVisible: Boolean,
     isPasswordVisibleIconVisible: Boolean,
     onPasswordVisibleIconClick: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -142,7 +143,7 @@ fun PasswordTextField(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
+    var isPasswordVisibleState by rememberSaveable { mutableStateOf(isPasswordVisible) }
 
     Column(
         modifier = modifier.width(MinWidth)
@@ -181,7 +182,7 @@ fun PasswordTextField(
                     interactionSource = interactionSource,
                     enabled = enabled,
                     readOnly = readOnly,
-                    visualTransformation = if (isPasswordVisible) {
+                    visualTransformation = if (isPasswordVisibleState) {
                         VisualTransformation.None
                     } else {
                         visualTransformation
@@ -221,14 +222,14 @@ fun PasswordTextField(
                 )
                 if (isPasswordVisibleIconVisible) {
                     Icon(
-                        painter = if (isPasswordVisible) passwordVisibleIcon.painter() else passwordNotVisibleIcon.painter(),
-                        contentDescription = if (isPasswordVisible) stringResource(id = R.string.show_password) else stringResource(
+                        painter = if (isPasswordVisibleState) passwordVisibleIcon.painter() else passwordNotVisibleIcon.painter(),
+                        contentDescription = if (isPasswordVisibleState) stringResource(id = R.string.show_password) else stringResource(
                             id = R.string.hide_password
                         ),
                         modifier = Modifier
                             .padding(start = 8.dp, end = 14.dp)
                             .clickable {
-                                isPasswordVisible = !isPasswordVisible
+                                isPasswordVisibleState = !isPasswordVisibleState
                                 onPasswordVisibleIconClick.invoke()
                             },
                         tint = passwordIconTint
@@ -259,6 +260,7 @@ fun PasswordInputPreview() {
             onValueChange = {
                 text = it
             },
+            isPasswordVisible = true,
             isPasswordVisibleIconVisible = true,
             onPasswordVisibleIconClick = {  },
             hint = StringVO.Plain("Enter password"),

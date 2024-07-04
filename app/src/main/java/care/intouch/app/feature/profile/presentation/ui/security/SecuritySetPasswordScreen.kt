@@ -82,6 +82,7 @@ fun SecuritySetPasswordScreen(
                 currentPasswordValid.getString()
             } else StringVO.Plain(""),
             captionLinesAmount = 2,
+            isPasswordVisible = false,
             isPasswordVisibleIconVisible = true,
             keyboardActions = KeyboardActions(
                 onDone = {
@@ -109,6 +110,7 @@ fun SecuritySetPasswordScreen(
                 isPasswordValid.getString()
             } else StringVO.Plain(""),
             captionLinesAmount = 2,
+            isPasswordVisible = false,
             isPasswordVisibleIconVisible = true,
             keyboardActions = KeyboardActions(
                 onDone = {
@@ -131,6 +133,7 @@ fun SecuritySetPasswordScreen(
                 isConfirmPasswordValid.getString()
             } else StringVO.Plain(""),
             captionLinesAmount = 2,
+            isPasswordVisible = false,
             isPasswordVisibleIconVisible = true,
         )
         Spacer(modifier = Modifier.height(20.dp))
@@ -148,7 +151,7 @@ fun SecuritySetPasswordScreen(
             modifier = Modifier
                 .width(176.dp)
                 .align(Alignment.CenterHorizontally),
-            text = stringResource(id = R.string.save_button),
+            text = StringVO.Resource(R.string.save_button),
             isEnabled = isEnable,
             enableBackgroundColor = InTouchTheme.colors.mainGreen,
             disableBackgroundColor = InTouchTheme.colors.unableElementLight,
@@ -174,7 +177,7 @@ fun SecuritySetPasswordScreen(
                 onEvent.invoke(SecurityEvent.OnCallFormForDelete)
             },
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.delete_profile_button)
+            text = StringVO.Resource(R.string.delete_profile_button)
         )
         Spacer(modifier = Modifier.height(44.dp))
     }
