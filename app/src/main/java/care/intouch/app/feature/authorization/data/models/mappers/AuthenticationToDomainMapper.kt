@@ -2,7 +2,9 @@ package care.intouch.app.feature.authorization.data.models.mappers
 
 import care.intouch.app.feature.authorization.data.models.exception.AuthenticationException
 import care.intouch.app.feature.authorization.data.models.response.ConfirmEmailResponse
+import care.intouch.app.feature.authorization.data.models.response.TokensResponse
 import care.intouch.app.feature.authorization.domain.models.Authentication
+import care.intouch.app.feature.authorization.domain.models.AuthenticationToken
 import javax.inject.Inject
 
 class AuthenticationToDomainMapper @Inject constructor() {
@@ -34,6 +36,13 @@ class AuthenticationToDomainMapper @Inject constructor() {
                 message = response.message ?: BLANC_STRING
             )
         }
+    }
+
+    fun toAuthenticationTokenOutputData(response: TokensResponse): AuthenticationToken {
+        return AuthenticationToken(
+            accessToken = response.access,
+            refreshToken = response.refresh,
+        )
     }
 
     companion object {
