@@ -7,6 +7,7 @@ import care.intouch.app.feature.authorization.domain.api.UserStorage
 import care.intouch.app.feature.authorization.domain.models.User
 import care.intouch.app.feature.profile.domain.profile.models.ProfileData
 import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserDataUseCase
+import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserEmailUseCase
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataEvent
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileInformationData
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataState
@@ -15,7 +16,6 @@ import care.intouch.app.feature.profile.presentation.ui.profile.models.ViewsComp
 import care.intouch.uikit.common.StringVO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -25,13 +25,15 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val userStorage: UserStorage,
-    private val redactUserDataUseCase: RedactUserDataUseCase
+    private val redactUserDataUseCase: RedactUserDataUseCase,
+    private val redactUserEmailUseCase: RedactUserEmailUseCase
 ) : ViewModel() {
 
-    private var _state = MutableStateFlow(ProfileState(loadProfileData(), ViewsComponentsState()))
+    private var _state = MutableStateFlow(ProfileState(getDefaultProfileData(), ViewsComponentsState()))
     val state = _state.asStateFlow()
     private var userData: User? = null
-    private var profileData: ProfileData = ProfileData("", "", "")
+    private var profileData: ProfileData = ProfileData("", "")
+    private var email: String = ""
 
     fun onEvent(event: ProfileDataEvent) {
         when (event) {
@@ -79,6 +81,7 @@ class ProfileViewModel @Inject constructor(
 
             is ProfileDataEvent.OnSaveChangesButtonClick -> {
                 doPatchUserData()
+                doChangeEmail()
                 changeTextFieldsAndButtonsEnabled(
                     name = event.name,
                     lastName = event.lastName,
@@ -172,9 +175,7 @@ class ProfileViewModel @Inject constructor(
             if (!isEmailValid) {
                 errorMessage = event.errorEmailNotValid
             }
-            profileData = profileData.copy(
-                email = event.email
-            )
+            email = event.email
             _state.update {
                 ProfileState(
                     profileDataState = ProfileDataState(
@@ -194,11 +195,24 @@ class ProfileViewModel @Inject constructor(
     private fun readUserDataFromSharedPreferences() {
         viewModelScope.launch(Dispatchers.IO) {
             val dataFromSharedPreferences: User = userStorage.read()
+            _state.update {
+                ProfileState(
+                    profileDataState = ProfileDataState(
+                        dataIsValid = true,
+                        name = ProfileInformationData(StringVO.Plain(dataFromSharedPreferences.firstName), true),
+                        lastName = ProfileInformationData(StringVO.Plain(dataFromSharedPreferences.firstName), true),
+                        email = ProfileInformationData(StringVO.Plain(dataFromSharedPreferences.email), true),
+                        errorMessage = _state.value.profileDataState.errorMessage,
+                        successMessage = _state.value.profileDataState.successMessage
+                    ),
+                    viewsComponentsState = _state.value.viewsComponentsState
+                )
+            }
             profileData = ProfileData(
                 name = dataFromSharedPreferences.firstName,
-                lastName = dataFromSharedPreferences.lastName,
-                email = dataFromSharedPreferences.email
+                lastName = dataFromSharedPreferences.lastName
             )
+            email = dataFromSharedPreferences.email
             userData = dataFromSharedPreferences
         }
     }
@@ -210,13 +224,19 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    private fun doChangeEmail() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val message = redactUserEmailUseCase.invoke(email)
+            // Как выдернуть код ответа сервера
+        }
+    }
+
     private fun saveUserDataInSharedPreferences() {
         userStorage.save(userData!!)
     }
 
     private fun signOut() {
         userStorage.clear()
-
     }
 
     private fun changeTextFieldsAndButtonsEnabled(
@@ -243,7 +263,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun loadProfileData(): ProfileDataState {
+    private fun getDefaultProfileData(): ProfileDataState {
         return ProfileDataState(
             dataIsValid = true,
             name = ProfileInformationData(StringVO.Plain("MyName"), true),

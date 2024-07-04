@@ -69,7 +69,7 @@ fun AppNavHost(
                     navController.navigate(route = ProfileRouteBranch.route)
                 },
                 onSingOut = {
-                    // Go to start Screen
+                    navController.navigate(route = Authentication.route)
                 }
             )
         }

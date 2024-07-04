@@ -1,6 +1,6 @@
 package care.intouch.app.feature.profile.data.profile.models
 
-data class RedactUserDataResponse(
+data class UserDataResponse(
     val firstName: String,
     val lastName: String,
     val email: String,

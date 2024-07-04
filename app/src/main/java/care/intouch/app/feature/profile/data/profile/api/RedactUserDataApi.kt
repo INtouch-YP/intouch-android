@@ -1,6 +1,6 @@
 package care.intouch.app.feature.profile.data.profile.api
 
-import care.intouch.app.feature.profile.data.profile.models.RedactUserDataResponse
+import care.intouch.app.feature.profile.data.profile.models.UserDataResponse
 import retrofit2.http.PATCH
 import retrofit2.http.Path
 import retrofit2.http.QueryMap
@@ -10,5 +10,5 @@ interface RedactUserDataApi {
     suspend fun updateUserData(
         @Path("id") id: Int,
         @QueryMap userData: HashMap<String, String>
-    ): RedactUserDataResponse
+    ): UserDataResponse
 }
