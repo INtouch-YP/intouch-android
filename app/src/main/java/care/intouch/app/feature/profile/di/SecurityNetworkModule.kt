@@ -1,6 +1,6 @@
 package care.intouch.app.feature.profile.di
 
-import care.intouch.app.feature.common.di.RetrofitWithoutAuth
+import care.intouch.app.feature.common.di.RetrofitWithAuth
 import care.intouch.app.feature.profile.data.network.SecurityApiService
 import dagger.Module
 import dagger.Provides
@@ -15,7 +15,7 @@ class SecurityNetworkModule {
     @Provides
     @Singleton
     fun provideSecurityApiService(
-        @RetrofitWithoutAuth retrofit: Retrofit
+        @RetrofitWithAuth retrofit: Retrofit
     ): SecurityApiService {
         return retrofit.create(SecurityApiService::class.java)
     }

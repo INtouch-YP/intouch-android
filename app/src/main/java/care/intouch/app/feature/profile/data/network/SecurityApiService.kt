@@ -8,10 +8,10 @@ import retrofit2.http.POST
 interface SecurityApiService {
 
     @GET("/api/v1/user/delete")
-    fun deleteProfile()
+    suspend fun deleteProfile()
 
     @POST("/api/v1/user/update/password/")
-    fun updatePassword(
+    suspend fun updatePassword(
         @Body data: PasswordDataDto
     )
 }

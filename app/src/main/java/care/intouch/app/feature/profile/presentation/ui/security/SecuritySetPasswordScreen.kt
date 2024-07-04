@@ -144,7 +144,7 @@ fun SecuritySetPasswordScreen(
             textAlign = TextAlign.Center,
             minLines = 2,
             maxLines = 2,
-            color = InTouchTheme.colors.textGreen
+            color = if (isSuccessUpdate == true) InTouchTheme.colors.textGreen else InTouchTheme.colors.errorRed
         )
         Spacer(modifier = Modifier.height(12.dp))
         IntouchButton(

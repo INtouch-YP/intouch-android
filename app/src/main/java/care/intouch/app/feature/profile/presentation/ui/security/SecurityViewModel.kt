@@ -88,6 +88,7 @@ class SecurityViewModel @Inject constructor(
                             currentPassword = "",
                             passwordValidType = PasswordValidType.CORRECT,
                             confirmPasswordValidType = PasswordValidType.CORRECT,
+                            isSuccessUpdate = true
                         )
                     }
                 }
@@ -95,7 +96,8 @@ class SecurityViewModel @Inject constructor(
                 is Resource.Error -> {
                     _state.update { securityState ->
                         securityState.copy(
-                            currentPasswordValidType = PasswordValidType.INCORRECT_CURRENT_PASSWORD
+                            currentPasswordValidType = PasswordValidType.INCORRECT_CURRENT_PASSWORD,
+                            isSuccessUpdate = false
                         )
                     }
                 }
