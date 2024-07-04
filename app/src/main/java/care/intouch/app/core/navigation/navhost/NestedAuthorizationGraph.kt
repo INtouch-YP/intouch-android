@@ -19,7 +19,7 @@ import care.intouch.app.core.navigation.PinCodeEnter
 import care.intouch.app.core.navigation.PinCodeInstallation
 import care.intouch.app.core.navigation.Registration
 import care.intouch.app.core.navigation.SendingNotification
-import care.intouch.app.feature.authorization.presentation.AuthorizationScreen
+import care.intouch.app.feature.authorization.presentation.AuthorizationScreenInit
 import care.intouch.app.feature.authorization.presentation.ui.AuthenticationScreen
 import care.intouch.app.feature.authorization.presentation.ui.EnterPinCodeScreen
 import care.intouch.app.feature.authorization.presentation.ui.PasswordRecoveryScreen
@@ -136,8 +136,7 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("clientId")
             val token = backStackEntry.arguments?.getString("token")
-            AuthorizationScreen(
-                navController = navController,
+            AuthorizationScreenInit(
                 userId = userId,
                 token = token,
                 onGoPinCodeInstallationScreen = {

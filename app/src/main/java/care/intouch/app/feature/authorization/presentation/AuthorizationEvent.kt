@@ -6,8 +6,22 @@ sealed class AuthorizationEvent {
         val token: String?
     ): AuthorizationEvent()
 
-    data class OnSetPassword(
+    data class OnSavePassword(
         val password: String,
         val confirmPassword: String,
     ): AuthorizationEvent()
+
+    data class OnSetPassword(
+        val password: String
+    ): AuthorizationEvent()
+
+    data class OnSetConfirmPassword(
+        val confirmPassword: String
+    ): AuthorizationEvent()
+
+    data class OnUpdateAgreementToTerm(
+        val isEnable: Boolean
+    ): AuthorizationEvent()
+
+    data object OnCreatePinCodeButtonClick : AuthorizationEvent()
 }
