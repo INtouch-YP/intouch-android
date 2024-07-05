@@ -4,7 +4,6 @@ import care.intouch.app.feature.profile.data.profile.models.UserDataResponse
 import retrofit2.http.Body
 import retrofit2.http.PATCH
 import retrofit2.http.Path
-import retrofit2.http.QueryMap
 
 interface RedactUserDataApi {
     @PATCH("/api/v1/user/update/{id}/")

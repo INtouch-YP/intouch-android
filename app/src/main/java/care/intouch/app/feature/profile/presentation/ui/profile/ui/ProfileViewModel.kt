@@ -1,5 +1,6 @@
 package care.intouch.app.feature.profile.presentation.ui.profile.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import care.intouch.app.R
@@ -34,7 +35,7 @@ class ProfileViewModel @Inject constructor(
     val state = _state.asStateFlow()
     private var userData: User? = null
     private var profileData: ProfileData = ProfileData("", "")
-    private var email: String = ""
+    private var currentEmail: String = ""
 
     init {
         readUserDataFromSharedPreferences()
@@ -114,6 +115,9 @@ class ProfileViewModel @Inject constructor(
             if (name.length <= 2) {
                 errorMessage = event.errorLength
             }
+            profileData = profileData.copy(
+                name = event.name
+            )
             _state.update {
                 ProfileState(
                     profileDataState = ProfileDataState(
@@ -142,6 +146,9 @@ class ProfileViewModel @Inject constructor(
             if (lastName.length <= 2) {
                 errorMessage = event.errorLength
             }
+            profileData = profileData.copy(
+                lastName = event.lastName
+            )
             _state.update {
                 ProfileState(
                     profileDataState = ProfileDataState(
@@ -168,6 +175,7 @@ class ProfileViewModel @Inject constructor(
         if (!isEmailValid) {
             errorMessage = event.errorEmailNotValid
         }
+        currentEmail = event.email
         _state.update {
             ProfileState(
                 profileDataState = ProfileDataState(
@@ -203,7 +211,7 @@ class ProfileViewModel @Inject constructor(
                 name = dataFromSharedPreferences.firstName,
                 lastName = dataFromSharedPreferences.lastName
             )
-            email = dataFromSharedPreferences.email
+            currentEmail = dataFromSharedPreferences.email
             userData = dataFromSharedPreferences
         }
     }
@@ -217,8 +225,9 @@ class ProfileViewModel @Inject constructor(
 
     private fun doChangeEmail() {
         viewModelScope.launch(Dispatchers.IO) {
-            val message = redactUserEmailUseCase.invoke(email)
+            val message = redactUserEmailUseCase.invoke(currentEmail)
             // Как выдернуть код ответа сервера
+            Log.d("INTOUCH_MY_TAG", "doChangeEmail ${message}")
         }
     }
 
@@ -228,7 +237,7 @@ class ProfileViewModel @Inject constructor(
                 id = userData!!.id,
                 firstName = profileData.name,
                 lastName = profileData.lastName,
-                email = email,
+                email = currentEmail,
                 acceptPolicy = userData!!.acceptPolicy,
                 newEmailChanging = userData!!.newEmailChanging,
                 newEmailTemp = userData!!.newEmailTemp
