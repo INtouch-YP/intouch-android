@@ -35,6 +35,10 @@ class ProfileViewModel @Inject constructor(
     private var profileData: ProfileData = ProfileData("", "")
     private var email: String = ""
 
+    init {
+        readUserDataFromSharedPreferences()
+    }
+
     fun onEvent(event: ProfileDataEvent) {
         when (event) {
             is ProfileDataEvent.OnName -> {
@@ -94,15 +98,7 @@ class ProfileViewModel @Inject constructor(
             is ProfileDataEvent.OnSingOutButtonClick -> {
                 signOut()
             }
-
-            is ProfileDataEvent.OnCreate -> {
-                onCreate()
-            }
         }
-    }
-
-    private fun onCreate(){
-        readUserDataFromSharedPreferences()
     }
 
     private fun updateName(event: ProfileDataEvent.OnName) {
@@ -200,7 +196,7 @@ class ProfileViewModel @Inject constructor(
                     profileDataState = ProfileDataState(
                         dataIsValid = true,
                         name = ProfileInformationData(StringVO.Plain(dataFromSharedPreferences.firstName), true),
-                        lastName = ProfileInformationData(StringVO.Plain(dataFromSharedPreferences.firstName), true),
+                        lastName = ProfileInformationData(StringVO.Plain(dataFromSharedPreferences.lastName), true),
                         email = ProfileInformationData(StringVO.Plain(dataFromSharedPreferences.email), true),
                         errorMessage = _state.value.profileDataState.errorMessage,
                         successMessage = _state.value.profileDataState.successMessage
@@ -232,7 +228,17 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun saveUserDataInSharedPreferences() {
-        userStorage.save(userData!!)
+        userStorage.save(
+            User(
+                id = userData!!.id,
+                firstName = profileData.name,
+                lastName = profileData.lastName,
+                email = email,
+                acceptPolicy = userData!!.acceptPolicy,
+                newEmailChanging = userData!!.newEmailChanging,
+                newEmailTemp = userData!!.newEmailTemp
+            )
+        )
     }
 
     private fun signOut() {

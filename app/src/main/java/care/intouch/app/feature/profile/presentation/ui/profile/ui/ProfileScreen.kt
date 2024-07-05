@@ -50,7 +50,6 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    viewModel.onEvent(ProfileDataEvent.OnCreate())
 
     ProfileScreen(
         onSecurityClick = onSecurityClick,
