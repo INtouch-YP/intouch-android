@@ -41,7 +41,7 @@ class AuthInterceptor @Inject constructor(
                 } else {
                     try {
                         val newTokens = getNewTokens(getRefreshToken())
-                        saveCredentials(userId = getUserId(), newTokens.access, newTokens.refresh)
+                        saveCredentials(newTokens.access, newTokens.refresh)
                         return chain.proceed(
                             createRequestOnResponseWithToken(
                                 response,
@@ -86,11 +86,6 @@ class AuthInterceptor @Inject constructor(
             )
         }
 
-    private fun getUserId(): Int =
-        runBlocking(Dispatchers.IO) {
-            return@runBlocking accountLocalDataSource.getAccountInformation()?.userId ?: 0
-        }
-
     private fun getAccessToken(): String =
         runBlocking(Dispatchers.IO) {
             return@runBlocking accountLocalDataSource.getAccountInformation()?.accessToken
@@ -103,11 +98,10 @@ class AuthInterceptor @Inject constructor(
                 ?: EMPTY_STRING
         }
 
-    private fun saveCredentials(userId: Int, accessToken: String, refreshToken: String) {
+    private fun saveCredentials(accessToken: String, refreshToken: String) {
         runBlocking(Dispatchers.IO) {
             accountLocalDataSource.saveAccountInformation(
                 AccountModel(
-                    userId = userId,
                     accessToken = accessToken,
                     refreshToken = refreshToken
                 )

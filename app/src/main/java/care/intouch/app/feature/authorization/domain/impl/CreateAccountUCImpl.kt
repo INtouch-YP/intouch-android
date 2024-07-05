@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class CreateAccountUCImpl @Inject constructor(private val repository: AccountStateRepository) :
     CreateAccountUC {
-    override suspend fun invoke(userId: Int, accessToken: String, refreshToken: String) {
-        repository.createAccount(userId, accessToken, refreshToken)
+    override suspend fun invoke(accessToken: String, refreshToken: String) {
+        repository.createAccount(accessToken, refreshToken)
     }
 }
