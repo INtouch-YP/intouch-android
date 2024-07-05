@@ -13,6 +13,7 @@ import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileIn
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataState
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileState
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ViewsComponentsState
+import care.intouch.app.feature.profile.presentation.ui.profile.string_extension.replaceChars
 import care.intouch.uikit.common.StringVO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -103,23 +104,21 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateName(event: ProfileDataEvent.OnName) {
         if (event.name.length <= MAX_NAME_LENGTH) {
-            val isTextValid = isTextValid(event.name)
-            val isNameValid = isTextValid && (event.name.length > 2)
+            val name = event.name.replaceChars()
+            val isTextValid = isTextValid(name)
+            val isNameValid = isTextValid && (name.length > 2)
             var errorMessage: StringVO = StringVO.Plain("")
             if (!isTextValid) {
                 errorMessage = event.errorInvalidChar
             }
-            if (event.name.length <= 2) {
+            if (name.length <= 2) {
                 errorMessage = event.errorLength
             }
-            profileData = profileData.copy(
-                name = event.name
-            )
             _state.update {
                 ProfileState(
                     profileDataState = ProfileDataState(
                         dataIsValid = isNameValid,
-                        name = ProfileInformationData(StringVO.Plain(event.name), isNameValid),
+                        name = ProfileInformationData(StringVO.Plain(name), isNameValid),
                         lastName = _state.value.profileDataState.lastName,
                         email = _state.value.profileDataState.email,
                         errorMessage = errorMessage,
@@ -133,25 +132,23 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateLastName(event: ProfileDataEvent.OnLastName) {
         if (event.lastName.length <= MAX_NAME_LENGTH) {
-            val isTextValid = isTextValid(event.lastName)
-            val isLastNameValid = isTextValid && (event.lastName.length > 2)
+            val lastName = event.lastName.replaceChars()
+            val isTextValid = isTextValid(lastName)
+            val isLastNameValid = isTextValid && (lastName.length > 2)
             var errorMessage: StringVO = StringVO.Plain("")
             if (!isTextValid) {
                 errorMessage = event.errorInvalidChar
             }
-            if (event.lastName.length <= 2) {
+            if (lastName.length <= 2) {
                 errorMessage = event.errorLength
             }
-            profileData = profileData.copy(
-                lastName = event.lastName
-            )
             _state.update {
                 ProfileState(
                     profileDataState = ProfileDataState(
                         dataIsValid = isLastNameValid,
                         name = _state.value.profileDataState.name,
                         lastName = ProfileInformationData(
-                            StringVO.Plain(event.lastName),
+                            StringVO.Plain(lastName),
                             isLastNameValid
                         ),
                         email = _state.value.profileDataState.email,
@@ -165,26 +162,24 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun updateEmail(event: ProfileDataEvent.OnEmail) {
-        if (event.email.length <= MAX_EMAIL_LENGTH) {
-            val isEmailValid = isEmailValid(event.email)
-            var errorMessage: StringVO = StringVO.Plain("")
-            if (!isEmailValid) {
-                errorMessage = event.errorEmailNotValid
-            }
-            email = event.email
-            _state.update {
-                ProfileState(
-                    profileDataState = ProfileDataState(
-                        dataIsValid = isEmailValid,
-                        name = _state.value.profileDataState.name,
-                        lastName = _state.value.profileDataState.lastName,
-                        email = ProfileInformationData(StringVO.Plain(event.email), isEmailValid),
-                        errorMessage = errorMessage,
-                        successMessage = _state.value.profileDataState.successMessage
-                    ),
-                    viewsComponentsState = _state.value.viewsComponentsState
-                )
-            }
+        val email =  event.email
+        val isEmailValid = isEmailValid(email)
+        var errorMessage: StringVO = StringVO.Plain("")
+        if (!isEmailValid) {
+            errorMessage = event.errorEmailNotValid
+        }
+        _state.update {
+            ProfileState(
+                profileDataState = ProfileDataState(
+                    dataIsValid = isEmailValid,
+                    name = _state.value.profileDataState.name,
+                    lastName = _state.value.profileDataState.lastName,
+                    email = ProfileInformationData(StringVO.Plain(email), isEmailValid),
+                    errorMessage = errorMessage,
+                    successMessage = _state.value.profileDataState.successMessage
+                ),
+                viewsComponentsState = _state.value.viewsComponentsState
+            )
         }
     }
 
@@ -281,16 +276,24 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun isEmailValid(text: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches()
+        val regex = Regex(REGEX_EMAIL_ADDRESS)
+        return regex.matches(text)
     }
 
     private fun isTextValid(text: String): Boolean {
-        val regex = Regex("[a-zA-Z- \\.]*")
+        val regex = Regex(NAME_REGEX)
         return regex.matches(text)
     }
 
     private companion object {
         private const val MAX_NAME_LENGTH = 20
-        private const val MAX_EMAIL_LENGTH = 30
+        private const val REGEX_EMAIL_ADDRESS = "[a-zA-Z0-9\\.\\_\\-]{1,256}" +
+                "\\@" +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,64}" +
+                "(" +
+                "\\." +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,25}" +
+                ")+"
+        private const val NAME_REGEX = "[a-zA-Z- \\.]*"
     }
 }
