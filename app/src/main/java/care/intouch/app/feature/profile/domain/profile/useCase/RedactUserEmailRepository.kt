@@ -3,5 +3,5 @@ package care.intouch.app.feature.profile.domain.profile.useCase
 import care.intouch.app.feature.profile.domain.profile.models.RedactUserEmailResponse
 
 interface RedactUserEmailRepository {
-    suspend fun redactUserEmail(newEmail: String): RedactUserEmailResponse
+    suspend fun redactUserEmail(newEmail: String): Result<RedactUserEmailResponse>
 }

@@ -1,28 +1,48 @@
 package care.intouch.app.feature.profile.data.profile.api
 
-import android.util.Log
+import care.intouch.app.feature.authorization.data.models.exception.AuthenticationException
+import care.intouch.app.feature.authorization.data.models.mappers.NetworkToUserExceptionMapper.Companion.COULD_NOT_CONVERT_TO_ERROR_RESPONSE
+import care.intouch.app.feature.common.data.models.exception.NetworkException
+import care.intouch.app.feature.profile.data.profile.models.UpdateUserEmailErrorResponse
+import care.intouch.app.feature.profile.data.profile.models.UpdateUserEmailRequest
 import care.intouch.app.feature.profile.domain.profile.models.RedactUserEmailResponse
 import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserEmailRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class RedactUserEmailRepositoryImpl @Inject constructor(
-    private val redactUserEmailApi: RedactUserEmailApi
-): RedactUserEmailRepository {
-    var response: String = ""
+    private val redactUserEmailApi: RedactUserEmailApi,
+    private val json: Json
+) : RedactUserEmailRepository {
 
-    override suspend fun redactUserEmail(newEmail: String): RedactUserEmailResponse {
-        return withContext(Dispatchers.IO) {
+    override suspend fun redactUserEmail(newEmail: String): Result<RedactUserEmailResponse> {
+        return
             try {
-                response = redactUserEmailApi.updateUserEmail(newEmail)
-                Log.d("INTOUCH_MY_TAG", "doChangeEmail in try")
-                RedactUserEmailResponse.RedactUserEmailSuccess()
-            } catch (e: Exception) {
-                Log.d("INTOUCH_MY_TAG", "doChangeEmail in Exception")
-                RedactUserEmailResponse.RedactUserEmailError(response)
+                val response = redactUserEmailApi.updateUserEmail(UpdateUserEmailRequest(newEmail))
+                Result.success(RedactUserEmailResponse.RedactUserEmailSuccess())
+            } catch (e: NetworkException) {
+                when(e){
+                    is NetworkException.BadRequest -> {
+                        val response = handleErrorResponse<UpdateUserEmailErrorResponse>(e.errorBody)
+                        Result.failure(Exception(response.detail?.get(0)?: ""))
+                    }
+                    else -> {
+                        val response = handleErrorResponse<UpdateUserEmailErrorResponse>(e.errorBody)
+                    }
+                }
+
+
             }
         }
-    }
 
+
+    private inline fun <reified T> handleErrorResponse(errorMessage: String): T {
+        try {
+            return json.decodeFromString<T>(errorMessage)
+
+        } catch (e: Exception) {
+            throw AuthenticationException.Undefined(COULD_NOT_CONVERT_TO_ERROR_RESPONSE)
+        }
 }
+
+    }

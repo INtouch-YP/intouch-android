@@ -4,12 +4,12 @@ import care.intouch.app.feature.profile.domain.profile.models.RedactUserEmailRes
 import javax.inject.Inject
 
 interface RedactUserEmailUseCase {
-    suspend operator fun invoke(newEmail: String): RedactUserEmailResponse
+    suspend operator fun invoke(newEmail: String): Result<RedactUserEmailResponse>
 
     class Base @Inject constructor(
         private val redactUserEmailRepository: RedactUserEmailRepository
     ): RedactUserEmailUseCase {
-        override suspend fun invoke(newEmail: String): RedactUserEmailResponse {
+        override suspend fun invoke(newEmail: String): Result<RedactUserEmailResponse> {
             return redactUserEmailRepository.redactUserEmail(newEmail)
         }
     }
