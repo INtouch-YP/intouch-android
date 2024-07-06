@@ -7,6 +7,7 @@ import care.intouch.app.R
 import care.intouch.app.feature.authorization.domain.api.UserStorage
 import care.intouch.app.feature.authorization.domain.models.User
 import care.intouch.app.feature.profile.domain.profile.models.ProfileData
+import care.intouch.app.feature.profile.domain.profile.models.RedactUserEmailResponse
 import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserDataUseCase
 import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserEmailUseCase
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataEvent
@@ -225,9 +226,13 @@ class ProfileViewModel @Inject constructor(
 
     private fun doChangeEmail() {
         viewModelScope.launch(Dispatchers.IO) {
-            val message = redactUserEmailUseCase.invoke(currentEmail)
-            // Как выдернуть код ответа сервера
-            Log.d("INTOUCH_MY_TAG", "doChangeEmail ${message}")
+            val response = redactUserEmailUseCase.invoke(currentEmail)
+            if(response is RedactUserEmailResponse.RedactUserEmailError){
+                Log.d("INTOUCH_MY_TAG", "doChangeEmail ${response.message}")
+            } else {
+                Log.d("INTOUCH_MY_TAG", "doChangeEmail SUCCESS")
+            }
+
         }
     }
 

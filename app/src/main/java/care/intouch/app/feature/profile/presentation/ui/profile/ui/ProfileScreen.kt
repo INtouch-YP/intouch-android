@@ -38,7 +38,7 @@ import care.intouch.uikit.ui.buttons.PrimaryButtonWhite
 import care.intouch.uikit.ui.profile.PersonalData
 import care.intouch.uikit.ui.profile.ProfileButton
 import care.intouch.uikit.ui.profile.RowWithMessage
-import care.intouch.uikit.ui.profile.TopPanel
+import care.intouch.uikit.ui.profile.TopPanelWithoutArrow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -86,7 +86,7 @@ private fun ProfileScreen(
 
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(66.dp))
-            TopPanel(text = StringVO.Resource(resId = care.intouch.app.R.string.profile_title))
+            TopPanelWithoutArrow(text = StringVO.Resource(resId = care.intouch.app.R.string.profile_title))
             Spacer(modifier = Modifier.height(104.dp))
             PersonalData(
                 naming = StringVO.Resource(resId = care.intouch.app.R.string.name_info_profile),
@@ -218,7 +218,7 @@ private fun ProfileScreen(
             },
             modifier = Modifier
                 .align(BottomCenter)
-                .padding(bottom = 96.dp)
+                .padding(bottom = 48.dp)
         )
     }
 }
