@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import care.intouch.app.R
 import care.intouch.app.feature.authorization.domain.api.UserStorage
 import care.intouch.app.feature.authorization.domain.models.User
+import care.intouch.app.feature.common.data.models.exception.NetworkException
 import care.intouch.app.feature.profile.domain.profile.models.ProfileData
 import care.intouch.app.feature.profile.domain.profile.models.RedactUserEmailResponse
 import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserDataUseCase
@@ -32,7 +33,8 @@ class ProfileViewModel @Inject constructor(
     private val redactUserEmailUseCase: RedactUserEmailUseCase
 ) : ViewModel() {
 
-    private var _state = MutableStateFlow(ProfileState(getDefaultProfileData(), ViewsComponentsState()))
+    private var _state =
+        MutableStateFlow(ProfileState(getDefaultProfileData(), ViewsComponentsState()))
     val state = _state.asStateFlow()
     private var userData: User? = null
     private var profileData: ProfileData = ProfileData("", "")
@@ -170,7 +172,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun updateEmail(event: ProfileDataEvent.OnEmail) {
-        val email =  event.email
+        val email = event.email
         val isEmailValid = isEmailValid(email)
         var errorMessage: StringVO = StringVO.Plain("")
         if (!isEmailValid) {
@@ -199,9 +201,18 @@ class ProfileViewModel @Inject constructor(
                 ProfileState(
                     profileDataState = ProfileDataState(
                         dataIsValid = true,
-                        name = ProfileInformationData(StringVO.Plain(dataFromSharedPreferences.firstName), true),
-                        lastName = ProfileInformationData(StringVO.Plain(dataFromSharedPreferences.lastName), true),
-                        email = ProfileInformationData(StringVO.Plain(dataFromSharedPreferences.email), true),
+                        name = ProfileInformationData(
+                            StringVO.Plain(dataFromSharedPreferences.firstName),
+                            true
+                        ),
+                        lastName = ProfileInformationData(
+                            StringVO.Plain(dataFromSharedPreferences.lastName),
+                            true
+                        ),
+                        email = ProfileInformationData(
+                            StringVO.Plain(dataFromSharedPreferences.email),
+                            true
+                        ),
                         errorMessage = _state.value.profileDataState.errorMessage,
                         successMessage = _state.value.profileDataState.successMessage
                     ),
@@ -226,12 +237,23 @@ class ProfileViewModel @Inject constructor(
 
     private fun doChangeEmail() {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = redactUserEmailUseCase.invoke(currentEmail)
-            if(response is RedactUserEmailResponse.RedactUserEmailError){
-                Log.d("INTOUCH_MY_TAG", "doChangeEmail ${response.message}")
-            } else {
-                Log.d("INTOUCH_MY_TAG", "doChangeEmail SUCCESS")
-            }
+            redactUserEmailUseCase.invoke(currentEmail)
+                .onSuccess { //обработать данные
+                        it ->
+                }.onFailure {error ->
+                    when(error){
+                        is NetworkException.BadRequest -> {
+                            //взять текст
+                        }
+                        is NetworkException.NoInternetConnection -> {
+                            // ошибка нет сети
+                        }
+                        else -> {
+                            // ошибка по дефолту
+                        }
+                    }
+
+                }
 
         }
     }
