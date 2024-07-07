@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AccountStateRepository {
     suspend fun clearAccount()
-    suspend fun createAccount(userId: Int, accessToken: String, refreshToken: String)
+    suspend fun createAccount(accessToken: String, refreshToken: String)
     suspend fun getAccountState(): Flow<AccountState>
     suspend fun getAccountInformation(): AccountState
 }
