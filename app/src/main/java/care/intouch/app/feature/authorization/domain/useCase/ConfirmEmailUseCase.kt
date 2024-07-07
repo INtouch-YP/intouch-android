@@ -19,7 +19,6 @@ interface ConfirmEmailUseCase {
             return when (val result = authenticationRepository.confirmEmail(id, token)) {
                 is Resource.Success -> {
                     accountRepository.createAccount(
-                        userId = id,
                         accessToken = result.data.accessToken,
                         refreshToken = result.data.refreshToken,
                     )
