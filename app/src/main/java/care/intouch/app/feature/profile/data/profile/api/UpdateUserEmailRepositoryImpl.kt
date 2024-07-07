@@ -5,19 +5,19 @@ import care.intouch.app.feature.authorization.data.models.mappers.NetworkToUserE
 import care.intouch.app.feature.common.data.models.exception.NetworkException
 import care.intouch.app.feature.profile.data.profile.models.UpdateUserEmailErrorResponse
 import care.intouch.app.feature.profile.data.profile.models.UpdateUserEmailRequest
-import care.intouch.app.feature.profile.data.profile.models.UpdateUserEmailResponseDto
-import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserEmailRepository
+import care.intouch.app.feature.profile.domain.profile.models.UpdateUserEmailResponse
+import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserEmailRepository
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
-class RedactUserEmailRepositoryImpl @Inject constructor(
-    private val redactUserEmailApi: RedactUserEmailApi,
+class UpdateUserEmailRepositoryImpl @Inject constructor(
+    private val updateUserEmailApi: UpdateUserEmailApi,
     private val json: Json
-) : RedactUserEmailRepository {
+) : UpdateUserEmailRepository {
 
-    override suspend fun redactUserEmail(newEmail: String): Result<UpdateUserEmailResponseDto> {
+    override suspend fun redactUserEmail(newEmail: String): Result<UpdateUserEmailResponse> {
         try {
-            val response = redactUserEmailApi.updateUserEmail(UpdateUserEmailRequest(newEmail))
+            val response = updateUserEmailApi.updateUserEmail(UpdateUserEmailRequest(newEmail))
             return Result.success(response)
         } catch (e: NetworkException) {
             return when (e) {

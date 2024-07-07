@@ -1,6 +1,5 @@
 package care.intouch.app.feature.profile.presentation.ui.profile.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import care.intouch.app.R
@@ -8,9 +7,8 @@ import care.intouch.app.feature.authorization.domain.api.UserStorage
 import care.intouch.app.feature.authorization.domain.models.User
 import care.intouch.app.feature.common.data.models.exception.NetworkException
 import care.intouch.app.feature.profile.domain.profile.models.ProfileData
-import care.intouch.app.feature.profile.domain.profile.models.RedactUserEmailResponse
-import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserDataUseCase
-import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserEmailUseCase
+import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserDataUseCase
+import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserEmailUseCase
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataEvent
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileInformationData
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataState
@@ -29,8 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val userStorage: UserStorage,
-    private val redactUserDataUseCase: RedactUserDataUseCase,
-    private val redactUserEmailUseCase: RedactUserEmailUseCase
+    private val updateUserDataUseCase: UpdateUserDataUseCase,
+    private val updateUserEmailUseCase: UpdateUserEmailUseCase
 ) : ViewModel() {
 
     private var _state =
@@ -230,14 +228,14 @@ class ProfileViewModel @Inject constructor(
 
     private fun doPatchUserData() {
         viewModelScope.launch(Dispatchers.IO) {
-            redactUserDataUseCase.invoke(profileData, userData!!.id)
+            updateUserDataUseCase.invoke(profileData, userData!!.id)
             saveUserDataInSharedPreferences()
         }
     }
 
     private fun doChangeEmail() {
         viewModelScope.launch(Dispatchers.IO) {
-            redactUserEmailUseCase.invoke(currentEmail)
+            updateUserEmailUseCase.invoke(currentEmail)
                 .onSuccess { //обработать данные
                         it ->
                 }.onFailure {error ->

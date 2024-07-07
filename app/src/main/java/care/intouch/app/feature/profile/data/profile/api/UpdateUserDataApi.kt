@@ -5,7 +5,7 @@ import retrofit2.http.Body
 import retrofit2.http.PATCH
 import retrofit2.http.Path
 
-interface RedactUserDataApi {
+interface UpdateUserDataApi {
     @PATCH("/api/v1/user/update/{id}/")
     suspend fun updateUserData(
         @Path("id") id: Int,

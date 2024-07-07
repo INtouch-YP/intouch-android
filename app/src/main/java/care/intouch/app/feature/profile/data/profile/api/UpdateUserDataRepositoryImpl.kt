@@ -1,28 +1,28 @@
 package care.intouch.app.feature.profile.data.profile.api
 
 import care.intouch.app.feature.profile.domain.profile.models.ProfileData
-import care.intouch.app.feature.profile.domain.profile.models.RedactUserDataResponse
-import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserDataPatchRepository
+import care.intouch.app.feature.profile.domain.profile.models.UpdateUserDataResponse
+import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserDataRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class RedactUserDataPatchRepositoryImpl @Inject constructor(
-    private val redactUserDataApi: RedactUserDataApi
-) : RedactUserDataPatchRepository {
-    override suspend fun redactUserData(userData: ProfileData, id: Int): RedactUserDataResponse {
+class UpdateUserDataRepositoryImpl @Inject constructor(
+    private val updateUserDataApi: UpdateUserDataApi
+) : UpdateUserDataRepository {
+    override suspend fun redactUserData(userData: ProfileData, id: Int): UpdateUserDataResponse {
         return withContext(Dispatchers.IO) {
             try {
                 val ttt = formatToQueryMap(userData)
-                val response = redactUserDataApi.updateUserData(id, formatToQueryMap(userData))
-                RedactUserDataResponse.RedactUserDataSuccess(
+                val response = updateUserDataApi.updateUserData(id, formatToQueryMap(userData))
+                UpdateUserDataResponse.UpdateUserDataSuccess(
                     ProfileData(
                         name = response.firstName,
                         lastName = response.lastName
                     )
                 )
             } catch (e: Exception) {
-                RedactUserDataResponse.RedactUserDataError()
+                UpdateUserDataResponse.UpdateUserDataError()
             }
         }
     }

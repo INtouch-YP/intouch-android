@@ -1,7 +1,7 @@
 package care.intouch.app.feature.profile.di.profile
 
 import care.intouch.app.feature.common.di.RetrofitWithAuth
-import care.intouch.app.feature.profile.data.profile.api.RedactUserEmailApi
+import care.intouch.app.feature.profile.data.profile.api.UpdateUserEmailApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,12 +11,12 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class RedactUserEmailModule {
+class UpdateUserEmailModule {
     @Provides
     @Singleton
     fun provideRedactUserEmailApi(
         @RetrofitWithAuth retrofit: Retrofit
-    ): RedactUserEmailApi {
-        return retrofit.create(RedactUserEmailApi::class.java)
+    ): UpdateUserEmailApi {
+        return retrofit.create(UpdateUserEmailApi::class.java)
     }
 }

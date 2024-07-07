@@ -1,11 +1,11 @@
 package care.intouch.app.feature.profile.di.profile
 
-import care.intouch.app.feature.profile.data.profile.api.RedactUserDataPatchRepositoryImpl
-import care.intouch.app.feature.profile.data.profile.api.RedactUserEmailRepositoryImpl
-import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserDataPatchRepository
-import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserDataUseCase
-import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserEmailRepository
-import care.intouch.app.feature.profile.domain.profile.useCase.RedactUserEmailUseCase
+import care.intouch.app.feature.profile.data.profile.api.UpdateUserDataRepositoryImpl
+import care.intouch.app.feature.profile.data.profile.api.UpdateUserEmailRepositoryImpl
+import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserDataRepository
+import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserDataUseCase
+import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserEmailRepository
+import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserEmailUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -16,16 +16,16 @@ import dagger.hilt.android.components.ViewModelComponent
 interface ProfileModule {
 
     @Binds
-    fun bindRedactUserDataUseCase(impl: RedactUserDataUseCase.Base): RedactUserDataUseCase
+    fun bindRedactUserDataUseCase(impl: UpdateUserDataUseCase.Base): UpdateUserDataUseCase
 
     @Binds
-    fun bindRedactUserDataPatchRepository(impl: RedactUserDataPatchRepositoryImpl): RedactUserDataPatchRepository
+    fun bindRedactUserDataPatchRepository(impl: UpdateUserDataRepositoryImpl): UpdateUserDataRepository
 
     @Binds
-    fun bindRedactUserEmailUseCase(impl: RedactUserEmailUseCase.Base): RedactUserEmailUseCase
+    fun bindRedactUserEmailUseCase(impl: UpdateUserEmailUseCase.Base): UpdateUserEmailUseCase
 
     @Binds
-    fun bindRedactUserEmailRepository(impl: RedactUserEmailRepositoryImpl): RedactUserEmailRepository
+    fun bindRedactUserEmailRepository(impl: UpdateUserEmailRepositoryImpl): UpdateUserEmailRepository
 
 }
 
