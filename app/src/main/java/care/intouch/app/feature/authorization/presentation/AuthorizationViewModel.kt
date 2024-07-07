@@ -147,7 +147,6 @@ class AuthorizationViewModel @Inject constructor(
         viewModelScope.launch(context = Dispatchers.IO) {
             when (val result = setPasswordUseCase.invoke(password, confirmPassword)) {
                 is Resource.Success -> {
-                    Log.d("TEST", "error ${result.data}")
                     _state.update { registrationState ->
                         registrationState.copy(
                             uiState = AuthorizationUiState.Authorized

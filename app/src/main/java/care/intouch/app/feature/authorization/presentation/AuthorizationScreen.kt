@@ -38,7 +38,7 @@ fun AuthorizationScreenInit(
         viewModel.sideEffect.collect {
             when(it) {
                 AuthorizationSideEffect.NavigateToCreatePinCode -> {
-                    onGoPinCodeInstallationScreen.invoke()
+                    onGoPinCodeInstallationScreen()
                 }
             }
         }
