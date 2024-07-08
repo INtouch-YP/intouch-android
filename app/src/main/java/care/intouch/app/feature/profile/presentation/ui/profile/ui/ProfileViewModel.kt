@@ -96,9 +96,11 @@ class ProfileViewModel @Inject constructor(
                     currentProfileData.firstName != userDataFromSharedPref!!.firstName ||
                     currentProfileData.lastName != userDataFromSharedPref!!.lastName
                 ) {
+                    Log.d("MY_INTOUCH_TAG", "OnSaveChangesButtonClick name or lastname not same")
                     updateUserData(event)
                 }
                 if (currentEmail != userDataFromSharedPref!!.email) {
+                    Log.d("MY_INTOUCH_TAG", "OnSaveChangesButtonClick email not same")
                     updateUserEmail(event)
                 }
             }
@@ -288,26 +290,26 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             updateUserEmailUseCase.invoke(currentEmail)
                 .onSuccess { //обработать данные
-                    Log.d("MY_INTOUCH_TAG", "Message SUCCESS - ${it.message}")
+                    Log.d("MY_INTOUCH_TAG", "Message Email SUCCESS - ${it.message}")
                     updateUserDataAndEmailOnSuccess(event, StringVO.Plain(it.message))
                 }.onFailure { error ->
                     when (error) {
                         is NetworkException.BadRequest -> {
-                            Log.d("MY_INTOUCH_TAG", "Message BadRequest - ${error.message}")
-                            updateUserDataAndEmailOnError(StringVO.Plain(error.message?: "User with this email is already exists"))
+                            Log.d("MY_INTOUCH_TAG", "Message Email BadRequest - ${error.message}")
+                            updateUserDataAndEmailOnError(StringVO.Plain(error.message?: "User with this email is already exists111"))
                         }
 
                         is NetworkException.NoInternetConnection -> {
                             Log.d(
                                 "MY_INTOUCH_TAG",
-                                "Message NoInternetConnection - ${error.message}"
+                                "Message Email NoInternetConnection - ${error.message}"
                             )
-                            updateUserDataAndEmailOnError(StringVO.Plain(error.message?: "No internet connection"))
+                            updateUserDataAndEmailOnError(StringVO.Plain(error.message?: "No internet connection111"))
                         }
 
                         else -> {
                             // ошибка по дефолту
-                            Log.d("MY_INTOUCH_TAG", "Message Error - ${error.message}")
+                            Log.d("MY_INTOUCH_TAG", "Message Email Error - ${error.message}")
                             updateUserDataAndEmailOnError(StringVO.Plain(error.message?: "Unknown error"))
                         }
                     }
@@ -319,6 +321,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             updateUserDataUseCase.invoke(currentProfileData, userDataFromSharedPref!!.id)
                 .onSuccess {
+                    Сделай логи!!
                     updateUserDataAndEmailOnSuccess(event, StringVO.Resource(R.string.info_about_change_profile_data))
                 }.onFailure { error ->
                     when (error) {
@@ -350,6 +353,11 @@ class ProfileViewModel @Inject constructor(
                 newEmailTemp = userDataFromSharedPref!!.newEmailTemp
             )
         )
+        userDataFromSharedPref = userDataFromSharedPref!!.copy(
+            firstName = currentProfileData.firstName,
+            lastName = currentProfileData.lastName,
+            email = currentEmail
+        )
     }
 
     private fun updateUserDataAndEmailOnSuccess(event: ProfileDataEvent.OnSaveChangesButtonClick, message: StringVO) {
@@ -380,6 +388,7 @@ class ProfileViewModel @Inject constructor(
                     errorMessage = message
                 ),
                 viewsComponentsState = _state.value.viewsComponentsState.copy(
+                    informationIsUpdate = true,
                     colorOfMessageIsGreenOrRed = false
                 )
             )
