@@ -76,7 +76,7 @@ private fun SecurityScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(InTouchTheme.colors.white)
-                        .padding(paddingValues)
+                        .padding(bottom = paddingValues.calculateBottomPadding())
                         .verticalScroll(scrollState),
                 ) {
                     Box(

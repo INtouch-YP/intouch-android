@@ -10,15 +10,14 @@ import javax.inject.Inject
 
 class AccountStateRepositoryImpl @Inject constructor(
     private val localDataSource: AccountLocalDataSource,
-) :
-    AccountStateRepository {
+) : AccountStateRepository {
     override suspend fun clearAccount() {
         localDataSource.clearAccountInformation()
     }
 
-    override suspend fun createAccount(userId: Int, accessToken: String, refreshToken: String) {
+    override suspend fun createAccount(accessToken: String, refreshToken: String) {
         localDataSource.saveAccountInformation(
-            AccountModel(userId = userId, accessToken = accessToken, refreshToken = refreshToken)
+            AccountModel(accessToken = accessToken, refreshToken = refreshToken)
         )
     }
 
@@ -28,7 +27,6 @@ class AccountStateRepositoryImpl @Inject constructor(
                 AccountState.NoAccount
             } else {
                 AccountState.Account(
-                    userId = it.userId,
                     accessToken = it.accessToken,
                     refreshToken = it.refreshToken
                 )
@@ -42,7 +40,6 @@ class AccountStateRepositoryImpl @Inject constructor(
             AccountState.NoAccount
         } else {
             AccountState.Account(
-                userId = account.userId,
                 accessToken = account.accessToken,
                 refreshToken = account.refreshToken
             )
