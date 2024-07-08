@@ -102,7 +102,7 @@
     <string name="password_not_match_error">Passwords don\'t match</string>
     <string name="password_not_match_try_again_error">Passwords don\'t match. Please try again</string>
     <string name="password_update_error">Password update failed. Please try again later</string>
-    <string name="problem_with_connection">Unable to establish a connection. Please check your internet connection and try again</string>
+    <string name="problem_with_connection">Unable to establish a connection.\n Please check your internet connection and try again</string>
     <string name="email_not_valid_error">Not a valid e-mail address.</string>
     <string name="profile_invalid_char_error">Invalid characters. Only letters, spaces,\nand periods are allowed.</string>
     <string name="profile_small_name_error">Please enter a name with at least 2 characters.</string>

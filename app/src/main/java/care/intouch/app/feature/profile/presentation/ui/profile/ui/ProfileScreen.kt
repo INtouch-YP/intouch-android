@@ -155,7 +155,7 @@ private fun ProfileScreen(
             } else {
                 Spacer(modifier = Modifier.height(16.dp))
                 RowWithMessage(
-                    successOrError = state.profileDataState.dataIsValid,
+                    textIsGreenOrRed = state.viewsComponentsState.colorOfMessageIsGreenOrRed,
                     messageText = state.profileDataState.errorMessage,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -163,7 +163,7 @@ private fun ProfileScreen(
 
             if (state.viewsComponentsState.informationIsUpdate) {    // Show message "Information successfully updated"
                 RowWithMessage(
-                    successOrError = state.profileDataState.dataIsValid,
+                    textIsGreenOrRed = state.viewsComponentsState.colorOfMessageIsGreenOrRed,
                     messageText = state.profileDataState.successMessage,
                 )
                 Spacer(modifier = Modifier.height(16.dp))

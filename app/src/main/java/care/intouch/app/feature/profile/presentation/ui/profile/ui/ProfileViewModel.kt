@@ -1,6 +1,7 @@
 package care.intouch.app.feature.profile.presentation.ui.profile.ui
 
 import android.util.Log
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import care.intouch.app.R
@@ -33,7 +34,10 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var _state =
-        MutableStateFlow(ProfileState(getDefaultProfileData(), ViewsComponentsState()))
+        MutableStateFlow(ProfileState(ProfileDataState(), ViewsComponentsState()))
+
+    //    private var _state =
+//        MutableStateFlow(ProfileState(getDefaultProfileData(), ViewsComponentsState()))
     val state = _state.asStateFlow()
     private var userDataFromSharedPref: User? = null      //
     private var currentProfileData: ProfileData = ProfileData("", "")
@@ -88,14 +92,15 @@ class ProfileViewModel @Inject constructor(
             }
 
             is ProfileDataEvent.OnSaveChangesButtonClick -> {
-                userDataVerification()
-                changeTextFieldsAndButtonsEnabled(
-                    name = event.name,
-                    lastName = event.lastName,
-                    email = event.email,
-                    saveChangesButton = event.saveChangesButton,
-                    infIsUpdate = event.infIsUpdate,
-                )
+                if (
+                    currentProfileData.firstName != userDataFromSharedPref!!.firstName ||
+                    currentProfileData.lastName != userDataFromSharedPref!!.lastName
+                ) {
+                    updateUserData(event)
+                }
+                if (currentEmail != userDataFromSharedPref!!.email) {
+                    updateUserEmail(event)
+                }
             }
 
             is ProfileDataEvent.OnSingOutButtonClick -> {
@@ -254,16 +259,16 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun getDefaultProfileData(): ProfileDataState {
-        return ProfileDataState(
-            dataIsValid = true,
-            name = ProfileInformationData(StringVO.Plain("MyName"), true),
-            lastName = ProfileInformationData(StringVO.Plain("MyLastName"), true),
-            email = ProfileInformationData(StringVO.Plain("gogo@gmail.com"), true),
-            errorMessage = StringVO.Plain(""),
-            successMessage = StringVO.Resource(R.string.info_about_change_profile_data)
-        )
-    }
+//    private fun getDefaultProfileData(): ProfileDataState {
+//        return ProfileDataState(
+//            dataIsValid = true,
+//            name = ProfileInformationData(StringVO.Plain("MyName"), true),
+//            lastName = ProfileInformationData(StringVO.Plain("MyLastName"), true),
+//            email = ProfileInformationData(StringVO.Plain("gogo@gmail.com"), true),
+//            errorMessage = StringVO.Plain(""),
+//            successMessage = StringVO.Resource(R.string.info_about_change_profile_data)
+//        )
+//    }
 
     private fun isEmailValid(text: String): Boolean {
         val regex = Regex(REGEX_EMAIL_ADDRESS)
@@ -275,30 +280,21 @@ class ProfileViewModel @Inject constructor(
         return regex.matches(text)
     }
 
-    private fun userDataVerification() {
-        if(
-            currentProfileData.firstName != userDataFromSharedPref!!.firstName ||
-            currentProfileData.lastName != userDataFromSharedPref!!.lastName
-            ) {
-            updateUserData()
-            saveUserDataInSharedPreferences() // Тут может быть проблема ибо этот же метод вызывается в updateUserEmail при .onSuccess
-        }
-        if (currentEmail != userDataFromSharedPref!!.email) {
-            updateUserEmail()
-        }
-    }
+//    private fun userDataVerification() {
+//
+//    }
 
-    private fun updateUserEmail() {
+    private fun updateUserEmail(event: ProfileDataEvent.OnSaveChangesButtonClick) {
         viewModelScope.launch(Dispatchers.IO) {
             updateUserEmailUseCase.invoke(currentEmail)
                 .onSuccess { //обработать данные
                     Log.d("MY_INTOUCH_TAG", "Message SUCCESS - ${it.message}")
-                    saveUserDataInSharedPreferences()
+                    updateUserDataAndEmailOnSuccess(event, StringVO.Plain(it.message))
                 }.onFailure { error ->
                     when (error) {
                         is NetworkException.BadRequest -> {
-                            //взять текст
                             Log.d("MY_INTOUCH_TAG", "Message BadRequest - ${error.message}")
+                            updateUserDataAndEmailOnError(StringVO.Plain(error.message?: "User with this email is already exists"))
                         }
 
                         is NetworkException.NoInternetConnection -> {
@@ -306,21 +302,39 @@ class ProfileViewModel @Inject constructor(
                                 "MY_INTOUCH_TAG",
                                 "Message NoInternetConnection - ${error.message}"
                             )
-                            // ошибка нет сети
+                            updateUserDataAndEmailOnError(StringVO.Plain(error.message?: "No internet connection"))
                         }
 
                         else -> {
                             // ошибка по дефолту
                             Log.d("MY_INTOUCH_TAG", "Message Error - ${error.message}")
+                            updateUserDataAndEmailOnError(StringVO.Plain(error.message?: "Unknown error"))
                         }
                     }
                 }
         }
     }
 
-    private fun updateUserData() {
+    private fun updateUserData(event: ProfileDataEvent.OnSaveChangesButtonClick) {
         viewModelScope.launch(Dispatchers.IO) {
             updateUserDataUseCase.invoke(currentProfileData, userDataFromSharedPref!!.id)
+                .onSuccess {
+                    updateUserDataAndEmailOnSuccess(event, StringVO.Resource(R.string.info_about_change_profile_data))
+                }.onFailure { error ->
+                    when (error) {
+                        is NetworkException.BadRequest -> {
+                            updateUserDataAndEmailOnError(StringVO.Resource(R.string.unknown_error))
+                        }
+
+                        is NetworkException.NoInternetConnection -> {
+                            updateUserDataAndEmailOnError(StringVO.Resource(R.string.problem_with_connection))
+                        }
+
+                        else -> {
+                            updateUserDataAndEmailOnError(StringVO.Resource(R.string.problem_with_connection))
+                        }
+                    }
+                }
         }
     }
 
@@ -336,6 +350,40 @@ class ProfileViewModel @Inject constructor(
                 newEmailTemp = userDataFromSharedPref!!.newEmailTemp
             )
         )
+    }
+
+    private fun updateUserDataAndEmailOnSuccess(event: ProfileDataEvent.OnSaveChangesButtonClick, message: StringVO) {
+        saveUserDataInSharedPreferences() // Тут может быть проблема ибо этот же метод вызывается в updateUserEmail при .onSuccess
+        _state.update {
+            ProfileState(
+                profileDataState = _state.value.profileDataState.copy(
+                    successMessage = message
+                ),
+                viewsComponentsState = _state.value.viewsComponentsState.copy(
+                    colorOfMessageIsGreenOrRed = true
+                )
+            )
+        }
+        changeTextFieldsAndButtonsEnabled(
+            name = event.name,
+            lastName = event.lastName,
+            email = event.email,
+            saveChangesButton = event.saveChangesButton,
+            infIsUpdate = event.infIsUpdate,
+        )
+    }
+
+    private fun updateUserDataAndEmailOnError(message: StringVO) {
+        _state.update {
+            ProfileState(
+                profileDataState = _state.value.profileDataState.copy(
+                    errorMessage = message
+                ),
+                viewsComponentsState = _state.value.viewsComponentsState.copy(
+                    colorOfMessageIsGreenOrRed = false
+                )
+            )
+        }
     }
 
     private companion object {

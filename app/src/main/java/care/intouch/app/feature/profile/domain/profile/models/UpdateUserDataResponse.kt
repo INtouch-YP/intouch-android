@@ -5,5 +5,7 @@ sealed class UpdateUserDataResponse {
         val profileData: ProfileData
     ) : UpdateUserDataResponse()
 
-    class UpdateUserDataError: UpdateUserDataResponse()
+    data class UpdateUserDataError(
+        val details: String = "No message"
+    ): UpdateUserDataResponse()
 }

@@ -1,6 +1,6 @@
 package care.intouch.app.feature.profile.presentation.ui.profile.models
 
-class ViewsComponentsState(
+data class ViewsComponentsState(
     val saveChangesButtonVisibility: Boolean = false,
     val informationIsUpdate: Boolean = false,
     val nameTextFieldEnabled: Boolean = false,
@@ -8,5 +8,6 @@ class ViewsComponentsState(
     val emailTextFieldEnabled: Boolean = false,
     val nameButtonEnabled: Boolean = true,
     val lastNameButtonEnabled: Boolean = true,
-    val emailButtonEnabled: Boolean = true
+    val emailButtonEnabled: Boolean = true,
+    val colorOfMessageIsGreenOrRed: Boolean = true
 )

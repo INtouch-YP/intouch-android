@@ -18,7 +18,7 @@ import care.intouch.uikit.theme.InTouchTheme
 
 @Composable
 fun RowWithMessage(
-    successOrError: Boolean,
+    textIsGreenOrRed: Boolean,
     messageText: StringVO,
     textStyle: TextStyle = InTouchTheme.typography.caption1Regular,
     colorError: Color = InTouchTheme.colors.errorRed,
@@ -35,7 +35,7 @@ fun RowWithMessage(
         Text(
             text = messageText.value(),
             style = textStyle,
-            color = if (successOrError) {
+            color = if (textIsGreenOrRed) {
                 colorSuccess
             } else {
                 colorError
@@ -50,7 +50,7 @@ fun RowWithMessage(
 fun RowWithMessagePreview() {
     InTouchTheme {
         RowWithMessage(
-            successOrError = true,
+            textIsGreenOrRed = true,
             messageText = StringVO.Plain("resultOfCheckData.message\nresultOfCheckData.message2"),
         )
     }

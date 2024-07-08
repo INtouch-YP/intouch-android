@@ -41,7 +41,6 @@ class UpdateUserEmailRepositoryImpl @Inject constructor(
         }
     }
 
-
     private inline fun <reified T> handleErrorResponse(errorMessage: String): T {
         try {
             return json.decodeFromString<T>(errorMessage)
@@ -50,5 +49,4 @@ class UpdateUserEmailRepositoryImpl @Inject constructor(
             throw AuthenticationException.Undefined(COULD_NOT_CONVERT_TO_ERROR_RESPONSE)
         }
     }
-
 }

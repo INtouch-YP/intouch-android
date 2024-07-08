@@ -5,12 +5,12 @@ import care.intouch.app.feature.profile.domain.profile.models.UpdateUserDataResp
 import javax.inject.Inject
 
 interface UpdateUserDataUseCase {
-    suspend operator fun invoke(userData: ProfileData, id: Int) : UpdateUserDataResponse
+    suspend operator fun invoke(userData: ProfileData, id: Int) : Result<UpdateUserDataResponse>
 
     class Base @Inject constructor(
         private val updateUserDataRepository: UpdateUserDataRepository
     ): UpdateUserDataUseCase {
-        override suspend fun invoke(userData: ProfileData, id: Int): UpdateUserDataResponse {
+        override suspend fun invoke(userData: ProfileData, id: Int): Result<UpdateUserDataResponse> {
             return updateUserDataRepository.redactUserData(userData, id)
         }
     }
