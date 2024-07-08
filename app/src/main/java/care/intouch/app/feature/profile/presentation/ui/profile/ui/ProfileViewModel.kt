@@ -1,5 +1,6 @@
 package care.intouch.app.feature.profile.presentation.ui.profile.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import care.intouch.app.R
@@ -34,8 +35,8 @@ class ProfileViewModel @Inject constructor(
     private var _state =
         MutableStateFlow(ProfileState(getDefaultProfileData(), ViewsComponentsState()))
     val state = _state.asStateFlow()
-    private var userData: User? = null
-    private var profileData: ProfileData = ProfileData("", "")
+    private var userDataFromSharedPref: User? = null      //
+    private var currentProfileData: ProfileData = ProfileData("", "")
     private var currentEmail: String = ""
 
     init {
@@ -87,8 +88,7 @@ class ProfileViewModel @Inject constructor(
             }
 
             is ProfileDataEvent.OnSaveChangesButtonClick -> {
-                doPatchUserData()
-                doChangeEmail()
+                userDataVerification()
                 changeTextFieldsAndButtonsEnabled(
                     name = event.name,
                     lastName = event.lastName,
@@ -116,8 +116,8 @@ class ProfileViewModel @Inject constructor(
             if (name.length <= 2) {
                 errorMessage = event.errorLength
             }
-            profileData = profileData.copy(
-                name = event.name
+            currentProfileData = currentProfileData.copy(
+                firstName = event.name
             )
             _state.update {
                 ProfileState(
@@ -147,7 +147,7 @@ class ProfileViewModel @Inject constructor(
             if (lastName.length <= 2) {
                 errorMessage = event.errorLength
             }
-            profileData = profileData.copy(
+            currentProfileData = currentProfileData.copy(
                 lastName = event.lastName
             )
             _state.update {
@@ -217,57 +217,13 @@ class ProfileViewModel @Inject constructor(
                     viewsComponentsState = _state.value.viewsComponentsState
                 )
             }
-            profileData = ProfileData(
-                name = dataFromSharedPreferences.firstName,
+            currentProfileData = ProfileData(
+                firstName = dataFromSharedPreferences.firstName,
                 lastName = dataFromSharedPreferences.lastName
             )
             currentEmail = dataFromSharedPreferences.email
-            userData = dataFromSharedPreferences
+            userDataFromSharedPref = dataFromSharedPreferences
         }
-    }
-
-    private fun doPatchUserData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            updateUserDataUseCase.invoke(profileData, userData!!.id)
-            saveUserDataInSharedPreferences()
-        }
-    }
-
-    private fun doChangeEmail() {
-        viewModelScope.launch(Dispatchers.IO) {
-            updateUserEmailUseCase.invoke(currentEmail)
-                .onSuccess { //обработать данные
-                        it ->
-                }.onFailure {error ->
-                    when(error){
-                        is NetworkException.BadRequest -> {
-                            //взять текст
-                        }
-                        is NetworkException.NoInternetConnection -> {
-                            // ошибка нет сети
-                        }
-                        else -> {
-                            // ошибка по дефолту
-                        }
-                    }
-
-                }
-
-        }
-    }
-
-    private fun saveUserDataInSharedPreferences() {
-        userStorage.save(
-            User(
-                id = userData!!.id,
-                firstName = profileData.name,
-                lastName = profileData.lastName,
-                email = currentEmail,
-                acceptPolicy = userData!!.acceptPolicy,
-                newEmailChanging = userData!!.newEmailChanging,
-                newEmailTemp = userData!!.newEmailTemp
-            )
-        )
     }
 
     private fun signOut() {
@@ -317,6 +273,69 @@ class ProfileViewModel @Inject constructor(
     private fun isTextValid(text: String): Boolean {
         val regex = Regex(NAME_REGEX)
         return regex.matches(text)
+    }
+
+    private fun userDataVerification() {
+        if(
+            currentProfileData.firstName != userDataFromSharedPref!!.firstName ||
+            currentProfileData.lastName != userDataFromSharedPref!!.lastName
+            ) {
+            updateUserData()
+            saveUserDataInSharedPreferences() // Тут может быть проблема ибо этот же метод вызывается в updateUserEmail при .onSuccess
+        }
+        if (currentEmail != userDataFromSharedPref!!.email) {
+            updateUserEmail()
+        }
+    }
+
+    private fun updateUserEmail() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateUserEmailUseCase.invoke(currentEmail)
+                .onSuccess { //обработать данные
+                    Log.d("MY_INTOUCH_TAG", "Message SUCCESS - ${it.message}")
+                    saveUserDataInSharedPreferences()
+                }.onFailure { error ->
+                    when (error) {
+                        is NetworkException.BadRequest -> {
+                            //взять текст
+                            Log.d("MY_INTOUCH_TAG", "Message BadRequest - ${error.message}")
+                        }
+
+                        is NetworkException.NoInternetConnection -> {
+                            Log.d(
+                                "MY_INTOUCH_TAG",
+                                "Message NoInternetConnection - ${error.message}"
+                            )
+                            // ошибка нет сети
+                        }
+
+                        else -> {
+                            // ошибка по дефолту
+                            Log.d("MY_INTOUCH_TAG", "Message Error - ${error.message}")
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun updateUserData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateUserDataUseCase.invoke(currentProfileData, userDataFromSharedPref!!.id)
+        }
+    }
+
+    private fun saveUserDataInSharedPreferences() {
+        userStorage.save(
+            User(
+                id = userDataFromSharedPref!!.id,
+                firstName = currentProfileData.firstName,
+                lastName = currentProfileData.lastName,
+                email = currentEmail,
+                acceptPolicy = userDataFromSharedPref!!.acceptPolicy,
+                newEmailChanging = userDataFromSharedPref!!.newEmailChanging,
+                newEmailTemp = userDataFromSharedPref!!.newEmailTemp
+            )
+        )
     }
 
     private companion object {

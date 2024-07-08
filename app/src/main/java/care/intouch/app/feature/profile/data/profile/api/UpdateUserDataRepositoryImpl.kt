@@ -13,11 +13,10 @@ class UpdateUserDataRepositoryImpl @Inject constructor(
     override suspend fun redactUserData(userData: ProfileData, id: Int): UpdateUserDataResponse {
         return withContext(Dispatchers.IO) {
             try {
-                val ttt = formatToQueryMap(userData)
                 val response = updateUserDataApi.updateUserData(id, formatToQueryMap(userData))
                 UpdateUserDataResponse.UpdateUserDataSuccess(
                     ProfileData(
-                        name = response.firstName,
+                        firstName = response.firstName,
                         lastName = response.lastName
                     )
                 )
@@ -29,7 +28,7 @@ class UpdateUserDataRepositoryImpl @Inject constructor(
 
     private fun formatToQueryMap(userData: ProfileData): HashMap<String, String> {
         val queryParameters: HashMap<String, String> = HashMap()
-        queryParameters["first_name"] = userData.name
+        queryParameters["first_name"] = userData.firstName
         queryParameters["last_name"] = userData.lastName
         return queryParameters
     }

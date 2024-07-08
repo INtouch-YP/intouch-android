@@ -1,6 +1,6 @@
 package care.intouch.app.feature.profile.domain.profile.models
 
 data class ProfileData(
-    val name: String,
+    val firstName: String,
     val lastName:String
 )
