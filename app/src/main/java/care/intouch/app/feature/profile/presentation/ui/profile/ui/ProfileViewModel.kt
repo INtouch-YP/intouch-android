@@ -1,7 +1,6 @@
 package care.intouch.app.feature.profile.presentation.ui.profile.ui
 
 import android.util.Log
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import care.intouch.app.R
@@ -12,10 +11,7 @@ import care.intouch.app.feature.profile.domain.profile.models.ProfileData
 import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserDataUseCase
 import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserEmailUseCase
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataEvent
-import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileInformationData
-import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataState
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileState
-import care.intouch.app.feature.profile.presentation.ui.profile.models.ViewsComponentsState
 import care.intouch.app.feature.profile.presentation.ui.profile.string_extension.replaceChars
 import care.intouch.uikit.common.StringVO
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +30,7 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var _state =
-        MutableStateFlow(ProfileState(ProfileDataState(), ViewsComponentsState()))
+        MutableStateFlow(ProfileState())
 
     //    private var _state =
 //        MutableStateFlow(ProfileState(getDefaultProfileData(), ViewsComponentsState()))
@@ -127,16 +123,11 @@ class ProfileViewModel @Inject constructor(
                 firstName = event.name
             )
             _state.update {
-                ProfileState(
-                    profileDataState = ProfileDataState(
-                        dataIsValid = isNameValid,
-                        name = ProfileInformationData(StringVO.Plain(name), isNameValid),
-                        lastName = _state.value.profileDataState.lastName,
-                        email = _state.value.profileDataState.email,
-                        errorMessage = errorMessage,
-                        successMessage = _state.value.profileDataState.successMessage
-                    ),
-                    viewsComponentsState = _state.value.viewsComponentsState
+                _state.value.copy(
+                    dataIsValid = isNameValid,
+                    name = StringVO.Plain(name),
+                    nameIsValid = isNameValid,
+                    errorMessage = errorMessage,
                 )
             }
         }
@@ -158,19 +149,11 @@ class ProfileViewModel @Inject constructor(
                 lastName = event.lastName
             )
             _state.update {
-                ProfileState(
-                    profileDataState = ProfileDataState(
-                        dataIsValid = isLastNameValid,
-                        name = _state.value.profileDataState.name,
-                        lastName = ProfileInformationData(
-                            StringVO.Plain(lastName),
-                            isLastNameValid
-                        ),
-                        email = _state.value.profileDataState.email,
-                        errorMessage = errorMessage,
-                        successMessage = _state.value.profileDataState.successMessage
-                    ),
-                    viewsComponentsState = _state.value.viewsComponentsState
+                _state.value.copy(
+                    dataIsValid = isLastNameValid,
+                    lastName = StringVO.Plain(lastName),
+                    lastNameIsValid = isLastNameValid,
+                    errorMessage = errorMessage
                 )
             }
         }
@@ -185,16 +168,11 @@ class ProfileViewModel @Inject constructor(
         }
         currentEmail = event.email
         _state.update {
-            ProfileState(
-                profileDataState = ProfileDataState(
-                    dataIsValid = isEmailValid,
-                    name = _state.value.profileDataState.name,
-                    lastName = _state.value.profileDataState.lastName,
-                    email = ProfileInformationData(StringVO.Plain(email), isEmailValid),
-                    errorMessage = errorMessage,
-                    successMessage = _state.value.profileDataState.successMessage
-                ),
-                viewsComponentsState = _state.value.viewsComponentsState
+            _state.value.copy(
+                dataIsValid = isEmailValid,
+                email = StringVO.Plain(email),
+                emailIsValid = isEmailValid,
+                errorMessage = errorMessage,
             )
         }
     }
@@ -203,25 +181,14 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val dataFromSharedPreferences: User = userStorage.read()
             _state.update {
-                ProfileState(
-                    profileDataState = ProfileDataState(
-                        dataIsValid = true,
-                        name = ProfileInformationData(
-                            StringVO.Plain(dataFromSharedPreferences.firstName),
-                            true
-                        ),
-                        lastName = ProfileInformationData(
-                            StringVO.Plain(dataFromSharedPreferences.lastName),
-                            true
-                        ),
-                        email = ProfileInformationData(
-                            StringVO.Plain(dataFromSharedPreferences.email),
-                            true
-                        ),
-                        errorMessage = _state.value.profileDataState.errorMessage,
-                        successMessage = _state.value.profileDataState.successMessage
-                    ),
-                    viewsComponentsState = _state.value.viewsComponentsState
+                _state.value.copy(
+                    dataIsValid = true,
+                    name = StringVO.Plain(dataFromSharedPreferences.firstName),
+                    nameIsValid = true,
+                    lastName = StringVO.Plain(dataFromSharedPreferences.lastName),
+                    lastNameIsValid = true,
+                    email = StringVO.Plain(dataFromSharedPreferences.email),
+                    emailIsValid = true
                 )
             }
             currentProfileData = ProfileData(
@@ -245,32 +212,18 @@ class ProfileViewModel @Inject constructor(
         infIsUpdate: Boolean
     ) {
         _state.update {
-            ProfileState(
-                profileDataState = _state.value.profileDataState,
-                ViewsComponentsState(
-                    saveChangesButtonVisibility = saveChangesButton,
-                    informationIsUpdate = infIsUpdate,
-                    nameTextFieldEnabled = name,
-                    lastNameTextFieldEnabled = lastName,
-                    emailTextFieldEnabled = email,
-                    nameButtonEnabled = !name,
-                    lastNameButtonEnabled = !lastName,
-                    emailButtonEnabled = !email,
-                )
+            _state.value.copy(
+                saveChangesButtonVisibility = saveChangesButton,
+                informationIsUpdate = infIsUpdate,
+                nameTextFieldEnabled = name,
+                lastNameTextFieldEnabled = lastName,
+                emailTextFieldEnabled = email,
+                nameButtonEnabled = !name,
+                lastNameButtonEnabled = !lastName,
+                emailButtonEnabled = !email,
             )
         }
     }
-
-//    private fun getDefaultProfileData(): ProfileDataState {
-//        return ProfileDataState(
-//            dataIsValid = true,
-//            name = ProfileInformationData(StringVO.Plain("MyName"), true),
-//            lastName = ProfileInformationData(StringVO.Plain("MyLastName"), true),
-//            email = ProfileInformationData(StringVO.Plain("gogo@gmail.com"), true),
-//            errorMessage = StringVO.Plain(""),
-//            successMessage = StringVO.Resource(R.string.info_about_change_profile_data)
-//        )
-//    }
 
     private fun isEmailValid(text: String): Boolean {
         val regex = Regex(REGEX_EMAIL_ADDRESS)
@@ -281,10 +234,6 @@ class ProfileViewModel @Inject constructor(
         val regex = Regex(NAME_REGEX)
         return regex.matches(text)
     }
-
-//    private fun userDataVerification() {
-//
-//    }
 
     private fun updateUserEmail(event: ProfileDataEvent.OnSaveChangesButtonClick) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -321,7 +270,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             updateUserDataUseCase.invoke(currentProfileData, userDataFromSharedPref!!.id)
                 .onSuccess {
-                    Сделай логи!!
+                    //Сделай логи!!
                     updateUserDataAndEmailOnSuccess(event, StringVO.Resource(R.string.info_about_change_profile_data))
                 }.onFailure { error ->
                     when (error) {
@@ -363,13 +312,9 @@ class ProfileViewModel @Inject constructor(
     private fun updateUserDataAndEmailOnSuccess(event: ProfileDataEvent.OnSaveChangesButtonClick, message: StringVO) {
         saveUserDataInSharedPreferences() // Тут может быть проблема ибо этот же метод вызывается в updateUserEmail при .onSuccess
         _state.update {
-            ProfileState(
-                profileDataState = _state.value.profileDataState.copy(
-                    successMessage = message
-                ),
-                viewsComponentsState = _state.value.viewsComponentsState.copy(
-                    colorOfMessageIsGreenOrRed = true
-                )
+            _state.value.copy(
+                successMessage = message,
+                colorOfMessageIsGreenOrRed = true
             )
         }
         changeTextFieldsAndButtonsEnabled(
@@ -383,14 +328,10 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateUserDataAndEmailOnError(message: StringVO) {
         _state.update {
-            ProfileState(
-                profileDataState = _state.value.profileDataState.copy(
-                    errorMessage = message
-                ),
-                viewsComponentsState = _state.value.viewsComponentsState.copy(
-                    informationIsUpdate = true,
-                    colorOfMessageIsGreenOrRed = false
-                )
+            _state.value.copy(
+                errorMessage = message,
+                informationIsUpdate = true,
+                colorOfMessageIsGreenOrRed = false
             )
         }
     }
