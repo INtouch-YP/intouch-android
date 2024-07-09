@@ -152,17 +152,30 @@ private fun ProfileScreen(
             } else {
                 Spacer(modifier = Modifier.height(16.dp))
                 RowWithMessage(
-                    textIsGreenOrRed = state.colorOfMessageIsGreenOrRed,
-                    messageText = state.errorMessage,
+                    textIsGreenOrRed = false,
+                    messageText = state.dataIsNotValidMessage,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            if (state.informationIsUpdate) {    // Show message "Information successfully updated"
+            if (state.nameResponseHasBeenReceived) {  // Show message about name request result
                 RowWithMessage(
-                    textIsGreenOrRed = state.colorOfMessageIsGreenOrRed,
-                    messageText = state.successMessage,
+                    textIsGreenOrRed = state.nameColorMessageIsGreenOrRed,
+                    messageText = state.resultMessageOfChangeNameRequest,
+                    //messageText = StringVO.Plain("Первое")
                 )
+            }
+            if (state.emailResponseHasBeenReceived) {  // Show message about email request result
+                if (state.nameResponseHasBeenReceived){
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+                RowWithMessage(
+                    textIsGreenOrRed = state.emailColorMessageIsGreenOrRed,
+                    messageText = state.resultMessageOfChangeEmailRequest,
+                    //messageText = StringVO.Plain("Второе")
+                )
+            }
+            if (state.nameResponseHasBeenReceived || state.emailResponseHasBeenReceived) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
@@ -227,12 +240,14 @@ fun ProfileScreenPreview() {
         dataIsValid = true,
         name = StringVO.Plain("MyName"),
         nameIsValid = true,
-        lastName =  StringVO.Plain("MyLastName"),
+        lastName = StringVO.Plain("MyLastName"),
         lastNameIsValid = true,
-        email =  StringVO.Plain("gogo@gmail.com"),
+        email = StringVO.Plain("gogo@gmail.com"),
         emailIsValid = true,
-        errorMessage = StringVO.Plain(""),
-        successMessage = StringVO.Resource(care.intouch.app.R.string.info_about_change_profile_data)
+        resultMessageOfChangeEmailRequest = StringVO.Resource(care.intouch.app.R.string.info_about_change_profile_data),
+        emailColorMessageIsGreenOrRed = false,
+        emailResponseHasBeenReceived = true,
+        saveChangesButtonVisibility = true
     )
     val state = profileData
 

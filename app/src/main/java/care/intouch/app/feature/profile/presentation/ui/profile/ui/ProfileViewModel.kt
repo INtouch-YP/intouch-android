@@ -29,11 +29,7 @@ class ProfileViewModel @Inject constructor(
     private val updateUserEmailUseCase: UpdateUserEmailUseCase
 ) : ViewModel() {
 
-    private var _state =
-        MutableStateFlow(ProfileState())
-
-    //    private var _state =
-//        MutableStateFlow(ProfileState(getDefaultProfileData(), ViewsComponentsState()))
+    private var _state = MutableStateFlow(ProfileState())
     val state = _state.asStateFlow()
     private var userDataFromSharedPref: User? = null      //
     private var currentProfileData: ProfileData = ProfileData("", "")
@@ -62,8 +58,7 @@ class ProfileViewModel @Inject constructor(
                     name = event.name,
                     lastName = event.lastName,
                     email = event.email,
-                    saveChangesButton = event.saveChangesButton,
-                    infIsUpdate = event.infIsUpdate,
+                    saveChangesButton = event.saveChangesButton
                 )
             }
 
@@ -72,8 +67,7 @@ class ProfileViewModel @Inject constructor(
                     name = event.name,
                     lastName = event.lastName,
                     email = event.email,
-                    saveChangesButton = event.saveChangesButton,
-                    infIsUpdate = event.infIsUpdate,
+                    saveChangesButton = event.saveChangesButton
                 )
             }
 
@@ -82,8 +76,7 @@ class ProfileViewModel @Inject constructor(
                     name = event.name,
                     lastName = event.lastName,
                     email = event.email,
-                    saveChangesButton = event.saveChangesButton,
-                    infIsUpdate = event.infIsUpdate,
+                    saveChangesButton = event.saveChangesButton
                 )
             }
 
@@ -93,10 +86,13 @@ class ProfileViewModel @Inject constructor(
                     currentProfileData.lastName != userDataFromSharedPref!!.lastName
                 ) {
                     Log.d("MY_INTOUCH_TAG", "OnSaveChangesButtonClick name or lastname not same")
+                    Log.d("MY_INTOUCH_TAG", "${currentProfileData.firstName} != ${userDataFromSharedPref!!.firstName}")
+                    Log.d("MY_INTOUCH_TAG", "${currentProfileData.lastName} != ${userDataFromSharedPref!!.lastName}")
                     updateUserData(event)
                 }
                 if (currentEmail != userDataFromSharedPref!!.email) {
                     Log.d("MY_INTOUCH_TAG", "OnSaveChangesButtonClick email not same")
+                    Log.d("MY_INTOUCH_TAG", "${currentEmail} != ${userDataFromSharedPref!!.email}")
                     updateUserEmail(event)
                 }
             }
@@ -127,7 +123,9 @@ class ProfileViewModel @Inject constructor(
                     dataIsValid = isNameValid,
                     name = StringVO.Plain(name),
                     nameIsValid = isNameValid,
-                    errorMessage = errorMessage,
+                    dataIsNotValidMessage = errorMessage,
+                    emailResponseHasBeenReceived = false,
+                    nameResponseHasBeenReceived = false,
                 )
             }
         }
@@ -153,7 +151,9 @@ class ProfileViewModel @Inject constructor(
                     dataIsValid = isLastNameValid,
                     lastName = StringVO.Plain(lastName),
                     lastNameIsValid = isLastNameValid,
-                    errorMessage = errorMessage
+                    dataIsNotValidMessage = errorMessage,
+                    emailResponseHasBeenReceived = false,
+                    nameResponseHasBeenReceived = false,
                 )
             }
         }
@@ -172,7 +172,9 @@ class ProfileViewModel @Inject constructor(
                 dataIsValid = isEmailValid,
                 email = StringVO.Plain(email),
                 emailIsValid = isEmailValid,
-                errorMessage = errorMessage,
+                dataIsNotValidMessage = errorMessage,
+                emailResponseHasBeenReceived = false,
+                nameResponseHasBeenReceived = false,
             )
         }
     }
@@ -195,6 +197,8 @@ class ProfileViewModel @Inject constructor(
                 firstName = dataFromSharedPreferences.firstName,
                 lastName = dataFromSharedPreferences.lastName
             )
+            Log.d("MY_INTOUCH_TAG", "currentProfileData - ${dataFromSharedPreferences.firstName}  ${dataFromSharedPreferences.lastName}")
+            Log.d("MY_INTOUCH_TAG", "currentEmail - ${dataFromSharedPreferences.email}")
             currentEmail = dataFromSharedPreferences.email
             userDataFromSharedPref = dataFromSharedPreferences
         }
@@ -208,19 +212,17 @@ class ProfileViewModel @Inject constructor(
         name: Boolean,
         lastName: Boolean,
         email: Boolean,
-        saveChangesButton: Boolean,
-        infIsUpdate: Boolean
+        saveChangesButton: Boolean
     ) {
         _state.update {
             _state.value.copy(
                 saveChangesButtonVisibility = saveChangesButton,
-                informationIsUpdate = infIsUpdate,
                 nameTextFieldEnabled = name,
                 lastNameTextFieldEnabled = lastName,
                 emailTextFieldEnabled = email,
                 nameButtonEnabled = !name,
                 lastNameButtonEnabled = !lastName,
-                emailButtonEnabled = !email,
+                emailButtonEnabled = !email
             )
         }
     }
@@ -240,12 +242,16 @@ class ProfileViewModel @Inject constructor(
             updateUserEmailUseCase.invoke(currentEmail)
                 .onSuccess { //обработать данные
                     Log.d("MY_INTOUCH_TAG", "Message Email SUCCESS - ${it.message}")
-                    updateUserDataAndEmailOnSuccess(event, StringVO.Plain(it.message))
+                    updateStateWhenEmailOnSuccess(StringVO.Plain(it.message.trim().replace("\n","")))
                 }.onFailure { error ->
                     when (error) {
                         is NetworkException.BadRequest -> {
                             Log.d("MY_INTOUCH_TAG", "Message Email BadRequest - ${error.message}")
-                            updateUserDataAndEmailOnError(StringVO.Plain(error.message?: "User with this email is already exists111"))
+                            updateStateWhenUserEmailOnError(
+                                StringVO.Plain(
+                                    error.message?.trim()?.replace("\n","") ?: "User with this email is already exists"
+                                )
+                            )
                         }
 
                         is NetworkException.NoInternetConnection -> {
@@ -253,17 +259,30 @@ class ProfileViewModel @Inject constructor(
                                 "MY_INTOUCH_TAG",
                                 "Message Email NoInternetConnection - ${error.message}"
                             )
-                            updateUserDataAndEmailOnError(StringVO.Plain(error.message?: "No internet connection111"))
+                            updateStateWhenUserEmailOnError(
+                                StringVO.Plain(
+                                    error.message?.trim()?.replace("\n","") ?: "No internet connection"
+                                )
+                            )
                         }
 
-                        else -> {
-                            // ошибка по дефолту
+                        else -> { // ошибка по дефолту
                             Log.d("MY_INTOUCH_TAG", "Message Email Error - ${error.message}")
-                            updateUserDataAndEmailOnError(StringVO.Plain(error.message?: "Unknown error"))
+                            updateStateWhenUserEmailOnError(
+                                StringVO.Plain(
+                                    error.message ?: "Unknown error"
+                                )
+                            )
                         }
                     }
                 }
         }
+        changeTextFieldsAndButtonsEnabled(
+            name = event.name,
+            lastName = event.lastName,
+            email = event.email,
+            saveChangesButton = event.saveChangesButton
+        )
     }
 
     private fun updateUserData(event: ProfileDataEvent.OnSaveChangesButtonClick) {
@@ -271,23 +290,29 @@ class ProfileViewModel @Inject constructor(
             updateUserDataUseCase.invoke(currentProfileData, userDataFromSharedPref!!.id)
                 .onSuccess {
                     //Сделай логи!!
-                    updateUserDataAndEmailOnSuccess(event, StringVO.Resource(R.string.info_about_change_profile_data))
+                    updateStateWhenUserDataOnSuccess(StringVO.Resource(R.string.info_about_change_profile_data))
                 }.onFailure { error ->
                     when (error) {
                         is NetworkException.BadRequest -> {
-                            updateUserDataAndEmailOnError(StringVO.Resource(R.string.unknown_error))
+                            updateStateWhenUserDataOnError(StringVO.Resource(R.string.unknown_error))
                         }
 
                         is NetworkException.NoInternetConnection -> {
-                            updateUserDataAndEmailOnError(StringVO.Resource(R.string.problem_with_connection))
+                            updateStateWhenUserDataOnError(StringVO.Resource(R.string.problem_with_connection))
                         }
 
                         else -> {
-                            updateUserDataAndEmailOnError(StringVO.Resource(R.string.problem_with_connection))
+                            updateStateWhenUserDataOnError(StringVO.Resource(R.string.problem_with_connection))
                         }
                     }
                 }
         }
+        changeTextFieldsAndButtonsEnabled(
+            name = event.name,
+            lastName = event.lastName,
+            email = event.email,
+            saveChangesButton = event.saveChangesButton
+        )
     }
 
     private fun saveUserDataInSharedPreferences() {
@@ -309,29 +334,45 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    private fun updateUserDataAndEmailOnSuccess(event: ProfileDataEvent.OnSaveChangesButtonClick, message: StringVO) {
+    private fun updateStateWhenEmailOnSuccess(message: StringVO) {
         saveUserDataInSharedPreferences() // Тут может быть проблема ибо этот же метод вызывается в updateUserEmail при .onSuccess
         _state.update {
             _state.value.copy(
-                successMessage = message,
-                colorOfMessageIsGreenOrRed = true
+                resultMessageOfChangeEmailRequest = message,
+                emailResponseHasBeenReceived = true,
+                emailColorMessageIsGreenOrRed = true,
             )
         }
-        changeTextFieldsAndButtonsEnabled(
-            name = event.name,
-            lastName = event.lastName,
-            email = event.email,
-            saveChangesButton = event.saveChangesButton,
-            infIsUpdate = event.infIsUpdate,
-        )
     }
 
-    private fun updateUserDataAndEmailOnError(message: StringVO) {
+    private fun updateStateWhenUserDataOnSuccess(message: StringVO) {
+        saveUserDataInSharedPreferences() // Тут может быть проблема ибо этот же метод вызывается в updateUserEmail при .onSuccess
         _state.update {
             _state.value.copy(
-                errorMessage = message,
-                informationIsUpdate = true,
-                colorOfMessageIsGreenOrRed = false
+                resultMessageOfChangeNameRequest = message,
+                nameColorMessageIsGreenOrRed = true,
+                nameResponseHasBeenReceived = true
+            )
+        }
+    }
+
+    private fun updateStateWhenUserEmailOnError(message: StringVO) {
+        _state.update {
+            _state.value.copy(
+                resultMessageOfChangeEmailRequest = message,
+                nameColorMessageIsGreenOrRed = false,
+                nameResponseHasBeenReceived = true
+            )
+        }
+
+    }
+
+    private fun updateStateWhenUserDataOnError(message: StringVO) {
+        _state.update {
+            _state.value.copy(
+                resultMessageOfChangeNameRequest = message,
+                nameColorMessageIsGreenOrRed = false,
+                nameResponseHasBeenReceived = true
             )
         }
     }

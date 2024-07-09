@@ -51,7 +51,6 @@ sealed class ProfileDataEvent {
         val lastName: Boolean = false,
         val email: Boolean = false,
         val saveChangesButton: Boolean = false,
-        val infIsUpdate: Boolean = true
     ): ProfileDataEvent()
 
     class OnSingOutButtonClick(): ProfileDataEvent()
