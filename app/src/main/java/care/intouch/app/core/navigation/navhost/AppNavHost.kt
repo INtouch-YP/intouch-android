@@ -56,6 +56,9 @@ fun AppNavHost(
             DiaryNoteScreen(
                 onMakeNoteClick = {
                     navController.navigate(route = DiaryRouteBranch.route)
+                },
+                onBackButtonClick = {
+                    navController.popBackStack()
                 }
             )
         }

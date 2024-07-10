@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">InTouch</string>
     //UiKitSample
     <string name="uikit_sample_button">UiKitSample</string>
@@ -80,13 +80,13 @@
     <string name="incorrect_error_pin">Incorrect PIN. Please try again</string>
 
     <string name="info_delete_task_question">Are you sure you want to delete this task?</string>
-    <string name="info_delete_node_question">Are you sure you want to delete this note?</string>
+    <string name="info_delete_node_question">Are you sure you want\n to delete this note?</string>
     <string name="info_about_setup_pin">Secure your data with a PIN code or \n set it up later in your Profile</string>
     <string name="info_about_password_recovery">If your account exists, you\'ll receive an email with a link to reset your password. Please check your spam folder if you don\'t receive it within a few minutes.</string>
     <string name="info_about_delete_account">Are you certain you wish to delete your account?</string>
     <string name="info_about_change_password">You have successfully changed your password</string>
     <string name="info_about_change_profile_data">Information successfully updated</string>
-    <string name="warning_delete">All your entered data will be permanently removed.</string>
+    <string name="warning_delete">All your entered data\n will be permanently removed.</string>
     <string name="warning_delete_account">This action will permanently erase all your data, and there\'s no way to recover it later.</string>
 
     <string name="agreement_to_terms">I agree with</string>
@@ -187,4 +187,5 @@
     <string name="enter_email_password_recover">Enter your email for password recovery</string>
     <string name="if_account_exist">If your account exists, you\'ll receive an email with a link to reset your password. \nPlease check your spam folder if you don\'t receive it within a few minutes.</string>
     <string name="unknown_error">Unknown error</string>
+    <string name="diary_introduction_text">"Dear  %s,\n​\nCapture your emotional experiences \nand thoughtfully analyze situations.\n\nJournal is designed to help you reflect on your emotional experiences and gain insights into your reactions to various situations. "</string>
 </resources>
