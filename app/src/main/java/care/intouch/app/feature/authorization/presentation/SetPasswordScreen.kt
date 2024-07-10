@@ -51,9 +51,6 @@ fun SetPasswordScreen(
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
 
-    var isVisiblePassword by rememberSaveable { mutableStateOf(false) }
-    var isVisiblePasswordConfirm by rememberSaveable { mutableStateOf(false) }
-
     LaunchedEffect(
         key1 = confirmPassword
     ) {
@@ -102,11 +99,8 @@ fun SetPasswordScreen(
             caption = if (isPasswordValid != PasswordValidType.CORRECT) {
                 isPasswordValid.getString()
             } else StringVO.Plain(""),
-            isPasswordVisible = isVisiblePassword,
+            isPasswordVisible = false,
             isPasswordVisibleIconVisible = true,
-            onPasswordVisibleIconClick = {
-                isVisiblePassword = !isVisiblePassword
-            },
             keyboardActions = KeyboardActions(
                 onDone = {
                     onEvent(AuthorizationEvent.OnSetPassword(password))
@@ -132,7 +126,7 @@ fun SetPasswordScreen(
             caption = if (isConfirmPasswordValid != PasswordValidType.CORRECT) {
                 isConfirmPasswordValid.getString()
             } else StringVO.Plain(""),
-            isPasswordVisible = isVisiblePasswordConfirm,
+            isPasswordVisible = false,
             isPasswordVisibleIconVisible = true,
         )
         Spacer(modifier = Modifier.height(8.dp))
