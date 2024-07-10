@@ -155,27 +155,24 @@ private fun ProfileScreen(
                     textIsGreenOrRed = false,
                     messageText = state.dataIsNotValidMessage,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
             }
 
             if (state.nameResponseHasBeenReceived) {  // Show message about name request result
                 RowWithMessage(
-                    textIsGreenOrRed = state.nameColorMessageIsGreenOrRed,
+                    textIsGreenOrRed = state.nameResponseIsSuccess,
                     messageText = state.resultMessageOfChangeNameRequest,
-                    //messageText = StringVO.Plain("Первое")
                 )
             }
-            if (state.emailResponseHasBeenReceived) {  // Show message about email request result
+            if (state.emailResponseIsSuccess) {  // Show message about email request result
                 if (state.nameResponseHasBeenReceived){
                     Spacer(modifier = Modifier.height(8.dp))
                 }
                 RowWithMessage(
                     textIsGreenOrRed = state.emailColorMessageIsGreenOrRed,
                     messageText = state.resultMessageOfChangeEmailRequest,
-                    //messageText = StringVO.Plain("Второе")
                 )
             }
-            if (state.nameResponseHasBeenReceived || state.emailResponseHasBeenReceived) {
+            if (state.nameResponseHasBeenReceived || state.emailResponseIsSuccess || !state.dataIsValid) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
@@ -228,7 +225,7 @@ private fun ProfileScreen(
             },
             modifier = Modifier
                 .align(BottomCenter)
-                .padding(bottom = 48.dp)
+                .padding(bottom = 40.dp)
         )
     }
 }
@@ -246,7 +243,7 @@ fun ProfileScreenPreview() {
         emailIsValid = true,
         resultMessageOfChangeEmailRequest = StringVO.Resource(care.intouch.app.R.string.info_about_change_profile_data),
         emailColorMessageIsGreenOrRed = false,
-        emailResponseHasBeenReceived = true,
+        emailResponseIsSuccess = true,
         saveChangesButtonVisibility = true
     )
     val state = profileData

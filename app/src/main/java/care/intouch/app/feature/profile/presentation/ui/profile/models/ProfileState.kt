@@ -13,9 +13,9 @@ data class ProfileState (
     val emailIsValid: Boolean = false,
     val resultMessageOfChangeNameRequest: StringVO = StringVO.Plain(""),
     val nameResponseHasBeenReceived: Boolean = false,
-    val nameColorMessageIsGreenOrRed: Boolean = true,
+    val nameResponseIsSuccess: Boolean = true,
     val resultMessageOfChangeEmailRequest: StringVO = StringVO.Plain(""),
-    val emailResponseHasBeenReceived: Boolean = false,
+    val emailResponseIsSuccess: Boolean = false,
     val emailColorMessageIsGreenOrRed: Boolean = true,
     val saveChangesButtonVisibility: Boolean = false,
     val nameTextFieldEnabled: Boolean = false,
@@ -24,5 +24,4 @@ data class ProfileState (
     val nameButtonEnabled: Boolean = true,
     val lastNameButtonEnabled: Boolean = true,
     val emailButtonEnabled: Boolean = true,
-
     )

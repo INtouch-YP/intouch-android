@@ -1,6 +1,5 @@
 package care.intouch.app.feature.profile.presentation.ui.profile.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import care.intouch.app.R
@@ -31,7 +30,7 @@ class ProfileViewModel @Inject constructor(
 
     private var _state = MutableStateFlow(ProfileState())
     val state = _state.asStateFlow()
-    private var userDataFromSharedPref: User? = null      //
+    private var userDataFromSharedPref: User? = null
     private var currentProfileData: ProfileData = ProfileData("", "")
     private var currentEmail: String = ""
 
@@ -85,14 +84,9 @@ class ProfileViewModel @Inject constructor(
                     currentProfileData.firstName != userDataFromSharedPref!!.firstName ||
                     currentProfileData.lastName != userDataFromSharedPref!!.lastName
                 ) {
-                    Log.d("MY_INTOUCH_TAG", "OnSaveChangesButtonClick name or lastname not same")
-                    Log.d("MY_INTOUCH_TAG", "${currentProfileData.firstName} != ${userDataFromSharedPref!!.firstName}")
-                    Log.d("MY_INTOUCH_TAG", "${currentProfileData.lastName} != ${userDataFromSharedPref!!.lastName}")
                     updateUserData(event)
                 }
                 if (currentEmail != userDataFromSharedPref!!.email) {
-                    Log.d("MY_INTOUCH_TAG", "OnSaveChangesButtonClick email not same")
-                    Log.d("MY_INTOUCH_TAG", "${currentEmail} != ${userDataFromSharedPref!!.email}")
                     updateUserEmail(event)
                 }
             }
@@ -124,7 +118,7 @@ class ProfileViewModel @Inject constructor(
                     name = StringVO.Plain(name),
                     nameIsValid = isNameValid,
                     dataIsNotValidMessage = errorMessage,
-                    emailResponseHasBeenReceived = false,
+                    emailResponseIsSuccess = false,
                     nameResponseHasBeenReceived = false,
                 )
             }
@@ -152,7 +146,7 @@ class ProfileViewModel @Inject constructor(
                     lastName = StringVO.Plain(lastName),
                     lastNameIsValid = isLastNameValid,
                     dataIsNotValidMessage = errorMessage,
-                    emailResponseHasBeenReceived = false,
+                    emailResponseIsSuccess = false,
                     nameResponseHasBeenReceived = false,
                 )
             }
@@ -173,7 +167,7 @@ class ProfileViewModel @Inject constructor(
                 email = StringVO.Plain(email),
                 emailIsValid = isEmailValid,
                 dataIsNotValidMessage = errorMessage,
-                emailResponseHasBeenReceived = false,
+                emailResponseIsSuccess = false,
                 nameResponseHasBeenReceived = false,
             )
         }
@@ -197,8 +191,6 @@ class ProfileViewModel @Inject constructor(
                 firstName = dataFromSharedPreferences.firstName,
                 lastName = dataFromSharedPreferences.lastName
             )
-            Log.d("MY_INTOUCH_TAG", "currentProfileData - ${dataFromSharedPreferences.firstName}  ${dataFromSharedPreferences.lastName}")
-            Log.d("MY_INTOUCH_TAG", "currentEmail - ${dataFromSharedPreferences.email}")
             currentEmail = dataFromSharedPreferences.email
             userDataFromSharedPref = dataFromSharedPreferences
         }
@@ -240,39 +232,30 @@ class ProfileViewModel @Inject constructor(
     private fun updateUserEmail(event: ProfileDataEvent.OnSaveChangesButtonClick) {
         viewModelScope.launch(Dispatchers.IO) {
             updateUserEmailUseCase.invoke(currentEmail)
-                .onSuccess { //обработать данные
-                    Log.d("MY_INTOUCH_TAG", "Message Email SUCCESS - ${it.message}")
-                    updateStateWhenEmailOnSuccess(StringVO.Plain(it.message.trim().replace("\n","")))
+                .onSuccess {
+                    updateStateWhenEmailOnSuccess(StringVO.Plain(it.message))
                 }.onFailure { error ->
                     when (error) {
                         is NetworkException.BadRequest -> {
-                            Log.d("MY_INTOUCH_TAG", "Message Email BadRequest - ${error.message}")
-                            updateStateWhenUserEmailOnError(
-                                StringVO.Plain(
-                                    error.message?.trim()?.replace("\n","") ?: "User with this email is already exists"
-                                )
-                            )
+                            val message = if (error.message.isNullOrEmpty()) {
+                                StringVO.Resource(R.string.unknown_error)
+                            } else {
+                                StringVO.Plain(error.message!!)
+                            }
+                            updateStateWhenUserEmailOnError(message)
                         }
 
                         is NetworkException.NoInternetConnection -> {
-                            Log.d(
-                                "MY_INTOUCH_TAG",
-                                "Message Email NoInternetConnection - ${error.message}"
-                            )
-                            updateStateWhenUserEmailOnError(
-                                StringVO.Plain(
-                                    error.message?.trim()?.replace("\n","") ?: "No internet connection"
-                                )
-                            )
+                            updateStateWhenUserEmailOnError(StringVO.Resource(R.string.problem_with_connection))
                         }
 
-                        else -> { // ошибка по дефолту
-                            Log.d("MY_INTOUCH_TAG", "Message Email Error - ${error.message}")
-                            updateStateWhenUserEmailOnError(
-                                StringVO.Plain(
-                                    error.message ?: "Unknown error"
-                                )
-                            )
+                        else -> {
+                            val message = if (error.message.isNullOrEmpty()) {
+                                StringVO.Resource(R.string.unknown_error)
+                            } else {
+                                StringVO.Plain(error.message!!)
+                            }
+                            updateStateWhenUserEmailOnError(message)
                         }
                     }
                 }
@@ -289,7 +272,6 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             updateUserDataUseCase.invoke(currentProfileData, userDataFromSharedPref!!.id)
                 .onSuccess {
-                    //Сделай логи!!
                     updateStateWhenUserDataOnSuccess(StringVO.Resource(R.string.info_about_change_profile_data))
                 }.onFailure { error ->
                     when (error) {
@@ -302,7 +284,7 @@ class ProfileViewModel @Inject constructor(
                         }
 
                         else -> {
-                            updateStateWhenUserDataOnError(StringVO.Resource(R.string.problem_with_connection))
+                            updateStateWhenUserDataOnError(StringVO.Resource(R.string.unknown_error))
                         }
                     }
                 }
@@ -316,12 +298,17 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun saveUserDataInSharedPreferences() {
+        val emailToSave: String = if (_state.value.emailResponseIsSuccess && _state.value.emailColorMessageIsGreenOrRed){
+            currentEmail
+        }else {
+            userDataFromSharedPref!!.email
+        }
         userStorage.save(
             User(
                 id = userDataFromSharedPref!!.id,
                 firstName = currentProfileData.firstName,
                 lastName = currentProfileData.lastName,
-                email = currentEmail,
+                email = emailToSave,
                 acceptPolicy = userDataFromSharedPref!!.acceptPolicy,
                 newEmailChanging = userDataFromSharedPref!!.newEmailChanging,
                 newEmailTemp = userDataFromSharedPref!!.newEmailTemp
@@ -335,11 +322,11 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun updateStateWhenEmailOnSuccess(message: StringVO) {
-        saveUserDataInSharedPreferences() // Тут может быть проблема ибо этот же метод вызывается в updateUserEmail при .onSuccess
+        saveUserDataInSharedPreferences() // Тут может быть проблема ибо этот же метод вызывается в updateUserName при .onSuccess
         _state.update {
             _state.value.copy(
                 resultMessageOfChangeEmailRequest = message,
-                emailResponseHasBeenReceived = true,
+                emailResponseIsSuccess = true,
                 emailColorMessageIsGreenOrRed = true,
             )
         }
@@ -350,7 +337,7 @@ class ProfileViewModel @Inject constructor(
         _state.update {
             _state.value.copy(
                 resultMessageOfChangeNameRequest = message,
-                nameColorMessageIsGreenOrRed = true,
+                nameResponseIsSuccess = true,
                 nameResponseHasBeenReceived = true
             )
         }
@@ -360,8 +347,8 @@ class ProfileViewModel @Inject constructor(
         _state.update {
             _state.value.copy(
                 resultMessageOfChangeEmailRequest = message,
-                nameColorMessageIsGreenOrRed = false,
-                nameResponseHasBeenReceived = true
+                emailColorMessageIsGreenOrRed = false,
+                emailResponseIsSuccess = true
             )
         }
 
@@ -371,7 +358,7 @@ class ProfileViewModel @Inject constructor(
         _state.update {
             _state.value.copy(
                 resultMessageOfChangeNameRequest = message,
-                nameColorMessageIsGreenOrRed = false,
+                nameResponseIsSuccess = false,
                 nameResponseHasBeenReceived = true
             )
         }
