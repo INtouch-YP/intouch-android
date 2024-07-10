@@ -60,5 +60,4 @@ fun LoadingContainerPreview() {
         modifier = Modifier.fillMaxSize(),
         content = {}
     )
-
 }

@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -109,7 +110,7 @@ fun PasswordTextField(
     onValueChange: (String) -> Unit,
     isPasswordVisible: Boolean,
     isPasswordVisibleIconVisible: Boolean,
-    onPasswordVisibleIconClick: () -> Unit,
+    onPasswordVisibleIconClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     hint: StringVO = StringVO.Plain(BLANC_STRING),
     caption: StringVO = StringVO.Plain(BLANC_STRING),
@@ -142,6 +143,7 @@ fun PasswordTextField(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+    var isPasswordVisibleState by rememberSaveable { mutableStateOf(isPasswordVisible) }
 
     Column(
         modifier = modifier.width(MinWidth)
@@ -180,7 +182,7 @@ fun PasswordTextField(
                     interactionSource = interactionSource,
                     enabled = enabled,
                     readOnly = readOnly,
-                    visualTransformation = if (isPasswordVisible) {
+                    visualTransformation = if (isPasswordVisibleState) {
                         VisualTransformation.None
                     } else {
                         visualTransformation
@@ -220,13 +222,14 @@ fun PasswordTextField(
                 )
                 if (isPasswordVisibleIconVisible) {
                     Icon(
-                        painter = if (isPasswordVisible) passwordVisibleIcon.painter() else passwordNotVisibleIcon.painter(),
-                        contentDescription = if (isPasswordVisible) stringResource(id = R.string.show_password) else stringResource(
+                        painter = if (isPasswordVisibleState) passwordVisibleIcon.painter() else passwordNotVisibleIcon.painter(),
+                        contentDescription = if (isPasswordVisibleState) stringResource(id = R.string.show_password) else stringResource(
                             id = R.string.hide_password
                         ),
                         modifier = Modifier
                             .padding(start = 8.dp, end = 14.dp)
                             .clickable {
+                                isPasswordVisibleState = !isPasswordVisibleState
                                 onPasswordVisibleIconClick.invoke()
                             },
                         tint = passwordIconTint
@@ -238,8 +241,8 @@ fun PasswordTextField(
             text = caption.value(),
             style = captionTextStyle,
             color = if (error && enabled) borderStrokeErrorColor else captionTextColor,
-            minLines = captionLinesAmount,
-            maxLines = captionLinesAmount,
+            minLines = 1,
+            maxLines = if(caption.value().isNotBlank()) captionLinesAmount else 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .padding(top = captionTextPadding)
@@ -252,15 +255,14 @@ fun PasswordTextField(
 fun PasswordInputPreview() {
     InTouchTheme {
         var text by remember { mutableStateOf("") }
-        var isPasswordVisible by remember { mutableStateOf(false) }
         PasswordTextField(
             value = text,
             onValueChange = {
                 text = it
             },
-            isPasswordVisible = isPasswordVisible,
+            isPasswordVisible = true,
             isPasswordVisibleIconVisible = true,
-            onPasswordVisibleIconClick = { isPasswordVisible = !isPasswordVisible },
+            onPasswordVisibleIconClick = {  },
             hint = StringVO.Plain("Enter password"),
             caption = StringVO.Plain("Password must contain letters, numbers, and no more than 3 consecutive identical characters"),
             error = false,

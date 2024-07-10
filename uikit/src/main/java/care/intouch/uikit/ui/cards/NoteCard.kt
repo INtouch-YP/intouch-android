@@ -210,4 +210,3 @@ fun PreviewNoteCards() {
         )
     }
 }
-

@@ -46,9 +46,6 @@ fun SetPasswordScreen(
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
 
-    var isVisiblePassword by rememberSaveable { mutableStateOf(false) }
-    var isVisiblePasswordConfirm by rememberSaveable { mutableStateOf(false) }
-
     var checkmarkAgreementToTerm by remember { mutableStateOf(false) }
 
     var isEnableButton by remember { mutableStateOf(false) }
@@ -87,11 +84,8 @@ fun SetPasswordScreen(
             },
             hint = StringVO.Resource(R.string.password_hint),
             error = errorPassword,
-            isPasswordVisible = isVisiblePassword,
+            isPasswordVisible = false,
             isPasswordVisibleIconVisible = true,
-            onPasswordVisibleIconClick = {
-                isVisiblePassword = !isVisiblePassword
-            }
         )
         Spacer(modifier = Modifier.height(20.dp))
         PasswordTextField(
@@ -108,11 +102,8 @@ fun SetPasswordScreen(
             hint = StringVO.Resource(R.string.password_confirm_hint),
             error = errorPassword,
             caption = StringVO.Plain(errorPasswordText),
-            isPasswordVisible = isVisiblePasswordConfirm,
+            isPasswordVisible = false,
             isPasswordVisibleIconVisible = true,
-            onPasswordVisibleIconClick = {
-                isVisiblePasswordConfirm = !isVisiblePasswordConfirm
-            }
         )
         Spacer(modifier = Modifier.height(8.dp))
         Row(

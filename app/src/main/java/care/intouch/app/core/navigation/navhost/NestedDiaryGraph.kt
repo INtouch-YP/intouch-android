@@ -23,6 +23,9 @@ fun NavGraphBuilder.addNestedDiaryGraph(
             CreatingNoteIntroductionScreen(
                 onNextClick = {
                     navController.navigate(route = DiaryEntries.route)
+                },
+                onBackButtonClick = {
+                    navController.popBackStack()
                 }
             )
         }
