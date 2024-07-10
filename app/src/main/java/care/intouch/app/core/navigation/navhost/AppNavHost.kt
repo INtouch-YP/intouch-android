@@ -18,8 +18,8 @@ import care.intouch.app.core.navigation.ProfileRouteBranch
 import care.intouch.app.feature.diary.presentation.ui.DiaryNoteScreen
 import care.intouch.app.feature.home.presentation.ui.HomeScreen
 import care.intouch.app.feature.plan.presentation.ui.PlanScreen
-import care.intouch.app.feature.profile.presentation.ui.PasswordChangeScreen
 import care.intouch.app.feature.profile.presentation.ui.profile.ProfileScreen
+import care.intouch.app.feature.profile.presentation.ui.security.SecurityScreenInit
 
 @Composable
 fun AppNavHost(
@@ -56,6 +56,9 @@ fun AppNavHost(
             DiaryNoteScreen(
                 onMakeNoteClick = {
                     navController.navigate(route = DiaryRouteBranch.route)
+                },
+                onBackButtonClick = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -72,7 +75,10 @@ fun AppNavHost(
         }
 
         composable(route = PasswordChange.route) {
-            PasswordChangeScreen(
+            SecurityScreenInit(
+                onPopBackStack = {
+                    navController.popBackStack()
+                },
                 onDeleteProfileForeverClick = {
                     navController.navigate(route = Authentication.route)
                 }

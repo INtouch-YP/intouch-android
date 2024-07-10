@@ -134,9 +134,6 @@ fun SetPasswordScreen(
             } else StringVO.Plain(""),
             isPasswordVisible = isVisiblePasswordConfirm,
             isPasswordVisibleIconVisible = true,
-            onPasswordVisibleIconClick = {
-                isVisiblePasswordConfirm = !isVisiblePasswordConfirm
-            }
         )
         Spacer(modifier = Modifier.height(8.dp))
         Row(
