@@ -297,7 +297,7 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    private fun saveUserDataInSharedPreferences() {
+    private suspend fun saveUserDataInSharedPreferences() {
         val emailToSave: String = if (_state.value.emailResponseIsSuccess && _state.value.emailColorMessageIsGreenOrRed){
             currentEmail
         }else {
@@ -321,8 +321,8 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    private fun updateStateWhenEmailOnSuccess(message: StringVO) {
-        saveUserDataInSharedPreferences() // Тут может быть проблема ибо этот же метод вызывается в updateUserName при .onSuccess
+    private suspend fun updateStateWhenEmailOnSuccess(message: StringVO) {
+        saveUserDataInSharedPreferences()
         _state.update {
             _state.value.copy(
                 resultMessageOfChangeEmailRequest = message,
@@ -332,8 +332,8 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun updateStateWhenUserDataOnSuccess(message: StringVO) {
-        saveUserDataInSharedPreferences() // Тут может быть проблема ибо этот же метод вызывается в updateUserEmail при .onSuccess
+    private suspend fun updateStateWhenUserDataOnSuccess(message: StringVO) {
+        saveUserDataInSharedPreferences()
         _state.update {
             _state.value.copy(
                 resultMessageOfChangeNameRequest = message,
