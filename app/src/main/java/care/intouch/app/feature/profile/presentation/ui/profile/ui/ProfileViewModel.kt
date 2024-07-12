@@ -317,7 +317,7 @@ class ProfileViewModel @Inject constructor(
         userDataFromSharedPref = userDataFromSharedPref!!.copy(
             firstName = currentProfileData.firstName,
             lastName = currentProfileData.lastName,
-            email = currentEmail
+            email = emailToSave
         )
     }
 

@@ -14,18 +14,16 @@ class UserStorageImpl @Inject constructor(
     private val json: Json
 ) : UserStorage {
 
-
     override suspend fun save(user: User): Boolean {
         val mutex = Mutex()
         mutex.withLock {
             val data = json.encodeToString(user)
             return sharedPreferences.edit().putString(KEY, data).commit()
         }
-
     }
 
     override suspend fun read(): User {
-       return  sharedPreferences.getString(KEY, null).let {
+        return sharedPreferences.getString(KEY, null).let {
             json.decodeFromString<User>(it!!)
         }
     }
