@@ -53,7 +53,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="https" />
-                <data android:host="${hostname}" />
+                <data android:host="${hostName}" />
                 <data android:pathPattern="/email-update/" />
             </intent-filter>
         </activity>
