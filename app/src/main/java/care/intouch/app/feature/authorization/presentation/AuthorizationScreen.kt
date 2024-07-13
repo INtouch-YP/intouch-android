@@ -11,21 +11,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.State
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
+import care.intouch.app.feature.authorization.presentation.ui.AuthorizationSideEffect
 import care.intouch.uikit.R
 import care.intouch.uikit.theme.InTouchTheme
 
 @Composable
-fun AuthorizationScreen(
-    navController: NavController,
+fun AuthorizationScreenInit(
     userId: String? = null,
     token: String? = null,
     onGoPinCodeInstallationScreen: () -> Unit,
@@ -33,14 +34,35 @@ fun AuthorizationScreen(
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
-    viewModel.onEvent(AuthorizationEvent.OnGetUserInfo(userId, token))
+    LaunchedEffect(key1 = Unit) {
+        viewModel.sideEffect.collect {
+            when(it) {
+                AuthorizationSideEffect.NavigateToCreatePinCode -> {
+                    onGoPinCodeInstallationScreen()
+                }
+            }
+        }
+    }
+
+    AuthorizationScreen(
+        userId = userId,
+        token = token,
+        onEvent = { viewModel.onEvent(it) },
+        state = state
+    )
+}
+
+@Composable
+private fun AuthorizationScreen(
+    userId: String? = null,
+    token: String? = null,
+    onEvent: (AuthorizationEvent) -> Unit,
+    state: State<AuthorizationState>
+) {
+    onEvent(AuthorizationEvent.OnGetUserInfo(userId, token))
 
     Scaffold { paddingValues ->
         when (state.value.uiState) {
-            AuthorizationUiState.Loading -> {
-
-            }
-
             AuthorizationUiState.SetPassword -> {
                 Column(
                     modifier = Modifier
@@ -68,21 +90,30 @@ fun AuthorizationScreen(
                     Spacer(modifier = Modifier.height(48.dp))
                     SetPasswordScreen(
                         userName = state.value.userName,
-                        errorPassword = state.value.error != null,
-                        errorPasswordText = state.value.error?.let { getTextError(it) } ?: "",
-                        onEvent = viewModel::onEvent
+                        isPasswordValid = state.value.passwordValidType,
+                        isConfirmPasswordValid = state.value.confirmPasswordValidType,
+                        isEnable = state.value.isEnable,
+                        isEnableAgreementToTerm = state.value.isEnableAgreementToTerm,
+                        onEvent = onEvent
                     )
                 }
             }
 
             AuthorizationUiState.Authorized -> {
-                onGoPinCodeInstallationScreen.invoke()
+                onEvent(AuthorizationEvent.OnCreatePinCodeButtonClick)
             }
         }
     }
 }
 
 @Composable
-fun getTextError(errorType: InputPasswordError) = when (errorType) {
-    InputPasswordError.NotMatch -> stringResource(id = care.intouch.app.R.string.password_not_match_error)
+@Preview(showBackground = true)
+fun AuthorizationScreenPreview() {
+    InTouchTheme {
+        AuthorizationScreenInit(
+            userId = "12321",
+            token = "sdfsdfglkrl;er;lge;l",
+            onGoPinCodeInstallationScreen = {},
+        )
+    }
 }

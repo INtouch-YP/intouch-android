@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">InTouch</string>
+    <string name="app_name">INtouch</string>
     //UiKitSample
     <string name="uikit_sample_button">UiKitSample</string>
     <string name="main_screen_button">MainScreen</string>
@@ -31,6 +31,9 @@
     <string name="my_plan_sub_title">My plan</string>
     <string name="set_password_sub_title">Set Your Password To Proceed</string>
     <string name="enter_pin_sub_title">Enter your PIN code</string>
+    <string name="enter_old_pin_sub_title">Enter your old PIN code</string>
+    <string name="enter_new_pin_sub_title">Enter your new PIN code</string>
+    <string name="confirm_new_pin_sub_title">Confirm your new PIN code</string>
     <string name="sign_in_sub_title">Sign in to continue</string>
     <string name="email_for_recovery_sub_title">Enter your email for password recovery</string>
 
@@ -44,6 +47,7 @@
     <string name="save_button">Save</string>
     <string name="skip_button">Skip</string>
     <string name="back_button">Back</string>
+    <string name="back_to_home_button">Back to Home</string>
     <string name="done_button">Done</string>
     <string name="retry_button">Try again</string>
     <string name="confirm_button">Yes, delete</string>
@@ -85,6 +89,7 @@
     <string name="info_about_password_recovery">If your account exists, you\'ll receive an email with a link to reset your password. Please check your spam folder if you don\'t receive it within a few minutes.</string>
     <string name="info_about_delete_account">Are you certain you wish to delete your account?</string>
     <string name="info_about_change_password">You have successfully changed your password</string>
+    <string name="info_about_change_pin_code">You have successfully changed \nyour PIN code</string>
     <string name="info_about_change_profile_data">Information successfully updated</string>
     <string name="warning_delete">All your entered data\n will be permanently removed.</string>
     <string name="warning_delete_account">This action will permanently erase all your data, and there\'s no way to recover it later.</string>
