@@ -11,14 +11,10 @@ class UpdatePasswordUseCaseImpl @Inject constructor(
     private val repository: UpdatePasswordRepository
 ): UpdatePasswordUseCase {
     override suspend fun invoke(
-        currentPassword: String,
-        newPassword: String,
-        newConfirmationPassword: String
+        passwordData: PasswordData
     ): Resource<Unit, ErrorEntity> {
         return repository.updatePassword(
-            PasswordData(
-                currentPassword, newPassword, newConfirmationPassword
-            )
+            passwordData
         )
     }
 }

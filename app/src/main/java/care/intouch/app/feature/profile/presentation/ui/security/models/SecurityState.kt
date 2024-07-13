@@ -1,4 +1,4 @@
-package care.intouch.app.feature.profile.presentation.ui.security
+package care.intouch.app.feature.profile.presentation.ui.security.models
 
 data class SecurityState(
     val uiState: SecurityUiState = SecurityUiState.SetPassword,

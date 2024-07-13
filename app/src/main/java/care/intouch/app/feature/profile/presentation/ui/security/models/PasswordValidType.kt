@@ -1,4 +1,4 @@
-package care.intouch.app.feature.profile.presentation.ui.security
+package care.intouch.app.feature.profile.presentation.ui.security.models
 
 import care.intouch.app.R
 import care.intouch.uikit.common.StringVO
