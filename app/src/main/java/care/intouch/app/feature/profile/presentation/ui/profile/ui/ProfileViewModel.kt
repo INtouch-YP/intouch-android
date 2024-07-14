@@ -175,24 +175,26 @@ class ProfileViewModel @Inject constructor(
 
     private fun readUserDataFromSharedPreferences() {
         viewModelScope.launch(Dispatchers.IO) {
-            val dataFromSharedPreferences: User = userStorage.read()
-            _state.update {
-                _state.value.copy(
-                    dataIsValid = true,
-                    name = StringVO.Plain(dataFromSharedPreferences.firstName),
-                    nameIsValid = true,
-                    lastName = StringVO.Plain(dataFromSharedPreferences.lastName),
-                    lastNameIsValid = true,
-                    email = StringVO.Plain(dataFromSharedPreferences.email),
-                    emailIsValid = true
+            val dataFromSharedPreferences: User? = userStorage.read()
+            if(dataFromSharedPreferences != null){
+                _state.update {
+                    _state.value.copy(
+                        dataIsValid = true,
+                        name = StringVO.Plain(dataFromSharedPreferences.firstName),
+                        nameIsValid = true,
+                        lastName = StringVO.Plain(dataFromSharedPreferences.lastName),
+                        lastNameIsValid = true,
+                        email = StringVO.Plain(dataFromSharedPreferences.email),
+                        emailIsValid = true
+                    )
+                }
+                currentProfileData = ProfileData(
+                    firstName = dataFromSharedPreferences.firstName,
+                    lastName = dataFromSharedPreferences.lastName
                 )
+                currentEmail = dataFromSharedPreferences.email
+                userDataFromSharedPref = dataFromSharedPreferences
             }
-            currentProfileData = ProfileData(
-                firstName = dataFromSharedPreferences.firstName,
-                lastName = dataFromSharedPreferences.lastName
-            )
-            currentEmail = dataFromSharedPreferences.email
-            userDataFromSharedPref = dataFromSharedPreferences
         }
     }
 

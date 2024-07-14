@@ -3,7 +3,7 @@ package care.intouch.app.feature.profile.data.profile.api
 import care.intouch.app.feature.authorization.data.models.exception.AuthenticationException
 import care.intouch.app.feature.authorization.data.models.mappers.NetworkToUserExceptionMapper.Companion.COULD_NOT_CONVERT_TO_ERROR_RESPONSE
 import care.intouch.app.feature.common.data.models.exception.NetworkException
-import care.intouch.app.feature.profile.data.profile.models.UpdateUserEmailErrorResponse
+import care.intouch.app.feature.profile.data.profile.models.UpdateUserDataRequest
 import care.intouch.app.feature.profile.domain.profile.models.ProfileData
 import care.intouch.app.feature.profile.domain.profile.models.UpdateUserDataResponse
 import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserDataRepository
@@ -19,7 +19,10 @@ class UpdateUserDataRepositoryImpl @Inject constructor(
         id: Int
     ): Result<UpdateUserDataResponse> {
         try {
-            val response = updateUserDataApi.updateUserData(id, formatToQueryMap(userData))
+            val response = updateUserDataApi.updateUserData(
+                id,
+                UpdateUserDataRequest(firstName = userData.firstName, lastName = userData.lastName)
+            )
             return Result.success(
                 UpdateUserDataResponse.UpdateUserDataSuccess(
                     ProfileData(
@@ -48,13 +51,6 @@ class UpdateUserDataRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             return Result.failure(e)
         }
-    }
-
-    private fun formatToQueryMap(userData: ProfileData): HashMap<String, String> {
-        val queryParameters: HashMap<String, String> = HashMap()
-        queryParameters["first_name"] = userData.firstName
-        queryParameters["last_name"] = userData.lastName
-        return queryParameters
     }
 
     private inline fun <reified T> handleErrorResponse(errorMessage: String): T {

@@ -22,9 +22,9 @@ class UserStorageImpl @Inject constructor(
         }
     }
 
-    override suspend fun read(): User {
-        return sharedPreferences.getString(KEY, null).let {
-            json.decodeFromString<User>(it!!)
+    override suspend fun read(): User? {
+        return sharedPreferences.getString(KEY, null)?.let {
+            json.decodeFromString<User>(it)
         }
     }
 
