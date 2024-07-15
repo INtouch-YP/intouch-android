@@ -2,6 +2,14 @@ package care.intouch.app.feature.profile.presentation.ui.security
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import care.intouch.app.feature.common.Resource
+import care.intouch.app.feature.profile.domain.models.PasswordData
+import care.intouch.app.feature.profile.domain.useCase.DeleteProfileUseCase
+import care.intouch.app.feature.profile.domain.useCase.UpdatePasswordUseCase
+import care.intouch.app.feature.profile.presentation.ui.security.models.PasswordValidType
+import care.intouch.app.feature.profile.presentation.ui.security.models.SecuritySideEffect
+import care.intouch.app.feature.profile.presentation.ui.security.models.SecurityState
+import care.intouch.app.feature.profile.presentation.ui.security.models.SecurityUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,7 +23,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SecurityViewModel @Inject constructor(
-
+    private val updatePasswordUseCase: UpdatePasswordUseCase,
+    private val deleteProfileUseCase: DeleteProfileUseCase
 ): ViewModel() {
     private var _state = MutableStateFlow(SecurityState())
     val state = _state.asStateFlow()
@@ -69,11 +78,36 @@ class SecurityViewModel @Inject constructor(
 
     private fun savePassword() {
         viewModelScope.launch(context = Dispatchers.IO) {
-            _state.update { securityState ->
-                //todo request to backend
-                securityState.copy(
-                    errorCurrentPassword = PasswordValidType.INCORRECT_CURRENT_PASSWORD,
+            val updatePassword = updatePasswordUseCase.invoke(
+                PasswordData(
+                    currentPassword = state.value.currentPassword,
+                    newPassword = state.value.password,
+                    newConfirmationPassword = state.value.confirmPassword
                 )
+            )
+            when (updatePassword) {
+                is Resource.Success -> {
+                    _state.update { securityState ->
+                        securityState.copy(
+                            currentPasswordValidType = PasswordValidType.CORRECT,
+                            password = "",
+                            confirmPassword = "",
+                            currentPassword = "",
+                            passwordValidType = PasswordValidType.CORRECT,
+                            confirmPasswordValidType = PasswordValidType.CORRECT,
+                            isSuccessUpdate = true
+                        )
+                    }
+                }
+
+                is Resource.Error -> {
+                    _state.update { securityState ->
+                        securityState.copy(
+                            currentPasswordValidType = PasswordValidType.INCORRECT_CURRENT_PASSWORD,
+                            isSuccessUpdate = false
+                        )
+                    }
+                }
             }
         }
     }
@@ -95,11 +129,22 @@ class SecurityViewModel @Inject constructor(
 
     private fun deleteProfile() {
         viewModelScope.launch(context = Dispatchers.IO) {
-            _state.update { securityState ->
-                //todo request to backend
-                securityState.copy(
-                    uiState = SecurityUiState.ProfileDeleted
-                )
+            val deleteProfile = deleteProfileUseCase.invoke()
+            when (deleteProfile) {
+                is Resource.Success -> {
+                    _state.update { securityState ->
+                        securityState.copy(
+                            uiState = SecurityUiState.ProfileDeleted
+                        )
+                    }
+                }
+                is Resource.Error -> {
+                    _state.update { securityState ->
+                        securityState.copy(
+                            uiState = SecurityUiState.ProfileDeleted
+                        )
+                    }
+                }
             }
         }
     }
@@ -167,30 +212,24 @@ class SecurityViewModel @Inject constructor(
     }
 
     private fun checkPasswordFormat(password: String): PasswordValidType {
-        val smallPattern = "^.{8,}$"
-        val bigPattern = "^.{8,128}$"
-        val especialSymbol = "^[a-zA-Z\\d~!?@#\$%^&*_+\\-{}()\\[\\]<>\\/\\\\|\"'.,:;]*\$"
-
-        val missingPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}\$"
-        val spacePattern = "^\\S*\$"
         return when {
-            !Pattern.compile(spacePattern).matcher(password).matches() -> {
+            !Pattern.compile(SPACE_PATTERN).matcher(password).matches() -> {
                 PasswordValidType.EXIST_SPACE
             }
 
-            !Pattern.compile(especialSymbol).matcher(password).matches() -> {
+            !Pattern.compile(ESPECIAL_SYMBOL_PATTERN).matcher(password).matches() -> {
                 PasswordValidType.INVALID_SYMBOL
             }
 
-            !Pattern.compile(smallPattern).matcher(password).matches() -> {
+            !Pattern.compile(SMALL_PATTERN).matcher(password).matches() -> {
                 PasswordValidType.SMALL_PASSWORD
             }
 
-            !Pattern.compile(bigPattern).matcher(password).matches() -> {
+            !Pattern.compile(BIG_PATTERN).matcher(password).matches() -> {
                 PasswordValidType.BIG_PASSWORD
             }
 
-            !Pattern.compile(missingPattern).matcher(password).matches() -> {
+            !Pattern.compile(MISSING_PATTERN).matcher(password).matches() -> {
                 PasswordValidType.MISSING_SYMBOL
             }
 
@@ -210,4 +249,11 @@ class SecurityViewModel @Inject constructor(
                 && currentPassword.isNotBlank()
     }
 
+    companion object {
+        const val SMALL_PATTERN = "^.{8,}$"
+        const val BIG_PATTERN = "^.{8,128}$"
+        const val ESPECIAL_SYMBOL_PATTERN = "^[a-zA-Z\\d~!?@#\$%^&*_+\\-{}()\\[\\]<>\\/\\\\|\"'.,:;]*\$"
+        const val MISSING_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}\$"
+        const val SPACE_PATTERN = "^\\S*\$"
+    }
 }

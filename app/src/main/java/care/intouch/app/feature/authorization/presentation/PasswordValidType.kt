@@ -1,11 +1,10 @@
-package care.intouch.app.feature.profile.presentation.ui.security
+package care.intouch.app.feature.authorization.presentation
 
 import care.intouch.app.R
 import care.intouch.uikit.common.StringVO
 
 enum class PasswordValidType(val stringId: StringVO) {
     CORRECT(StringVO.Resource(-1)),
-    INCORRECT_CURRENT_PASSWORD(StringVO.Resource(R.string.incorrect_error)),
     SMALL_PASSWORD(StringVO.Resource(R.string.password_lengths_small_error)),
     BIG_PASSWORD(StringVO.Resource(R.string.password_lengths_long_error)),
     MISSING_SYMBOL(StringVO.Resource(R.string.password_rules_error)),

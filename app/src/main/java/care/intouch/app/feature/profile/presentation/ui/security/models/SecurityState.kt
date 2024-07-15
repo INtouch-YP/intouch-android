@@ -1,8 +1,7 @@
-package care.intouch.app.feature.profile.presentation.ui.security
+package care.intouch.app.feature.profile.presentation.ui.security.models
 
 data class SecurityState(
     val uiState: SecurityUiState = SecurityUiState.SetPassword,
-    val errorCurrentPassword: PasswordValidType = PasswordValidType.CORRECT,
     val isSuccessUpdate: Boolean? = null,
     val isEnable: Boolean = false,
     val currentPassword: String = "",

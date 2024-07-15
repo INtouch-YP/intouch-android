@@ -1,4 +1,4 @@
-package care.intouch.app.feature.profile.presentation.ui.security
+package care.intouch.app.feature.profile.presentation.ui.security.models
 
 sealed class SecurityUiState {
     data object SetPassword: SecurityUiState()

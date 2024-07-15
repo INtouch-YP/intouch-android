@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import care.intouch.app.R
+import care.intouch.app.feature.profile.presentation.ui.security.models.PasswordValidType
 import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.buttons.DeleteButton
@@ -31,7 +32,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SecuritySetPasswordScreen(
     modifier: Modifier = Modifier,
-    errorPassword: PasswordValidType,
+    currentPasswordValid: PasswordValidType,
     isSuccessUpdate: Boolean? = null,
     isPasswordValid: PasswordValidType = PasswordValidType.CORRECT,
     isConfirmPasswordValid: PasswordValidType = PasswordValidType.CORRECT,
@@ -77,9 +78,9 @@ fun SecuritySetPasswordScreen(
                 currentPassword = it
             },
             title = StringVO.Resource(R.string.current_password_hint),
-            error = (errorPassword != PasswordValidType.CORRECT),
-            caption = if (errorPassword != PasswordValidType.CORRECT) {
-                errorPassword.getString()
+            error = (currentPasswordValid != PasswordValidType.CORRECT),
+            caption = if (currentPasswordValid != PasswordValidType.CORRECT) {
+                currentPasswordValid.getString()
             } else StringVO.Plain(""),
             captionLinesAmount = 2,
             isPasswordVisible = false,
@@ -144,7 +145,7 @@ fun SecuritySetPasswordScreen(
             textAlign = TextAlign.Center,
             minLines = 2,
             maxLines = 2,
-            color = InTouchTheme.colors.textGreen
+            color = if (isSuccessUpdate == true) InTouchTheme.colors.textGreen else InTouchTheme.colors.errorRed
         )
         Spacer(modifier = Modifier.height(12.dp))
         IntouchButton(
