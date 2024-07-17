@@ -8,6 +8,7 @@ import care.intouch.app.feature.authorization.domain.api.UserStorage
 import care.intouch.app.feature.authorization.domain.models.User
 import care.intouch.app.feature.common.data.models.exception.NetworkException
 import care.intouch.app.feature.profile.domain.profile.models.ProfileData
+import care.intouch.app.feature.profile.domain.profile.useCase.ConfirmEmailChangeUseCase
 import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserDataUseCase
 import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserEmailUseCase
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataEvent
@@ -26,7 +27,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val userStorage: UserStorage,
     private val updateUserDataUseCase: UpdateUserDataUseCase,
-    private val updateUserEmailUseCase: UpdateUserEmailUseCase
+    private val updateUserEmailUseCase: UpdateUserEmailUseCase,
+    private val confirmEmailChangeUseCase: ConfirmEmailChangeUseCase
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(ProfileState())
@@ -381,7 +383,9 @@ class ProfileViewModel @Inject constructor(
         if(id != null && token != null && updateEmailFlag) {
             ///api/v1/user/update/email/confirm/{id}/{token}/
             Log.d("MY_INTOUCH_TAG", "Мы провалились в изменение почты id = $id")
-
+            viewModelScope.launch(Dispatchers.IO) {
+                confirmEmailChangeUseCase.invoke(id, token)
+            }
             updateEmailFlag = false
         }
     }

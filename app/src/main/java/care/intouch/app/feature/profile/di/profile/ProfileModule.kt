@@ -1,7 +1,10 @@
 package care.intouch.app.feature.profile.di.profile
 
+import care.intouch.app.feature.profile.data.profile.api.ConfirmEmailChangeRepositoryImpl
 import care.intouch.app.feature.profile.data.profile.api.UpdateUserDataRepositoryImpl
 import care.intouch.app.feature.profile.data.profile.api.UpdateUserEmailRepositoryImpl
+import care.intouch.app.feature.profile.domain.profile.useCase.ConfirmEmailChangeRepository
+import care.intouch.app.feature.profile.domain.profile.useCase.ConfirmEmailChangeUseCase
 import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserDataRepository
 import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserDataUseCase
 import care.intouch.app.feature.profile.domain.profile.useCase.UpdateUserEmailRepository
@@ -27,5 +30,10 @@ interface ProfileModule {
     @Binds
     fun bindRedactUserEmailRepository(impl: UpdateUserEmailRepositoryImpl): UpdateUserEmailRepository
 
+    @Binds
+    fun bindConfirmEmailChangeUseCase(impl: ConfirmEmailChangeUseCase.Base): ConfirmEmailChangeUseCase
+
+    @Binds
+    fun bindConfirmEmailChangeRepository(impl: ConfirmEmailChangeRepositoryImpl): ConfirmEmailChangeRepository
 }
 
