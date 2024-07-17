@@ -19,7 +19,7 @@ fun AssignmentDto.mapToAssignment(): Assignment {
         "to do" -> AssignmentStatus.TO_DO
         "in progress" -> AssignmentStatus.IN_PROGRESS
         "done" -> AssignmentStatus.DONE
-        else -> AssignmentStatus.TO_DO
+        else -> AssignmentStatus.UNKNOWN
     }
 
     return Assignment(

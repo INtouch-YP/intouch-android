@@ -121,7 +121,7 @@ fun PlanScreen(
             ) {
                 items(state.filteredAssignments) { assignment ->
                     CardHolder(
-                        chipText = StringVO.Plain(assignment.status.value),
+                        chipText = assignment.status.value,
                         text = assignment.title,
                         dateText = assignment.date,
                         onDuplicateMenuItemClick = {
