@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import care.intouch.app.core.navigation.AppNavScreen
-import care.intouch.app.core.navigation.MainNav
+import care.intouch.app.core.navigation.AssignmentsQuestion
 import care.intouch.app.core.navigation.Plan
 import care.intouch.app.core.navigation.PlanBottomNav
 import care.intouch.app.core.navigation.PlanRouteBranch
@@ -14,7 +14,7 @@ import care.intouch.app.core.navigation.TaskEstimate
 import care.intouch.app.core.navigation.TaskIntroduction
 import care.intouch.app.feature.plan.presentation.ui.TaskCompletingScreen
 import care.intouch.app.feature.plan.presentation.ui.TaskEstimateScreen
-import care.intouch.app.feature.plan.presentation.ui.TaskIntroductionScreen
+import care.intouch.app.feature.questions.presentations.ui.introductory.IntroductoryQuestionsScreen
 
 fun NavGraphBuilder.addNestedPlanGraph(
     navController: NavHostController
@@ -25,11 +25,13 @@ fun NavGraphBuilder.addNestedPlanGraph(
     ) {
 
         composable(route = TaskIntroduction.route) {
-            TaskIntroductionScreen(
+            IntroductoryQuestionsScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
                 onNextClick = {
-                    navController.navigate(route = TaskCompleting.route)
-                }
-            )
+                    navController.navigate(route = AssignmentsQuestion.route)
+                })
         }
 
         composable(route = TaskEstimate.route) {

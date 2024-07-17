@@ -16,6 +16,7 @@ import care.intouch.app.core.navigation.MainNav
 import care.intouch.app.core.navigation.MultilineTextFieldSample
 import care.intouch.app.core.navigation.Navigation
 import care.intouch.app.core.navigation.NavigationSample
+import care.intouch.app.core.navigation.OnEmotionClick
 import care.intouch.app.core.navigation.OneLineTextFieldSample
 import care.intouch.app.core.navigation.PasswordTextFieldSample
 import care.intouch.app.core.navigation.PinCodeEnter
@@ -108,7 +109,8 @@ fun MainNavHost(
 
                 onCardSampleClick = { navController.navigate(route = CardSample.route) },
 
-                onButtonSample2Click = { navController.navigate(route = ButtonSample2.route) }
+                onButtonSample2Click = { navController.navigate(route = ButtonSample2.route) },
+                onEmotionClick = { navController.navigate(route = OnEmotionClick.route) }
             )
         }
 

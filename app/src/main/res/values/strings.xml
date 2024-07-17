@@ -107,7 +107,7 @@
     <string name="password_not_match_error">Passwords don\'t match</string>
     <string name="password_not_match_try_again_error">Passwords don\'t match. Please try again</string>
     <string name="password_update_error">Password update failed. Please try again later</string>
-    <string name="problem_with_connection">Unable to establish a connection. Please check your internet connection and try again</string>
+    <string name="problem_with_connection">Unable to establish a connection.\n Please check your internet connection and try again</string>
     <string name="email_not_valid_error">Not a valid e-mail address.</string>
     <string name="profile_invalid_char_error">Invalid characters. Only letters, spaces,\nand periods are allowed.</string>
     <string name="profile_small_name_error">Please enter a name with at least 2 characters.</string>
@@ -132,9 +132,9 @@
     <string name="thoughts_sub_title_emotional">Thoughts Analysis</string>
     <string name="emotional_type_sub_title_emotional">Emotional Type</string>
     <string name="sensations_sub_title_emotional">Physical Sensations</string>
-    <string name="event_desc_emotional">Describe the event or situaton. What happened?</string>
+    <string name="event_desc_emotional">Describe the event or situation.\nWhat happened?</string>
     <string name="thoughts_desc_emotional">Reflect on your thoughts related to the situation. What were you thinking?</string>
-    <string name="emotional_type_desc_emotional">How are you feeling? Describe your emotions or choose from our prompt.</string>
+    <string name="emotional_type_desc_emotional">How are you feeling? Describe your emotions\nor choose from our prompt.</string>
     <string name="sensations_desc_emotional">Describe any physical sensations or changes you noticed in your body. For example, tension, butterflies, etc.</string>
 
 
@@ -182,6 +182,36 @@
     <string name="satisfaction_clarifying_emotional">Satisfaction</string>
     <string name="self_love_clarifying_emotional">Self-love</string>
     <string name="euphoria_clarifying_emotional">Euphoria</string>
+    
+    <string name="name_task_mock">Socratic Dialogue</string>
+    <string name="description_task_mock">Dear Benjamin,\n\nThis exercise uses a technique called Socratic Dialogue, which will help you to determine how accurate and helpful certain thoughts may be.\n\nSpecifically, this is done by exploring how you came to have those thoughts, and evaluating the evidence regarding those and other possible thoughts.</string>
+    <string name="motivates_question">What motivates you to pursue your current career path?</string>
+    <string name="inscribe_motivates_question">Please share insights into the motivations and factors that inspire your choice of the current professional journey. </string>
+    <string name="write_your_answer_here">Write your answer here...</string>
+    <string name="skills_question">Which of the following skills do you believe is most crucial for success in your current role?</string>
+    <string name="skills_leadership_answer">Leadership</string>
+    <string name="skills_communication_answer">Communication</string>
+    <string name="skills_problem_solving_answer">Problem-solving</string>
+    <string name="skills_technical_expertise_answer">Technical expertise</string>
+    <string name="professional_development_question">Which of the following professional development activities have you actively engaged in?</string>
+    <string name="inscribe_professional_development_question">Select all that apply. More than one answer possible.</string>
+    <string name="professional_development_attending_workshops_or_conferences_answer">Attending workshops or conferences</string>
+    <string name="professional_development_pursuing_further_education_or_certifications">Pursuing further education or certifications</string>
+    <string name="professional_development_participating_in_mentorship_programs">Participating in mentorship programs</string>
+    <string name="professional_development_joining_industry_related_associations">Joining industry-related associations</string>
+    <string name="scale_questions">On a scale of 1 to 10, how satisfied are you with your current work-life balance?</string>
+    <string name="navigating_professional_development">Navigating Professional Development</string>
+    <string name="skills_survey">Skills Survey</string>
+    <string name="skills_survey_discription">Which skill is key to success in your role? Leadership, Communication, Problem-solving, or Technical expertise? Your viewpoint shapes our collective understanding of essential skills.</string>
+    <string name="professional_development_snapshot">Professional Development Snapshot</string>
+    <string name="professional_development_snapshot_description">Active in workshops, further education, mentorship, or industry associations? Select your engagements to showcase your commitmen to continuous learning.</string>
+    <string name="dunning_kruger_effect">Dunning-Kruger Effect</string>
+    <string name="share_task_with_doctor">Share this task with my therapist</string>
+    <string name="complete_task">Complete Task</string>
+    <string name="questions_popap_not_all_filled">It seems not all fields are filled</string>
+    <string name="questions_popap_closing_task_first_line">Closing task without completion</string>
+    <string name="questions_popup_closing_task_second_line">may lead to data loss</string>
+
     <string name="welcome_to_intouch">Welcome to INtouch!</string>
     <string name="incorrect_please_try_again">Incorrect. Please try again</string>
     <string name="password">Password</string>

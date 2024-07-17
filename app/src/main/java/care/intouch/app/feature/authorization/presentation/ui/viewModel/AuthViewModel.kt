@@ -2,7 +2,6 @@ package care.intouch.app.feature.authorization.presentation.ui.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import care.intouch.app.feature.authorization.domain.useCase.GetAccountStateUC
 import care.intouch.app.feature.authorization.domain.useCase.LoginByEmailUC
 import care.intouch.app.feature.authorization.presentation.ui.models.AuthScreenState
 import care.intouch.app.feature.authorization.presentation.ui.models.AuthenticationDataEvent

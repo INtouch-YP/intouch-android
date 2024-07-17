@@ -80,7 +80,8 @@ fun ConfirmDeleteDialog(
                         SecondaryButtonDark(
                             modifier = Modifier,
                             onClick = { onCancel() },
-                            text = cancelButtonText
+                            text = cancelButtonText,
+                            textStyle = InTouchTheme.typography.titleSmall
                         )
                     }
                 }

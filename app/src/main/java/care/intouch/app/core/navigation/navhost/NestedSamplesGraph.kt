@@ -1,7 +1,6 @@
 package care.intouch.app.core.navigation.navhost
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import care.intouch.app.core.navigation.ButtonSample2
