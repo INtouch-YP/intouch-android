@@ -29,7 +29,7 @@
                 <data
                     android:host="${hostName}"
                     android:scheme="https"
-                    android:pathPattern="/reset-password/.*" />
+                    android:pathPrefix="/reset-password"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

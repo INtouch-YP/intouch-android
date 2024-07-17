@@ -28,6 +28,7 @@ fun AppNavHost(
     authStartDestination: String?,
     modifier: Modifier
 ) {
+
     NavHost(
         navController = navController,
         startDestination = startDestination,

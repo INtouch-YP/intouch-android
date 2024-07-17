@@ -21,13 +21,14 @@ import care.intouch.app.core.navigation.PinCodeInstallation
 import care.intouch.app.core.navigation.Registration
 import care.intouch.app.core.navigation.SendingNotification
 import care.intouch.app.feature.authorization.presentation.AuthorizationScreenInit
-import care.intouch.app.feature.pinCode.ui.enter.PinCodeEnterScreen
 import care.intouch.app.feature.authorization.presentation.ui.AuthenticationScreen
 import care.intouch.app.feature.authorization.presentation.ui.PasswordRecoveryScreen
 import care.intouch.app.feature.authorization.presentation.ui.RegistrationScreen
 import care.intouch.app.feature.authorization.presentation.ui.SendingNotificationScreen
 import care.intouch.app.feature.pinCode.ui.confirm.PinCodeConfirmationScreen
+import care.intouch.app.feature.pinCode.ui.enter.PinCodeEnterScreen
 import care.intouch.app.feature.pinCode.ui.install.PinCodeInstallationScreen
+import timber.log.Timber
 
 fun NavGraphBuilder.addNestedAuthorizationGraph(
     navController: NavHostController,
@@ -54,6 +55,7 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
                     popUpTo(navController.graph.startDestinationId) {
                         inclusive = true
                     }
+                    launchSingleTop = true
                 }
             })
         }
@@ -133,7 +135,7 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
 
         composable(route = MainNav.route) {
             AppNavScreen(
-                startDestination = Home.route
+                startDestination = Home.route,
             )
         }
 
@@ -141,10 +143,15 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
             route = Authorization.route,
             deepLinks = listOf(navDeepLink {
                 uriPattern = "https://app.intouch.care/activate-client/{clientId}/{token}/"
+            }, navDeepLink {
+                uriPattern = "https://app.intouch.care/reset-password/{clientId}/{token}/"
             })
         ) { backStackEntry ->
+
             val userId = backStackEntry.arguments?.getString("clientId")
             val token = backStackEntry.arguments?.getString("token")
+
+            Timber.tag("NAV").d("userId: $userId, token: $token")
             AuthorizationScreenInit(
                 userId = userId,
                 token = token,

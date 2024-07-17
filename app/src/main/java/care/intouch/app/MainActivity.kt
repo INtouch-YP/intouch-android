@@ -1,6 +1,5 @@
 package care.intouch.app
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,10 +25,7 @@ import care.intouch.app.core.navigation.AppNavScreen
 import care.intouch.app.core.navigation.Authentication
 import care.intouch.app.core.navigation.AuthorizationRouteBranch
 import care.intouch.app.core.navigation.Home
-import care.intouch.app.core.navigation.Registration
 import care.intouch.app.core.navigation.navhost.MainNavHost
-import care.intouch.app.core.utils.mappers.DeepLinkResultWrapper
-import care.intouch.app.core.utils.mappers.DeepLinksMapper
 import care.intouch.app.models.MainActivitySideEffect
 import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
@@ -38,15 +34,9 @@ import com.google.firebase.appdistribution.FirebaseAppDistribution
 import com.google.firebase.appdistribution.FirebaseAppDistributionException
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var deepLinksMapper: DeepLinksMapper
-
-    private var deepLinkResultWrapper: DeepLinkResultWrapper = DeepLinkResultWrapper.AbsentDeepLink
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -57,10 +47,6 @@ class MainActivity : ComponentActivity() {
             }
         }
         super.onCreate(savedInstanceState)
-
-        if (intent?.action == Intent.ACTION_VIEW) {
-            deepLinkResultWrapper = deepLinksMapper.handleDeepLink(data = intent?.data)
-        }
 
         enableEdgeToEdge()
         setContent {
@@ -92,33 +78,17 @@ class MainActivity : ComponentActivity() {
 
             InTouchTheme {
                 Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .systemBarsPadding(),
+                    modifier = Modifier.fillMaxSize().navigationBarsPadding(),
                     color = InTouchTheme.colors.mainBlue
                 ) {
                     Column {
                         if (BuildConfig.DEBUG) {
-                            when (deepLinkResultWrapper) {
-                                is DeepLinkResultWrapper.ResetPasswordDeepLink -> {
-                                    AppNavScreen(
-                                        startDestination = AuthorizationRouteBranch.route,
-                                        authStartDestination = Registration.route
-                                    )
-                                }
 
-                                is DeepLinkResultWrapper.AbsentDeepLink -> {
-                                    MainNavHost(
-                                        navController = rememberNavController(),
-                                        isAuthenticate = isAuthenticate
-                                    )
-                                }
-                            }
+                            MainNavHost(
+                                navController = rememberNavController(),
+                                isAuthenticate = isAuthenticate
+                            )
                         } else {
-                            val currentRoute = when (deepLinkResultWrapper) {
-                                DeepLinkResultWrapper.ResetPasswordDeepLink -> Registration.route
-                                DeepLinkResultWrapper.AbsentDeepLink -> Authentication.route
-                            }
 
                             val startDestination = if (isAuthenticate) {
                                 Home.route
@@ -128,7 +98,7 @@ class MainActivity : ComponentActivity() {
 
                             AppNavScreen(
                                 startDestination = startDestination,
-                                authStartDestination = currentRoute
+                                authStartDestination = Authentication.route
                             )
                         }
                     }
