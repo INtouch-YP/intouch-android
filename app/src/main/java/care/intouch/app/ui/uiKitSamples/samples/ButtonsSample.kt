@@ -48,7 +48,7 @@ fun ButtonSampleScreen() {
             PrimaryButtonWhite(
                 onClick = {},
                 modifier = Modifier.padding(top = 5.dp),
-                text = StringVO.Plain("Call to action"),
+                text = StringVO.Plain("Call to action")
             )
             SecondaryButtonDark(
                 onClick = { },

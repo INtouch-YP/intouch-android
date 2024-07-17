@@ -2,10 +2,10 @@ package care.intouch.app.feature.authorization.presentation.ui.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import care.intouch.app.feature.authorization.domain.useCase.GetAccountStateUC
 import care.intouch.app.feature.authorization.domain.useCase.LoginByEmailUC
 import care.intouch.app.feature.authorization.presentation.ui.models.AuthScreenState
 import care.intouch.app.feature.authorization.presentation.ui.models.AuthenticationDataEvent
+import care.intouch.app.feature.authorization.presentation.ui.models.AuthenticationSideEffect
 import care.intouch.app.feature.common.Resource
 import care.intouch.app.ui.uiKitSamples.samples.BLANC_STRING
 import care.intouch.uikit.common.StringVO
@@ -20,8 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModule @Inject constructor(
-    private val loginByEmailUC: LoginByEmailUC,
-    private val getAccountStateUC: GetAccountStateUC,
+    private val loginByEmailUC: LoginByEmailUC
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -37,8 +36,8 @@ class AuthViewModule @Inject constructor(
         )
     )
     val uiState = _uiState.asStateFlow()
-    private val _sharedUiState = MutableSharedFlow<String>()
-    val sharedUiState = _sharedUiState.asSharedFlow()
+    private val _sideEffect = MutableSharedFlow<AuthenticationSideEffect>()
+    val sideEffect = _sideEffect.asSharedFlow()
 
     fun onEvent(event: AuthenticationDataEvent) {
         when (event) {
@@ -106,11 +105,15 @@ class AuthViewModule @Inject constructor(
 
     private fun loginByEmail(username: String, password: String) {
         viewModelScope.launch {
-            val message = when (val result = loginByEmailUC.invoke(username, password)) {
-                is Resource.Error -> result.error.message
-                is Resource.Success -> "Success"
+           when (val result = loginByEmailUC.invoke(username, password)) {
+                is Resource.Error -> {
+                    val errorMessage = result.error.message
+                    _sideEffect.emit(AuthenticationSideEffect.ShowToast(StringVO.Plain(errorMessage)))
+                }
+                is Resource.Success -> {
+                    _sideEffect.emit(AuthenticationSideEffect.Login)
+                }
             }
-            _sharedUiState.emit(message)
         }
     }
 

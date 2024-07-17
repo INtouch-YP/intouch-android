@@ -12,13 +12,13 @@ import care.intouch.app.core.navigation.Home
 import care.intouch.app.core.navigation.PasswordChange
 import care.intouch.app.core.navigation.Plan
 import care.intouch.app.core.navigation.PlanBottomNav
-import care.intouch.app.core.navigation.PlanRouteBranch
 import care.intouch.app.core.navigation.Profile
 import care.intouch.app.core.navigation.ProfileRouteBranch
-import care.intouch.app.feature.diary.presentation.ui.DiaryNoteScreen
+import care.intouch.app.core.navigation.QuestionsRouteBranch
+import care.intouch.app.feature.diary.DiaryNoteScreen
 import care.intouch.app.feature.home.presentation.ui.HomeScreen
 import care.intouch.app.feature.plan.presentation.ui.PlanScreen
-import care.intouch.app.feature.profile.presentation.ui.profile.ProfileScreen
+import care.intouch.app.feature.profile.presentation.ui.profile.ui.ProfileScreen
 import care.intouch.app.feature.profile.presentation.ui.security.SecurityScreenInit
 
 @Composable
@@ -47,7 +47,7 @@ fun AppNavHost(
         composable(route = Plan.route) {
             PlanScreen(
                 onTaskListItemClick = {
-                    navController.navigate(route = PlanRouteBranch.route)
+                    navController.navigate(route = QuestionsRouteBranch.route/*PlanRouteBranch.route*/)
                 },
                 onBackArrowClick = {
                     navController.navigate(route = Home.route)
@@ -61,7 +61,7 @@ fun AppNavHost(
                     navController.navigate(route = DiaryRouteBranch.route)
                 },
                 onBackButtonClick = {
-                    navController.popBackStack()
+                    navController.navigate(route = Home.route)
                 }
             )
         }
@@ -73,9 +73,13 @@ fun AppNavHost(
                 },
                 onChangePinCode = {
                     navController.navigate(route = ProfileRouteBranch.route)
+                },
+                onSingOut = {
+                    navController.navigate(route = Authentication.route)
                 }
             )
         }
+
 
         composable(route = PasswordChange.route) {
             SecurityScreenInit(
@@ -98,6 +102,10 @@ fun AppNavHost(
         addNestedDiaryGraph(navController = navController)
 
         addNestedProfileGraph(navController = navController)
+
+        addNestedQuestionsGraph(
+            navController = navController
+        )
     }
 }
 

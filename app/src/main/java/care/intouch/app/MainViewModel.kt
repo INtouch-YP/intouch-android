@@ -91,7 +91,7 @@ class MainViewModel @Inject constructor(
         isLoading = false
         viewModelScope.launch {
             _sideEffect.emit(
-                MainActivitySideEffect.NavigatedToAuth
+                MainActivitySideEffect.NavigatedToMainScreen
             )
         }
     }

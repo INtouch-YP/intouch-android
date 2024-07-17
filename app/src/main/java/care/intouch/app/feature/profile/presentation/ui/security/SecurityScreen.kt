@@ -32,6 +32,9 @@ import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import care.intouch.app.R
+import care.intouch.app.feature.profile.presentation.ui.security.models.SecuritySideEffect
+import care.intouch.app.feature.profile.presentation.ui.security.models.SecurityState
+import care.intouch.app.feature.profile.presentation.ui.security.models.SecurityUiState
 import care.intouch.uikit.theme.InTouchTheme
 
 @Composable
@@ -118,7 +121,7 @@ private fun SecurityScreen(
                     }
                     Spacer(modifier = Modifier.height(40.dp))
                     SecuritySetPasswordScreen(
-                        errorPassword = state.value.errorCurrentPassword,
+                        currentPasswordValid = state.value.currentPasswordValidType,
                         isSuccessUpdate = state.value.isSuccessUpdate,
                         isPasswordValid = state.value.passwordValidType,
                         isConfirmPasswordValid = state.value.confirmPasswordValidType,

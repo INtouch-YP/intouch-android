@@ -27,8 +27,8 @@ import care.intouch.uikit.theme.InTouchTheme
 fun EmptyDiaryPlaceHolder(
     title: StringVO,
     text: StringVO,
-    arrowImage: ImageVO = ImageVO.Resource(R.drawable.icon_arrow_pointer_on_plus)
 ) {
+    val arrowImage: ImageVO = ImageVO.Resource(R.drawable.icon_arrow_pointer_on_plus)
     Box(
         modifier = Modifier
             .padding(horizontal = 28.dp)
@@ -69,7 +69,7 @@ fun EmptyDiaryPlaceHolder(
             Image(
                 modifier = Modifier
                     .padding(start = 86.dp, top = 10.dp)
-                    .offset(0.dp, -20.dp),
+                    .offset(0.dp, (-20).dp),
                 alignment = Alignment.BottomStart,
                 painter = arrowImage.painter(),
                 contentDescription = "the arrow that points on the creation icon"

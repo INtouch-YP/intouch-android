@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -22,15 +24,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import care.intouch.app.feature.authorization.presentation.ui.models.AuthScreenState
 import care.intouch.app.feature.authorization.presentation.ui.models.AuthenticationDataEvent
+import care.intouch.app.feature.authorization.presentation.ui.models.AuthenticationSideEffect
 import care.intouch.app.feature.authorization.presentation.ui.viewModel.AuthViewModule
 import care.intouch.uikit.R
 import care.intouch.uikit.common.ImageVO
@@ -38,8 +40,8 @@ import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.buttons.PrimaryButtonGreen
 import care.intouch.uikit.ui.buttons.SecondaryButtonDark
+import care.intouch.uikit.ui.snackbar.IntouchSnackbar
 import care.intouch.uikit.ui.textFields.PasswordTextField
-import kotlinx.coroutines.launch
 
 @Composable
 fun AuthenticationScreen(
@@ -48,32 +50,42 @@ fun AuthenticationScreen(
     viewModel: AuthViewModule,
 ) {
     val state by viewModel.uiState.collectAsState()
-    val sharedState by viewModel.sharedUiState.collectAsState("")
+    val sideEffect = viewModel.sideEffect
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = sideEffect) {
+        viewModel.sideEffect.collect {
+            when (it) {
+                AuthenticationSideEffect.Login -> onLoginClick()
+                is AuthenticationSideEffect.ShowToast -> {
+                    snackbarHostState.showSnackbar(
+                        message = it.message.value(context)
+                    )
+                }
+            }
+        }
+    }
     AuthenticationScreen(
         onForgotPasswordClick = onForgotPasswordClick,
-        onLoginClick = onLoginClick,
         state = state,
-        sharedState = sharedState,
-        onEvent = { viewModel.onEvent(it) }
+        onEvent = { viewModel.onEvent(it) },
+        snackbarHostState = snackbarHostState
     )
 }
 
 @Composable
 private fun AuthenticationScreen(
+    modifier: Modifier = Modifier,
     onForgotPasswordClick: () -> Unit,
-    onLoginClick: () -> Unit,
     headBackGround: ImageVO = ImageVO.Resource(R.drawable.head_background_small),
-    headBackGroundTint: Color = InTouchTheme.colors.mainBlue,
-    logoBackGroundTint: Color = InTouchTheme.colors.mainGreen,
     inTouchLogo: ImageVO = ImageVO.Resource(R.drawable.icon_intouch_logo),
     state: AuthScreenState,
-    sharedState: String,
     onEvent: (AuthenticationDataEvent) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(InTouchTheme.colors.input),
         verticalArrangement = Arrangement.Top,
@@ -127,7 +139,7 @@ private fun AuthenticationScreen(
                 },
                 hint = StringVO.Resource(care.intouch.app.R.string.e_mail),
             )
-            Spacer(modifier = Modifier.height(38.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             PasswordTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -158,26 +170,21 @@ private fun AuthenticationScreen(
                 state.login.isNotEmpty() and state.password.isNotEmpty() and !state.isErrorLogin and !state.isErrorPassword,
                 text = StringVO.Resource(care.intouch.app.R.string.login),
             )
-            LaunchedEffect(key1 = sharedState) {
-                if (sharedState == "Success") {
-                    onLoginClick.invoke()
-                } else {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(sharedState)
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.weight(1f))
             SecondaryButtonDark(
                 onClick = { onForgotPasswordClick.invoke() },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally),
-                textStyle = InTouchTheme.typography.bodyBold,
+                textStyle = InTouchTheme.typography.bodyRegular,
                 isEnabled = true,
                 text = StringVO.Resource(care.intouch.app.R.string.forgot_password),
                 enableTextColor = InTouchTheme.colors.textGreen
             )
-            SnackbarHost(snackbarHostState)
+            SnackbarHost(
+                modifier = Modifier.navigationBarsPadding(),
+                hostState = snackbarHostState
+            ){
+                IntouchSnackbar(data = it)
+            }
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -186,7 +193,7 @@ private fun AuthenticationScreen(
 @Composable
 @Preview(showBackground = true)
 fun AuthenticationScreenPreview() {
-    val state: AuthScreenState = AuthScreenState(
+    val state = AuthScreenState(
         password = "",
         login = "",
         loginCaption = StringVO.Plain(""),
@@ -199,10 +206,9 @@ fun AuthenticationScreenPreview() {
     InTouchTheme {
         AuthenticationScreen(
             onForgotPasswordClick = {},
-            onLoginClick = {},
             onEvent = {},
             state = state,
-            sharedState = ""
+            snackbarHostState = remember { SnackbarHostState() }
         )
     }
 }

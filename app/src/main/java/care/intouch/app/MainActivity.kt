@@ -8,7 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -92,18 +92,21 @@ class MainActivity : ComponentActivity() {
 
             InTouchTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize().navigationBarsPadding(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .systemBarsPadding(),
                     color = InTouchTheme.colors.mainBlue
                 ) {
                     Column {
                         if (BuildConfig.DEBUG) {
-                            when(deepLinkResultWrapper) {
+                            when (deepLinkResultWrapper) {
                                 is DeepLinkResultWrapper.ResetPasswordDeepLink -> {
                                     AppNavScreen(
                                         startDestination = AuthorizationRouteBranch.route,
                                         authStartDestination = Registration.route
                                     )
                                 }
+
                                 is DeepLinkResultWrapper.AbsentDeepLink -> {
                                     MainNavHost(
                                         navController = rememberNavController(),
@@ -112,7 +115,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         } else {
-                            val currentRoute = when(deepLinkResultWrapper) {
+                            val currentRoute = when (deepLinkResultWrapper) {
                                 DeepLinkResultWrapper.ResetPasswordDeepLink -> Registration.route
                                 DeepLinkResultWrapper.AbsentDeepLink -> Authentication.route
                             }

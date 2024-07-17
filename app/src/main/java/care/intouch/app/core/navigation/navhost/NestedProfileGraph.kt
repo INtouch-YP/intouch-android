@@ -6,12 +6,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import care.intouch.app.core.navigation.MainNav
 import care.intouch.app.core.navigation.PinCodeChange
-import care.intouch.app.core.navigation.PinCodeConfirm
 import care.intouch.app.core.navigation.ProfileRouteBranch
 import care.intouch.app.core.navigation.SuccessfulPinCodeChange
-import care.intouch.app.feature.profile.presentation.ui.PinCodeChangeScreen
-import care.intouch.app.feature.profile.presentation.ui.PinCodeConfirmScreen
-import care.intouch.app.feature.profile.presentation.ui.SuccessfulPinCodeChangeScreen
+import care.intouch.app.feature.pinCode.ui.change.PinCodeChangeScreen
+import care.intouch.app.feature.pinCode.ui.change.SuccessfulPinCodeChangeScreen
 
 fun NavGraphBuilder.addNestedProfileGraph(
     navController: NavHostController
@@ -21,31 +19,17 @@ fun NavGraphBuilder.addNestedProfileGraph(
     ) {
 
         composable(route = PinCodeChange.route) {
-            PinCodeChangeScreen(
-                pinCodeEntered = {
-                    navController.navigate(route = PinCodeConfirm.route)
-                },
-                exit = {
-                    navController.navigate(route = MainNav.route) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            inclusive = true
-                        }
-                    }
-                }
-            )
-        }
 
-        composable(route = PinCodeConfirm.route) {
-            PinCodeConfirmScreen(
-                pinCodeConfirm = {
-                    navController.navigate(route = SuccessfulPinCodeChange.route)
-                },
-                exit = {
+            PinCodeChangeScreen(
+                onCloseClick = {
                     navController.navigate(route = MainNav.route) {
                         popUpTo(navController.graph.startDestinationId) {
                             inclusive = true
                         }
                     }
+                },
+                onSuccessChange = {
+                    navController.navigate(route = SuccessfulPinCodeChange.route)
                 }
             )
         }

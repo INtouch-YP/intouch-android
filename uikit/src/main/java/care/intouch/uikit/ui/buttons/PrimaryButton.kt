@@ -15,7 +15,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
-import care.intouch.uikit.ui.NoRippleInteractionSource
 
 @Composable
 fun IntouchButton(
@@ -53,7 +52,6 @@ fun IntouchButton(
             disabledContentColor = disableTextColor,
         ),
         onClick = { onClick.invoke() },
-        interactionSource = NoRippleInteractionSource(),
     )
     {
         Text(text = text.value(), style = textStyle)

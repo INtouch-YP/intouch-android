@@ -21,6 +21,7 @@ import care.intouch.uikit.ui.diary.EmptyDiaryPlaceHolder
 
 @Composable
 fun DiaryLayout(
+    modifier: Modifier = Modifier,
     diaryEntryList: List<DiaryEntry>,
     onDeleteButtonClicked: (itemId: Int, itemIndex: Int) -> Unit,
     onSwitcherChange: (Int, Int, Boolean) -> Unit
@@ -32,10 +33,9 @@ fun DiaryLayout(
         )
     } else {
         LazyColumn(
-            modifier = Modifier
-                .padding(bottom = 60.dp, start = 28.dp, end = 28.dp),
+            modifier = modifier
+                .padding(horizontal = 28.dp),
             horizontalAlignment = Alignment.CenterHorizontally
-
         ) {
             itemsIndexed(diaryEntryList) { index, diaryEntry ->
                 var toggleState by rememberSaveable {

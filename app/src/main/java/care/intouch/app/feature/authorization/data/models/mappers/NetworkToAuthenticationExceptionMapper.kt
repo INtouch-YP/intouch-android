@@ -15,6 +15,12 @@ class NetworkToAuthenticationExceptionMapper @Inject constructor(private val jso
                     message = response.detail ?: BLANC_ERROR_MESSAGE,
                 )
             }
+            is NetworkException.Unauthorized -> {
+                val response = handleErrorResponse<ErrorResponse>(exception.errorBody)
+                AuthenticationException.Authentication.InvalidToken(
+                    message = response.detail ?: BLANC_ERROR_MESSAGE,
+                )
+            }
 
             else -> {
                 handleCommonException(exception)
