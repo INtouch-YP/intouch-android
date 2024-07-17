@@ -1,5 +1,6 @@
 package care.intouch.app.feature.profile.presentation.ui.profile.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import care.intouch.app.R
@@ -33,6 +34,7 @@ class ProfileViewModel @Inject constructor(
     private var userDataFromSharedPref: User? = null
     private var currentProfileData: ProfileData = ProfileData("", "")
     private var currentEmail: String = ""
+    private var updateEmailFlag = true
 
     init {
         readUserDataFromSharedPreferences()
@@ -94,8 +96,14 @@ class ProfileViewModel @Inject constructor(
             is ProfileDataEvent.OnSingOutButtonClick -> {
                 signOut()
             }
+
+            is ProfileDataEvent.onConfirmEmailUpdate -> {
+                confirmEmailUpdate(event.id, event.token)
+            }
         }
     }
+
+
 
     private fun updateName(event: ProfileDataEvent.OnName) {
         if (event.name.length <= MAX_NAME_LENGTH) {
@@ -272,6 +280,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateUserData(event: ProfileDataEvent.OnSaveChangesButtonClick) {
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("MY_INTOUCH_TAG", "Это я во вьюмодели проверяю id пользователя = ${userDataFromSharedPref!!.id}")
             updateUserDataUseCase.invoke(currentProfileData, userDataFromSharedPref!!.id)
                 .onSuccess {
                     updateStateWhenUserDataOnSuccess(StringVO.Resource(R.string.info_about_change_profile_data))
@@ -324,7 +333,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private suspend fun updateStateWhenEmailOnSuccess(message: StringVO) {
-        saveUserDataInSharedPreferences()
+
         _state.update {
             _state.value.copy(
                 resultMessageOfChangeEmailRequest = message,
@@ -332,10 +341,11 @@ class ProfileViewModel @Inject constructor(
                 emailColorMessageIsGreenOrRed = true,
             )
         }
+        saveUserDataInSharedPreferences()
     }
 
     private suspend fun updateStateWhenUserDataOnSuccess(message: StringVO) {
-        saveUserDataInSharedPreferences()
+
         _state.update {
             _state.value.copy(
                 resultMessageOfChangeNameRequest = message,
@@ -343,6 +353,7 @@ class ProfileViewModel @Inject constructor(
                 nameResponseHasBeenReceived = true
             )
         }
+        saveUserDataInSharedPreferences()
     }
 
     private fun updateStateWhenUserEmailOnError(message: StringVO) {
@@ -363,6 +374,15 @@ class ProfileViewModel @Inject constructor(
                 nameResponseIsSuccess = false,
                 nameResponseHasBeenReceived = true
             )
+        }
+    }
+
+    private fun confirmEmailUpdate(id: String?, token: String?) {
+        if(id != null && token != null && updateEmailFlag) {
+            ///api/v1/user/update/email/confirm/{id}/{token}/
+            Log.d("MY_INTOUCH_TAG", "Мы провалились в изменение почты id = $id")
+
+            updateEmailFlag = false
         }
     }
 

@@ -41,6 +41,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
+    userId: String? = null,
+    token: String? = null,
     onSecurityClick: () -> Unit,
     onChangePinCode: () -> Unit,
     onSingOut: () -> Unit,
@@ -49,6 +51,8 @@ fun ProfileScreen(
     val state by viewModel.state.collectAsState()
 
     ProfileScreen(
+        userId = userId,
+        token = token,
         onSecurityClick = onSecurityClick,
         onChangePinCode = onChangePinCode,
         onSingOut = onSingOut,
@@ -59,12 +63,17 @@ fun ProfileScreen(
 
 @Composable
 private fun ProfileScreen(
+    userId: String? = null,
+    token: String? = null,
     onSecurityClick: () -> Unit,
     onChangePinCode: () -> Unit,
     onSingOut: () -> Unit,
     onEvent: (ProfileDataEvent) -> Unit,
     state: ProfileState
 ) {
+
+    onEvent(ProfileDataEvent.onConfirmEmailUpdate(userId, token))
+
     val scope = rememberCoroutineScope()
 
     val nameFocusRequester = remember { FocusRequester() }

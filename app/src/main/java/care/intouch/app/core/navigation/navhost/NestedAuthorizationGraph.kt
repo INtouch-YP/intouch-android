@@ -18,6 +18,7 @@ import care.intouch.app.core.navigation.PasswordRecovery
 import care.intouch.app.core.navigation.PinCodeConfirmation
 import care.intouch.app.core.navigation.PinCodeEnter
 import care.intouch.app.core.navigation.PinCodeInstallation
+import care.intouch.app.core.navigation.Profile
 import care.intouch.app.core.navigation.Registration
 import care.intouch.app.core.navigation.SendingNotification
 import care.intouch.app.feature.authorization.presentation.AuthorizationScreenInit
@@ -159,6 +160,17 @@ fun NavGraphBuilder.addNestedAuthorizationGraph(
                     navController.navigate(route = PinCodeInstallation.route)
                 }
             )
+        }
+
+        composable(
+            route = Profile.route,
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "https://app.intouch.care/email-update/{clientId}/{token}/"
+            })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("clientId")
+            val token = backStackEntry.arguments?.getString("token")
+            Timber.tag("MY_INTOUCH_TAG").d("userId: $userId, token: $token")
         }
     }
 }

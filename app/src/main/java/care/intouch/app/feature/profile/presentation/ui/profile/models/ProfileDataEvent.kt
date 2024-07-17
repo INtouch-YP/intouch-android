@@ -53,5 +53,10 @@ sealed class ProfileDataEvent {
         val saveChangesButton: Boolean = false,
     ): ProfileDataEvent()
 
+    data class onConfirmEmailUpdate(
+        val id: String?,
+        val token: String?
+    ): ProfileDataEvent()
+
     class OnSingOutButtonClick(): ProfileDataEvent()
-}
+    }
