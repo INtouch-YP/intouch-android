@@ -1,10 +1,8 @@
 package care.intouch.app.feature.profile.data.profile.api
 
-import android.util.Log
 import care.intouch.app.feature.authorization.data.models.exception.AuthenticationException
 import care.intouch.app.feature.authorization.data.models.mappers.NetworkToUserExceptionMapper.Companion.COULD_NOT_CONVERT_TO_ERROR_RESPONSE
 import care.intouch.app.feature.common.data.models.exception.NetworkException
-import care.intouch.app.feature.profile.data.profile.models.UpdateUserEmailErrorResponse
 import care.intouch.app.feature.profile.domain.profile.models.EmailChangeResponse
 import care.intouch.app.feature.profile.domain.profile.useCase.ConfirmEmailChangeRepository
 import kotlinx.serialization.json.Json
@@ -21,10 +19,8 @@ class ConfirmEmailChangeRepositoryImpl @Inject constructor(
     ): Result<EmailChangeResponse> {
         try {
             val response = confirmEmailChangeApi.confirmEmailChange(id, token)
-            Log.d("MY_INTOUCH_TAG", "Изменение почты подтверждено")
             return Result.success(response)
         } catch (e: NetworkException) {
-            Log.d("MY_INTOUCH_TAG", "Мы не подтвердили изменение адреса эл.почты")
             return when (e) {
                 is NetworkException.BadRequest -> {
                     val response = handleErrorResponse<EmailChangeResponse>(e.errorBody)

@@ -1,6 +1,5 @@
 package care.intouch.app.feature.profile.data.profile.api
 
-import android.util.Log
 import care.intouch.app.feature.authorization.data.models.exception.AuthenticationException
 import care.intouch.app.feature.authorization.data.models.mappers.NetworkToUserExceptionMapper.Companion.COULD_NOT_CONVERT_TO_ERROR_RESPONSE
 import care.intouch.app.feature.common.data.models.exception.NetworkException
@@ -20,14 +19,10 @@ class UpdateUserDataRepositoryImpl @Inject constructor(
         id: Int
     ): Result<UpdateUserDataResponse> {
         try {
-            Log.d("MY_INTOUCH_TAG", "Пробуем изменить ФИО")
-            Log.d("MY_INTOUCH_TAG", "id = $id")
-            Log.d("MY_INTOUCH_TAG", "userData = ${userData.firstName}  &  ${userData.lastName}")
             val response = updateUserDataApi.updateUserData(
                 id,
                 UpdateUserDataRequest(firstName = userData.firstName, lastName = userData.lastName)
             )
-            Log.d("MY_INTOUCH_TAG", "ФИО Изменили все хорошо")
             return Result.success(
                 UpdateUserDataResponse.UpdateUserDataSuccess(
                     ProfileData(
@@ -37,7 +32,6 @@ class UpdateUserDataRepositoryImpl @Inject constructor(
                 )
             )
         } catch (e: NetworkException) {
-            Log.d("MY_INTOUCH_TAG", "Выпала ошибка 1 ")
             return when (e) {
                 is NetworkException.BadRequest -> {
                     val response = handleErrorResponse<UpdateUserDataResponse.UpdateUserDataError>(e.errorBody)
@@ -50,13 +44,11 @@ class UpdateUserDataRepositoryImpl @Inject constructor(
                 }
 
                 else -> {
-                    Log.d("MY_INTOUCH_TAG", "Выпала ошибка 2 ")
                     Result.failure(e)
                 }
             }
 
         } catch (e: Exception) {
-            Log.d("MY_INTOUCH_TAG", "Выпала ошибка 3 ")
             return Result.failure(e)
         }
     }

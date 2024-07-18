@@ -282,10 +282,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateUserData(event: ProfileDataEvent.OnSaveChangesButtonClick) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d(
-                "MY_INTOUCH_TAG",
-                "Это я во вьюмодели проверяю id пользователя = ${userDataFromSharedPref!!.id}"
-            )
+
             updateUserDataUseCase.invoke(currentProfileData, userDataFromSharedPref!!.id)
                 .onSuccess {
                     updateStateWhenUserDataOnSuccess(StringVO.Resource(R.string.info_about_change_profile_data))
@@ -385,7 +382,6 @@ class ProfileViewModel @Inject constructor(
 
     private fun confirmEmailUpdate(id: String?, token: String?) {
         if (id != null && token != null && updateEmailFlag) {
-            Log.d("MY_INTOUCH_TAG", "Мы провалились в изменение почты id = $id")
             viewModelScope.launch(Dispatchers.IO) {
                 confirmEmailChangeUseCase.invoke(id, token)
                     .onSuccess {
