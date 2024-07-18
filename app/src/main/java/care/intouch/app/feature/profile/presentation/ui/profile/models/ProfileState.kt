@@ -24,4 +24,7 @@ data class ProfileState (
     val nameButtonEnabled: Boolean = true,
     val lastNameButtonEnabled: Boolean = true,
     val emailButtonEnabled: Boolean = true,
+    val emailChangeDeepLinkRequestSent: Boolean = false,
+    val emailChangeDeepLinkRequestSentIsSuccess: Boolean = false,
+    val emailChangeDeepLinkRequestMessage: StringVO = StringVO.Plain("")
     )

@@ -166,6 +166,13 @@ private fun ProfileScreen(
                 )
             }
 
+            if (state.emailChangeDeepLinkRequestSent) {  // Show message about email change was confirmed
+                RowWithMessage(
+                    textIsGreenOrRed = state.emailChangeDeepLinkRequestSentIsSuccess,
+                    messageText = state.emailChangeDeepLinkRequestMessage,
+                )
+            }
+
             if (state.nameResponseHasBeenReceived) {  // Show message about name request result
                 RowWithMessage(
                     textIsGreenOrRed = state.nameResponseIsSuccess,

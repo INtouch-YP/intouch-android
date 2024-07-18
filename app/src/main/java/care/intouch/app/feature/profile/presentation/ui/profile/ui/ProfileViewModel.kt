@@ -61,7 +61,7 @@ class ProfileViewModel @Inject constructor(
                     name = event.name,
                     lastName = event.lastName,
                     email = event.email,
-                    saveChangesButton = event.saveChangesButton
+                    saveChangesButton = event.saveChangesButton,
                 )
             }
 
@@ -104,7 +104,6 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
-
 
 
     private fun updateName(event: ProfileDataEvent.OnName) {
@@ -186,7 +185,7 @@ class ProfileViewModel @Inject constructor(
     private fun readUserDataFromSharedPreferences() {
         viewModelScope.launch(Dispatchers.IO) {
             val dataFromSharedPreferences: User? = userStorage.read()
-            if(dataFromSharedPreferences != null){
+            if (dataFromSharedPreferences != null) {
                 _state.update {
                     _state.value.copy(
                         dataIsValid = true,
@@ -226,7 +225,8 @@ class ProfileViewModel @Inject constructor(
                 emailTextFieldEnabled = email,
                 nameButtonEnabled = !name,
                 lastNameButtonEnabled = !lastName,
-                emailButtonEnabled = !email
+                emailButtonEnabled = !email,
+                emailChangeDeepLinkRequestSent = false,
             )
         }
     }
@@ -282,7 +282,10 @@ class ProfileViewModel @Inject constructor(
 
     private fun updateUserData(event: ProfileDataEvent.OnSaveChangesButtonClick) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("MY_INTOUCH_TAG", "Это я во вьюмодели проверяю id пользователя = ${userDataFromSharedPref!!.id}")
+            Log.d(
+                "MY_INTOUCH_TAG",
+                "Это я во вьюмодели проверяю id пользователя = ${userDataFromSharedPref!!.id}"
+            )
             updateUserDataUseCase.invoke(currentProfileData, userDataFromSharedPref!!.id)
                 .onSuccess {
                     updateStateWhenUserDataOnSuccess(StringVO.Resource(R.string.info_about_change_profile_data))
@@ -311,11 +314,12 @@ class ProfileViewModel @Inject constructor(
     }
 
     private suspend fun saveUserDataInSharedPreferences() {
-        val emailToSave: String = if (_state.value.emailResponseIsSuccess && _state.value.emailColorMessageIsGreenOrRed){
-            currentEmail
-        }else {
-            userDataFromSharedPref!!.email
-        }
+        val emailToSave: String =
+            if (_state.value.emailResponseIsSuccess && _state.value.emailColorMessageIsGreenOrRed) {
+                currentEmail
+            } else {
+                userDataFromSharedPref!!.email
+            }
         userStorage.save(
             User(
                 id = userDataFromSharedPref!!.id,
@@ -380,11 +384,30 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun confirmEmailUpdate(id: String?, token: String?) {
-        if(id != null && token != null && updateEmailFlag) {
-            ///api/v1/user/update/email/confirm/{id}/{token}/
+        if (id != null && token != null && updateEmailFlag) {
             Log.d("MY_INTOUCH_TAG", "Мы провалились в изменение почты id = $id")
             viewModelScope.launch(Dispatchers.IO) {
                 confirmEmailChangeUseCase.invoke(id, token)
+                    .onSuccess {
+                        val message = it.message!!
+                        _state.update {
+                            _state.value.copy(
+                                emailChangeDeepLinkRequestSent = true,
+                                emailChangeDeepLinkRequestSentIsSuccess = true,
+                                emailChangeDeepLinkRequestMessage = StringVO.Plain(message)
+                            )
+                        }
+                    }
+                    .onFailure {
+                        val message = it.message!!
+                        _state.update {
+                            _state.value.copy(
+                                emailChangeDeepLinkRequestSent = true,
+                                emailChangeDeepLinkRequestSentIsSuccess = false,
+                                emailChangeDeepLinkRequestMessage = StringVO.Plain(message)
+                            )
+                        }
+                    }
             }
             updateEmailFlag = false
         }

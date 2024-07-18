@@ -34,6 +34,8 @@ import com.google.firebase.appdistribution.FirebaseAppDistribution
 import com.google.firebase.appdistribution.FirebaseAppDistributionException
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import android.content.Intent
+import android.net.Uri
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
