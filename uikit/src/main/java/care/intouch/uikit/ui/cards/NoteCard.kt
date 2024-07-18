@@ -97,7 +97,8 @@ fun NoteCards(
 fun TextContainer(
     noteText: String,
     noteColor: Color = InTouchTheme.colors.textBlue,
-    noteTextStyle: TextStyle = InTouchTheme.typography.bodyRegular, onClickTrash: () -> Unit,
+    noteTextStyle: TextStyle = InTouchTheme.typography.bodyRegular,
+    onClickTrash: () -> Unit,
 ) {
     Row(
         modifier = Modifier

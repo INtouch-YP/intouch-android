@@ -2,12 +2,16 @@ package care.intouch.app.feature.diary.di
 
 import care.intouch.app.feature.diary.domain.useCase.ClearAllInformationUC
 import care.intouch.app.feature.diary.domain.useCase.ClearEmotionsUC
+import care.intouch.app.feature.diary.domain.useCase.DeleteDiaryUC
+import care.intouch.app.feature.diary.domain.useCase.GetDiariesUC
 import care.intouch.app.feature.diary.domain.useCase.GetEmotionDescUC
 import care.intouch.app.feature.diary.domain.useCase.GetEmotionUC
 import care.intouch.app.feature.diary.domain.useCase.GetSavedAnswers
 import care.intouch.app.feature.diary.domain.useCase.SaveAnswersUC
+import care.intouch.app.feature.diary.domain.useCase.SaveDiaryUC
 import care.intouch.app.feature.diary.domain.useCase.SaveEmotionDescUC
 import care.intouch.app.feature.diary.domain.useCase.SaveEmotionUC
+import care.intouch.app.feature.diary.domain.useCase.SwitchVisibleUC
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -55,4 +59,24 @@ interface EmotionDomainModule {
     fun bindGetSavedAnswers(
         impl: GetSavedAnswers.Base,
     ): GetSavedAnswers
+
+    @Binds
+    fun bindGetDiariesUC(
+        impl: GetDiariesUC.Base,
+    ): GetDiariesUC
+
+    @Binds
+    fun bindDeleteDiaryUC(
+        impl: DeleteDiaryUC.Base,
+    ): DeleteDiaryUC
+
+    @Binds
+    fun bindSwitchVisibleUC(
+        impl: SwitchVisibleUC.Base,
+    ): SwitchVisibleUC
+
+    @Binds
+    fun bindSaveDiaryUC(
+        impl: SaveDiaryUC.Base,
+    ): SaveDiaryUC
 }

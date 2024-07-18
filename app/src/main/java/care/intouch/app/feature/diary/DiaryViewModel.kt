@@ -3,14 +3,20 @@ package care.intouch.app.feature.diary
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import care.intouch.app.R
+import care.intouch.app.feature.authorization.domain.useCase.GetUserFullNameUseCase
+import care.intouch.app.feature.common.Resource
+import care.intouch.app.feature.diary.domain.modal.Diary
+import care.intouch.app.feature.diary.domain.useCase.DeleteDiaryUC
+import care.intouch.app.feature.diary.domain.useCase.GetDiariesUC
+import care.intouch.app.feature.diary.domain.useCase.SwitchVisibleUC
+import care.intouch.app.feature.diary.presentation.ui.mapperToDiaryEntry
 import care.intouch.app.feature.diary.presentation.ui.models.DiaryChangeEvent
 import care.intouch.app.feature.diary.presentation.ui.models.DiaryDataState
-import care.intouch.app.feature.diary.presentation.ui.models.DiaryEntry
 import care.intouch.app.feature.diary.presentation.ui.models.DiaryPopUp
 import care.intouch.app.feature.diary.presentation.ui.models.DiaryUiState
-import care.intouch.app.feature.diary.presentation.ui.models.Mood
 import care.intouch.uikit.common.StringVO
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,7 +29,12 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class DiaryViewModel @Inject constructor() : ViewModel() {
+class DiaryViewModel @Inject constructor(
+    private val getDiariesUC: GetDiariesUC,
+    private val deleteDiaryUC: DeleteDiaryUC,
+    private val switchVisibleUC: SwitchVisibleUC,
+    private val getUserFullNameUseCase: GetUserFullNameUseCase
+) : ViewModel() {
     private val _diaryUIState = MutableStateFlow(DiaryUiState())
     val diaryUIState: StateFlow<DiaryUiState> = _diaryUIState.asStateFlow()
     private val _diaryDataState = MutableStateFlow(DiaryDataState())
@@ -53,51 +64,72 @@ class DiaryViewModel @Inject constructor() : ViewModel() {
             is DiaryChangeEvent.OnShareWithDoc -> {
                 onShareToggle(
                     index = event.index,
-                    event.sharedWithDoctor
+                    event.sharedWithDoctor,
+                    id = event.idToShare
                 )
 
             }
 
             is DiaryChangeEvent.IntentionToDelete -> {
                 showDeletePopup(
-                    index = event.index
+                    index = event.index,
+                    id = event.idToDelete
                 )
             }
         }
     }
 
-    private fun showDeletePopup(index: Int) {
+    private fun showDeletePopup(index: Int, id: Int) {
         showPopup(
             title = StringVO.Resource(R.string.info_delete_node_question),
             massage = StringVO.Resource(R.string.warning_delete),
             onConfirmButtonText = StringVO.Resource(R.string.confirm_button),
             onDismissButtonText = StringVO.Resource(R.string.cancel_button),
             onConfirm = {
-                handleDeleteDiaryEntry(index)
+                handleDeleteDiaryEntry(index, id)
             },
             onDismiss = {}
         )
     }
 
-    private fun handleDeleteDiaryEntry(index: Int) {
-        val newDiaryList = getState().noteList.toMutableList()
-        newDiaryList.removeAt(index)
-        _diaryDataState.update {
-            it.copy(noteList = newDiaryList)
+    private fun handleDeleteDiaryEntry(index: Int, id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (deleteDiaryUC.invoke(id)) {
+
+                is Resource.Success -> {
+                    val newDiaryList = getState().noteList.toMutableList()
+                    newDiaryList.removeAt(index)
+                    _diaryDataState.update {
+                        it.copy(noteList = newDiaryList)
+                    }
+                }
+
+                is Resource.Error -> {}
+
+            }
         }
     }
 
-    private fun onShareToggle(index: Int, isShared: Boolean) {
-        val shareNote = getState()
-            .noteList[index]
-            .copy(sharedWithDoc = isShared)
-        val diaryList = getState().noteList.toMutableList()
-        diaryList[index] = shareNote
+    private fun onShareToggle(index: Int, isShared: Boolean, id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = switchVisibleUC.invoke(id)) {
 
-        _diaryDataState.update { state ->
-            state.copy(noteList = diaryList)
+                is Resource.Success -> {
+                    val shareNote = getState()
+                        .noteList[index]
+                        .copy(sharedWithDoc = isShared)
+                    val diaryList = getState().noteList.toMutableList()
+                    diaryList[index] = shareNote
+                    _diaryDataState.update { state ->
+                        state.copy(noteList = diaryList)
+                    }
+                }
+
+                is Resource.Error -> {
+                }
+
+            }
         }
-
     }
 
     private fun showPopup(
@@ -123,48 +155,38 @@ class DiaryViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun setUserName() {
-        val name = buildString {
-            append("Bober Jan")
-        }
-        _diaryUIState.update {
-            it.copy(userName = name)
+        viewModelScope.launch(Dispatchers.IO) {
+            when(val result = getUserFullNameUseCase.invoke()){
+                is Resource.Success -> {
+                    _diaryUIState.update {
+                        it.copy(userName = result.data)
+                    }
+                }
+                is Resource.Error -> TODO()
+            }
         }
     }
+
 
     private fun loadDiaryData() {
-        val count = kotlin.random.Random.nextInt(1, 6)
-        val entries = generateRandomDiaryEntries(count)
-        _diaryDataState.update {
-            it.copy(noteList = entries)
-        }
-    }
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = getDiariesUC.invoke()) {
 
-    private fun generateRandomDiaryEntries(count: Int): List<DiaryEntry> {
-        val random = kotlin.random.Random
-        val moods = listOf(
-            Mood(name = "bad"),
-            Mood(name = "Sad"),
-            Mood(name = "Angry"),
-            Mood(name = "Excited")
-        )
-        val notes =
-            listOf(
-                "Went for a walk",
-                "Had a great meal",
-                "Felt stressed",
-                "Met with friends",
-                "Thers once was a ship that put to see and the name"
-            )
-        val month = listOf("jan", "mar", "oct", "nov")
+                is Resource.Success -> {
+                    _diaryDataState.update {
+                        it.copy(noteList = result.data.map { diary: Diary ->
+                            mapperToDiaryEntry(diary)
+                        })
+                    }
+                }
 
-        return List(count) { _ ->
-            DiaryEntry(
-                id = random.nextInt(100),
-                data = "${random.nextInt(31)} ${month[random.nextInt(month.size)]}",
-                note = notes[random.nextInt(notes.size)],
-                moodList = moods,
-                sharedWithDoc = random.nextBoolean(),
-            )
+                is Resource.Error -> {
+                    _diaryDataState.update {
+                        it.copy(noteList = emptyList())
+                    }
+                }
+
+            }
         }
     }
 }

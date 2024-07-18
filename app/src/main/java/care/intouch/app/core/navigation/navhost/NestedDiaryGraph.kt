@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import care.intouch.app.core.navigation.CreatingNoteIntroduction
+import care.intouch.app.core.navigation.Diary
 import care.intouch.app.core.navigation.DiaryEntries
 import care.intouch.app.core.navigation.DiaryRouteBranch
 import care.intouch.app.core.navigation.EmotionChoice
@@ -38,6 +39,13 @@ fun NavGraphBuilder.addNestedDiaryGraph(
                 },
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onSaveClick = {
+                    navController.navigate(route = Diary.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                    }
                 },
                 viewModel = hiltViewModel()
             )

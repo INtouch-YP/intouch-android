@@ -118,10 +118,10 @@ internal fun getEmotionDesc(list: List<EmotionDescriptionEnum>): MutableList<Emo
                 )
             )
 
-            EmotionDescriptionEnum.Disappointment -> result.add(
+            EmotionDescriptionEnum.Dissapointment -> result.add(
                 EmotionDescriptionTask(
                     StringVO.Resource(R.string.disappointment_clarifying_emotional),
-                    EmotionDescriptionEnum.Disappointment
+                    EmotionDescriptionEnum.Dissapointment
                 )
             )
 
@@ -334,7 +334,7 @@ internal fun fetchDescription(): List<EmotionDescriptionTask> {
         ),
         EmotionDescriptionTask(
             StringVO.Resource(R.string.disappointment_clarifying_emotional),
-            EmotionDescriptionEnum.Disappointment
+            EmotionDescriptionEnum.Dissapointment
         ),
         EmotionDescriptionTask(
             StringVO.Resource(R.string.confusion_clarifying_emotional),
