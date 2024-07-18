@@ -15,6 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +44,7 @@ fun FillingOutScreen(
     onNextClick: () -> Unit,
     viewModel: FillingOutViewModel,
     onBackClick: () -> Unit,
+    onSaveClick: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
     val imageState by viewModel.sharedImageUiState.collectAsStateWithLifecycle(null)
@@ -53,7 +57,8 @@ fun FillingOutScreen(
         onBackClick = onBackClick,
         imageState = imageState,
         listState = listState,
-        navigateState = navigateState
+        navigateState = navigateState,
+        onSaveClick = onSaveClick
     )
 }
 @Composable
@@ -65,7 +70,11 @@ fun FillingOutScreen(
     imageState: ImageVO?,
     listState: List<EmotionDescriptionTask>,
     navigateState: Boolean,
+    onSaveClick: () -> Unit
 ) {
+    var isVisible by rememberSaveable {
+        mutableStateOf(false)
+    }
     Column(
         Modifier.background(InTouchTheme.colors.mainBlue)
     ) {
@@ -158,15 +167,19 @@ fun FillingOutScreen(
                     modifier = Modifier.align(Alignment.CenterStart)
                 )
                 Toggle(
-                    isChecked = false,
+                    isChecked = isVisible,
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
-
+                    onEvent(FillingOutDataEvent.OnChangeVisible)
+                    isVisible = !isVisible
                 }
             }
             Spacer(modifier = Modifier.height(40.dp))
             PrimaryButtonGreen(
-                onClick = {},
+                onClick = {
+                    onEvent(FillingOutDataEvent.OnClickSave)
+                    onSaveClick()
+                },
                 modifier = Modifier,
                 text = StringVO.Resource(R.string.save_button)
             )
@@ -192,7 +205,8 @@ fun FillingOutScreenPreview() {
             onBackClick = {},
             imageState = null,
             listState = listOf(),
-            navigateState = false
+            navigateState = false,
+            {}
         )
     }
 }

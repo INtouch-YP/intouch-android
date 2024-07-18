@@ -8,5 +8,6 @@ sealed class FillingOutDataEvent {
     data object OnUpdateStateChanged : FillingOutDataEvent()
     data object OnTrashClicked : FillingOutDataEvent()
     data object OnAddEmotionClicked : FillingOutDataEvent()
-
+    data object OnChangeVisible: FillingOutDataEvent()
+    data object OnClickSave: FillingOutDataEvent()
 }

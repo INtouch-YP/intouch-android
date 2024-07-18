@@ -2,6 +2,13 @@ package care.intouch.app.feature.diary.data
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import care.intouch.app.feature.authorization.data.models.mappers.UserExceptionToErrorMapper
+import care.intouch.app.feature.common.Resource
+import care.intouch.app.feature.common.domain.errors.ErrorEntity
+import care.intouch.app.feature.diary.data.api.DiaryApiService
+import care.intouch.app.feature.diary.data.modals.Request
+import care.intouch.app.feature.diary.data.modals.toDiary
+import care.intouch.app.feature.diary.domain.modal.Diary
 import care.intouch.app.feature.diary.presentation.ui.emotionScreen.models.EmotionDesc
 import care.intouch.app.feature.diary.presentation.ui.emotionScreen.models.EmotionDescriptionEnum
 import care.intouch.app.feature.diary.presentation.ui.emotionScreen.models.EmotionDescriptionTask
@@ -14,6 +21,8 @@ import javax.inject.Inject
 class EmotionsRepositoryImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     private val json: Json,
+    private val api: DiaryApiService,
+    private val exceptionToErrorMapper: UserExceptionToErrorMapper,
 ) : EmotionsRepository {
     override suspend fun saveEmotion(emotionDesc: EmotionDesc) {
         withContext(Dispatchers.IO) {
@@ -54,6 +63,44 @@ class EmotionsRepositoryImpl @Inject constructor(
             result.add(sharedPreferences.getString(SENSATION, null).orEmpty())
         }
         return result
+    }
+
+    override suspend fun saveDiary(diary: Diary) {
+        api.saveDiary(mapperToRequest(diary))
+    }
+
+    private fun mapperToRequest(diary: Diary) = Request(
+        clarifyingEmotion = diary.clarifyingEmotion,
+        eventDetails = diary.eventDetails,
+        primaryEmotion = diary.primaryEmotion,
+        visible = diary.visible,
+        thoughtsAnalysis = diary.thoughtsAnalysis,
+        physicalSensations = diary.physicalSensations,
+        emotionType = diary.emotionType
+    )
+
+    override suspend fun getDiaries(): Resource<List<Diary>, ErrorEntity> {
+        return try {
+            (Resource.Success(api.getDiaries().diaryDTOS.map { it.toDiary() }))
+        } catch (e: Exception) {
+            (Resource.Error(exceptionToErrorMapper.handleException(e)))
+        }
+    }
+
+    override suspend fun deleteDiary(id: Int): Resource<Boolean, ErrorEntity> {
+        return try {
+            Resource.Success(api.deleteDiary(id).isSuccessful)
+        } catch (e: Exception) {
+            Resource.Error(exceptionToErrorMapper.handleException(e))
+        }
+    }
+
+    override suspend fun switchVisible(id: Int): Resource<Boolean, ErrorEntity> {
+        return try {
+            Resource.Success(api.switchVisible(id).isSuccessful)
+        } catch (e: Exception) {
+            Resource.Error(exceptionToErrorMapper.handleException(e))
+        }
     }
 
     override suspend fun clearAllInformation() {

@@ -13,7 +13,6 @@ val ralewayRegular = FontFamily(Font(R.font.raleway_regular))
 val ralewaySemiBold = FontFamily(Font(R.font.raleway_semibold))
 val ralewayBold = FontFamily(Font(R.font.raleway_bold))
 
-
 @Immutable
 data class InTouchTypography(
     val titleAccent: TextStyle = TextStyle(
@@ -29,6 +28,12 @@ data class InTouchTypography(
         fontSize = 32.sp,
         lineHeight = 34.sp,
         letterSpacing = (-0.32).sp,
+    ),
+    val titleBoldLarge: TextStyle = TextStyle(
+        fontFamily = ralewayBold,
+        fontWeight = FontWeight.Normal,
+        fontSize = 32.sp,
+        lineHeight = 34.sp,
     ),
     val titleMedium: TextStyle = TextStyle(
         fontFamily = itimRegular,

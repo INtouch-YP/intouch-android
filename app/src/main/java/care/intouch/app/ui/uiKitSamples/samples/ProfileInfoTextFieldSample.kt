@@ -45,7 +45,7 @@ fun ProfileInfoTextFieldScreen() {
                         text = it
                     },
                     enabled = false,
-                    naming = "Last name",
+                    naming = "Last nameId",
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
                 ProfileInfoTextField(

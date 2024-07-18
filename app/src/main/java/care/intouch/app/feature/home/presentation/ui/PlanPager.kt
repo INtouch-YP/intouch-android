@@ -15,9 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import care.intouch.app.R
-import care.intouch.app.feature.home.presentation.models.Status
-import care.intouch.app.feature.home.presentation.models.Task
+import care.intouch.app.feature.home.domain.models.Status
+import care.intouch.app.feature.home.domain.models.Task
 import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.cards.DropdownMenuItemsPlanCard
@@ -28,8 +27,8 @@ import care.intouch.uikit.ui.cards.PlanCard
 fun PlanPager(
     taskList: List<Task>,
     onSwitcherChange: (Int, Int, Boolean) -> Unit,
-    dropdownMenuDuplicate: (itemId: Int, itemIndex: Int) -> Unit,
-    dropdownMenuClear: (itemId: Int, itemIndex: Int) -> Unit
+    dropdownMenuDuplicate: (itemId: Int) -> Unit,
+    dropdownMenuClear: (itemId: Int) -> Unit
 ) {
     val pagerState = rememberPagerState(
         pageCount = { taskList.size },
@@ -47,27 +46,30 @@ fun PlanPager(
         var dropDownMenu by rememberSaveable {
             mutableStateOf(false)
         }
-        val menuItems: List<DropdownMenuItemsPlanCard> =
-            listOf(DropdownMenuItemsPlanCard(
-                stringResource(id = R.string.duplicate_item_menu),
-                care.intouch.uikit.R.drawable.icon_duplicate
-            ) {
-                dropdownMenuDuplicate(
-                    taskList[page].id,
-                    page
-                )
-                dropDownMenu = !dropDownMenu
-            },
-                DropdownMenuItemsPlanCard(
-                    stringResource(id = R.string.clear_item_menu),
-                    care.intouch.uikit.R.drawable.icon_small_trash
-                ) {
-                    dropdownMenuClear(
-                        taskList[page].id,
-                        page,
-                    )
-                    dropDownMenu = !dropDownMenu
-                })
+        val menuItems: List<DropdownMenuItemsPlanCard> = listOf()
+        /*
+
+        Drop down menu block
+
+        listOf(DropdownMenuItemsPlanCard(
+             stringResource(id = R.string.duplicate_item_menu),
+             care.intouch.uikit.R.drawable.icon_duplicate
+         ) {
+             dropdownMenuDuplicate(
+                 taskList[page].id
+             )
+             dropDownMenu = !dropDownMenu
+         },
+             DropdownMenuItemsPlanCard(
+                 stringResource(id = R.string.clear_item_menu),
+                 care.intouch.uikit.R.drawable.icon_small_trash
+             ) {
+                 dropdownMenuClear(
+                     taskList[page].id
+                 )
+                 dropDownMenu = !dropDownMenu
+             })*/
+
 
         PlanCard(
             chipText = StringVO.Plain(stringResource(id = taskList[page].status.stringId)),
@@ -83,7 +85,12 @@ fun PlanPager(
                 else -> InTouchTheme.colors.textGreen.copy(alpha = 0.4f)
             },
             isSettingsClicked = dropDownMenu,
-            onClickSetting = { dropDownMenu = !dropDownMenu },
+            onClickSetting = {
+                dropDownMenu = !dropDownMenu
+                dropdownMenuClear(
+                    taskList[page].id
+                )
+            },
             dropdownMenuItemsList = menuItems,
             onClickToggle = {
                 onSwitcherChange(
@@ -127,8 +134,8 @@ fun PlanPagerPreview() {
         PlanPager(
             taskList = taskList,
             onSwitcherChange = { _, _, _ -> },
-            dropdownMenuDuplicate = { _, _ -> },
-            dropdownMenuClear = { _, _ -> }
+            dropdownMenuDuplicate = { _ -> },
+            dropdownMenuClear = { _ -> }
         )
     }
 }

@@ -8,8 +8,8 @@ import care.intouch.app.feature.home.presentation.models.HomeUiState
 fun MyPlanCards(
     screenState: HomeUiState,
     onPlanSwitcherChange: (Int, Int, Boolean) -> Unit,
-    dropdownMenuDuplicate: (itemId: Int, itemIndex: Int) -> Unit,
-    dropdownMenuClear: (itemId: Int, itemIndex: Int) -> Unit
+    dropdownMenuDuplicate: (itemId: Int) -> Unit,
+    dropdownMenuClear: (itemId: Int) -> Unit
 ) {
     if (screenState.taskList.isNotEmpty()) {
         PlanPager(
@@ -29,8 +29,8 @@ fun MyPlanCardsPreview() {
     MyPlanCards(
         screenState = HomeUiState(),
         onPlanSwitcherChange = { _, _, _ -> },
-        dropdownMenuDuplicate = { _, _ -> },
-        dropdownMenuClear = { _, _ -> }
+        dropdownMenuDuplicate = { _-> },
+        dropdownMenuClear = { _ -> }
     )
 }
 

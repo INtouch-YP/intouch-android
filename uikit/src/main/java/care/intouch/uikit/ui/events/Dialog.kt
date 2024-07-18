@@ -1,4 +1,4 @@
-package care.intouch.uikit.ui.cards
+package care.intouch.uikit.ui.events
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -20,13 +20,13 @@ import care.intouch.uikit.ui.buttons.IntouchButton
 import care.intouch.uikit.ui.buttons.SecondaryButtonDark
 
 @Composable
-fun ConformationDialog(
+fun Dialog(
     modifier: Modifier,
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
-    headerText: String,
+    dialogHeaderText: String,
     headerTextStyle: TextStyle = InTouchTheme.typography.bodySemibold,
-    dialogText: String,
+    dialogMessageText: String,
     dialogTextStyle: TextStyle = InTouchTheme.typography.bodySemibold,
     dismissButtonText: String,
     dismissButtonTextStyle: TextStyle = InTouchTheme.typography.titleMedium,
@@ -44,7 +44,7 @@ fun ConformationDialog(
             modifier = Modifier
                 .padding(top = 48.dp)
                 .padding(horizontal = 28.dp),
-            text = headerText,
+            text = dialogHeaderText,
             textAlign = TextAlign.Center,
             style = headerTextStyle,
             color = InTouchTheme.colors.textBlue
@@ -53,7 +53,7 @@ fun ConformationDialog(
             modifier = Modifier
                 .padding(top = 4.dp)
                 .padding(horizontal = 28.dp),
-            text = dialogText,
+            text = dialogMessageText,
             textAlign = TextAlign.Center,
             style = dialogTextStyle,
             color = InTouchTheme.colors.textBlue
@@ -79,15 +79,15 @@ fun ConformationDialog(
 @Preview(showBackground = true, showSystemUi = true)
 fun ConformationDialogPreview() {
     InTouchTheme {
-        ConformationDialog(
+        Dialog(
             modifier = Modifier.padding(horizontal = 28.dp),
             onDismissRequest = { },
             onConfirmation = {},
-            headerText = buildString {
+            dialogHeaderText = buildString {
                 append("Are you sure you want \n")
                 append("to delete this task?\n")
             },
-            dialogText = buildString {
+            dialogMessageText = buildString {
                 append("All your entered data will be\n")
                 append("permanently removed.")
             },

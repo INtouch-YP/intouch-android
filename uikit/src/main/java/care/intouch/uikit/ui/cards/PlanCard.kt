@@ -98,65 +98,73 @@ fun PlanCard(
             )
 
             Box {
-                var selectedItemIndex by remember {
-                    mutableIntStateOf(-1)
-                }
+                if (dropdownMenuItemsList.isNotEmpty()) {
+                    var selectedItemIndex by remember {
+                        mutableIntStateOf(-1)
+                    }
 
 
 
-                DropdownMenu(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(InTouchTheme.colors.input),
-                    offset = DpOffset(x = -(8.dp), y = -(28.dp)),
-                    expanded = isSettingsClicked,
-                    onDismissRequest = { onClickSetting.invoke(!isSettingsClicked) }) {
+                    DropdownMenu(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(5.dp))
+                            .background(InTouchTheme.colors.input),
+                        offset = DpOffset(x = -(8.dp), y = -(28.dp)),
+                        expanded = isSettingsClicked,
+                        onDismissRequest = { onClickSetting.invoke(!isSettingsClicked) }) {
+                        dropdownMenuItemsList.forEachIndexed { index, dropdownMenuItemsPlanCard ->
+                            val interactionSource = remember { MutableInteractionSource() }
+                            val isPressed by interactionSource.collectIsPressedAsState()
 
-                    dropdownMenuItemsList.forEachIndexed { index, dropdownMenuItemsPlanCard ->
-
-                        val interactionSource = remember { MutableInteractionSource() }
-                        val isPressed by interactionSource.collectIsPressedAsState()
-
-                        DropdownMenuItem(modifier = Modifier
-                            .height(40.dp)
-                            .width(144.dp)
-                            .clickable(
-                                interactionSource = interactionSource,
-                                indication = rememberRipple(color = dropdownMenuItemColorSelect)
-                            ) {}
-                            .background(
-                                if (isPressed && index == selectedItemIndex) {
-                                    dropdownMenuItemColorSelect
-                                } else {
-                                    InTouchTheme.colors.input
-                                }
-                            ), interactionSource = interactionSource,
-                            leadingIcon = {
-                                Icon(
-                                    tint = dropdownMenuItemIconColor,
-                                    painter = painterResource(id = dropdownMenuItemsPlanCard.icon),
-                                    contentDescription = ""
-                                )
-                            }, text = {
-                                Text(
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    text = dropdownMenuItemsPlanCard.text,
-                                    color = dropdownMenuItemTextColor,
-                                    style = dropdownMenuItemTextStyle
-                                )
-                            }, onClick = {
-                                selectedItemIndex = index
-                                dropdownMenuItemsPlanCard.onClick()
-                            }, contentPadding = PaddingValues(horizontal = 24.dp)
-                        )
+                            DropdownMenuItem(modifier = Modifier
+                                .height(40.dp)
+                                .width(144.dp)
+                                .clickable(
+                                    interactionSource = interactionSource,
+                                    indication = rememberRipple(color = dropdownMenuItemColorSelect)
+                                ) {}
+                                .background(
+                                    if (isPressed && index == selectedItemIndex) {
+                                        dropdownMenuItemColorSelect
+                                    } else {
+                                        InTouchTheme.colors.input
+                                    }
+                                ), interactionSource = interactionSource,
+                                leadingIcon = {
+                                    Icon(
+                                        tint = dropdownMenuItemIconColor,
+                                        painter = painterResource(id = dropdownMenuItemsPlanCard.icon),
+                                        contentDescription = ""
+                                    )
+                                }, text = {
+                                    Text(
+                                        modifier = Modifier.padding(start = 4.dp),
+                                        text = dropdownMenuItemsPlanCard.text,
+                                        color = dropdownMenuItemTextColor,
+                                        style = dropdownMenuItemTextStyle
+                                    )
+                                }, onClick = {
+                                    selectedItemIndex = index
+                                    dropdownMenuItemsPlanCard.onClick()
+                                }, contentPadding = PaddingValues(horizontal = 24.dp)
+                            )
+                        }
                     }
                 }
+
                 Image(
                     modifier = Modifier.clickable {
                         onClickSetting.invoke(!isSettingsClicked)
                     },
-                    painter = painterResource(id = R.drawable.icon_elipsis_vertical),
-                    contentDescription = "",
+                    painter = painterResource(
+                        id =
+                        if (dropdownMenuItemsList.isEmpty()) {
+                            R.drawable.icon_trash_light
+                        } else {
+                            R.drawable.icon_elipsis_vertical
+                        }
+                    ),
+                    contentDescription = "dropdown menu or trash card",
                 )
             }
         }
@@ -199,6 +207,31 @@ fun PreviewPlanCards() {
     val menuItems: List<DropdownMenuItemsPlanCard> =
         listOf(DropdownMenuItemsPlanCard("Duplicate", R.drawable.icon_duplicate) {},
             DropdownMenuItemsPlanCard("Clear", R.drawable.icon_small_trash) {})
+    InTouchTheme {
+        var onClickSetting by remember { mutableStateOf(false) }
+        PlanCard(
+            modifier = Modifier
+                .padding(28.dp),
+            chipText = StringVO.Plain("Done"),
+            dateText = "May, 15  2023",
+            text = "Socratic dialogue Learning...\n" + "Lorem ipsum dolor sit amet ",
+            toggleIsChecked = toggleIsChecked,
+            onClickToggle = { toggleIsChecked = !toggleIsChecked },
+            onClickSetting = { onClickSetting = it },
+            dropdownMenuItemsList = menuItems,
+            isSettingsClicked = onClickSetting
+        )
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewPlanCardsEmptyDropDownMenu() {
+    var toggleIsChecked by remember {
+        mutableStateOf(false)
+    }
+    val menuItems: List<DropdownMenuItemsPlanCard> =
+        listOf()
     InTouchTheme {
         var onClickSetting by remember { mutableStateOf(false) }
         PlanCard(

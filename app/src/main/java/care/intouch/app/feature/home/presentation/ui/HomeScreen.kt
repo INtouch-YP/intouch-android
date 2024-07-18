@@ -1,6 +1,9 @@
 package care.intouch.app.feature.home.presentation.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,19 +31,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import care.intouch.app.feature.home.domain.models.DiaryEntry
+import care.intouch.app.feature.home.domain.models.Mood
+import care.intouch.app.feature.home.domain.models.Status
+import care.intouch.app.feature.home.domain.models.Task
 import care.intouch.app.feature.home.presentation.HomeViewModel
-import care.intouch.app.feature.home.presentation.models.DiaryEntry
 import care.intouch.app.feature.home.presentation.models.EventType
 import care.intouch.app.feature.home.presentation.models.HomeScreenSideEffect
 import care.intouch.app.feature.home.presentation.models.HomeUiState
-import care.intouch.app.feature.home.presentation.models.Mood
-import care.intouch.app.feature.home.presentation.models.Status
-import care.intouch.app.feature.home.presentation.models.Task
 import care.intouch.app.models.DialogState
+import care.intouch.app.models.ToastState
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.LoadingContainer
-import care.intouch.uikit.ui.cards.ConformationDialog
 import care.intouch.uikit.ui.customShape.CustomHeaderShape
+import care.intouch.uikit.ui.events.Dialog
+import care.intouch.uikit.ui.events.OneButtonDialog
+import care.intouch.uikit.ui.events.Toast
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import care.intouch.app.R as AppR
 
 @Composable
@@ -50,8 +59,13 @@ fun HomeScreen(
     val viewModel: HomeViewModel = hiltViewModel()
     val screenState by viewModel.homeUIState.collectAsState()
     var isDialogVisible by remember { mutableStateOf(false) }
+    var isToastVisible by remember { mutableStateOf(false) }
     var dialogState by remember { mutableStateOf(DialogState()) }
+    var toastState by remember { mutableStateOf(ToastState()) }
     val sideEffect = viewModel.sideEffect
+    val coroutineScope = rememberCoroutineScope()
+    val popUpDelayMsc = 1000L
+
 
     LaunchedEffect(key1 = sideEffect) {
         viewModel.sideEffect.collect { effect ->
@@ -59,8 +73,8 @@ fun HomeScreen(
                 is HomeScreenSideEffect.ShowDialog -> {
                     isDialogVisible = true
                     dialogState = DialogState(
-                        title = effect.title,
-                        massage = effect.massage,
+                        header = effect.header,
+                        message = effect.message,
                         onConfirmButtonText = effect.onConfirmButtonText,
                         onDismissButtonText = effect.onDismissButtonText,
                         onConfirm = {
@@ -68,8 +82,22 @@ fun HomeScreen(
                             isDialogVisible = false
                         },
                         onDismiss = {
-                            effect.onConfirm()
+                            effect.onDismiss()
                             isDialogVisible = false
+                        }
+                    )
+                }
+
+                is HomeScreenSideEffect.ShowToast -> {
+                    isToastVisible = true
+                    toastState = ToastState(
+                        massage = effect.message,
+                        onDismiss = {
+                            effect.onDismiss()
+                            coroutineScope.launch {
+                                delay(popUpDelayMsc)
+                                isToastVisible = false
+                            }
                         }
                     )
                 }
@@ -85,7 +113,9 @@ fun HomeScreen(
             onSeeAllPlanClicked = onSeeAllPlanClicked,
             onSeeAllDiaryClicked = onSeeAllDiaryClicked,
             isDialogVisible = isDialogVisible,
-            dialogState = dialogState
+            dialogState = dialogState,
+            isToastVisible = isToastVisible,
+            toastState = toastState
         )
     }
 
@@ -98,12 +128,20 @@ fun HomeScreen(
     onSeeAllPlanClicked: () -> Unit,
     onSeeAllDiaryClicked: () -> Unit,
     isDialogVisible: Boolean = false,
-    dialogState: DialogState = DialogState()
+    dialogState: DialogState = DialogState(),
+    isToastVisible: Boolean = false,
+    toastState: ToastState = ToastState(),
 ) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(InTouchTheme.colors.white),
+            .background(InTouchTheme.colors.input85)
+            .draggable(
+                state = rememberDraggableState { onDelta ->
+                    if (onDelta > 5f)
+                        onEvent(EventType.RefreshScreen)
+                },
+                orientation = Orientation.Vertical
+            ),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -120,8 +158,8 @@ fun HomeScreen(
             ) {
                 Text(
                     modifier = Modifier
-                        .padding(top = 24.dp),
-                    text = stringResource(id = AppR.string.hi_title, "Bob"),
+                        .padding(top = 36.dp),
+                    text = stringResource(id = AppR.string.hi_title, state.userName),
                     style = InTouchTheme.typography.titleLarge,
                     textAlign = TextAlign.Center,
                     color = InTouchTheme.colors.textBlue
@@ -131,7 +169,7 @@ fun HomeScreen(
             HomeScreenSegment(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.55f)
+                    .fillMaxHeight(0.5f)
                     .padding(top = 28.dp),
                 isSeeAllVisible = state.isSeeAllPlanVisible,
                 titleText = stringResource(id = AppR.string.my_plan_sub_title),
@@ -148,19 +186,12 @@ fun HomeScreen(
                             )
                         )
                     },
-                    dropdownMenuDuplicate = { taskId, taskIndex ->
-                        onEvent(
-                            EventType.DuplicateTask(
-                                taskId = taskId,
-                                index = taskIndex
-                            )
-                        )
+                    dropdownMenuDuplicate = { _ ->
                     },
-                    dropdownMenuClear = { taskId, taskIndex ->
+                    dropdownMenuClear = { taskId ->
                         onEvent(
                             EventType.ClearTask(
-                                taskId = taskId,
-                                index = taskIndex
+                                taskId = taskId
                             )
                         )
                     }
@@ -171,7 +202,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(1f)
-                    .padding(top = 28.dp),
+                    .padding(top = 28.dp, bottom = 60.dp),
                 isSeeAllVisible = state.isDiaryListVisible,
                 titleText = stringResource(id = AppR.string.my_diary_sub_title),
                 seeAllClicked = { onSeeAllDiaryClicked() }
@@ -181,8 +212,7 @@ fun HomeScreen(
                     onDeleteButtonClicked = { itemId, itemIndex ->
                         onEvent(
                             EventType.DeleteDiaryEntry(
-                                diaryEntryId = itemId,
-                                index = itemIndex
+                                diaryEntryId = itemId
                             )
                         )
                     },
@@ -199,21 +229,45 @@ fun HomeScreen(
             }
         }
 
-        if (isDialogVisible) {
-            FoldingScreen()
-            ConformationDialog(
+        if (isToastVisible) {
+            Toast(
                 modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(horizontal = 28.dp),
-                onDismissRequest = {
-                    dialogState.onDismiss()
-                },
-                onConfirmation = { dialogState.onConfirm() },
-                headerText = dialogState.title.value(),
-                dialogText = dialogState.massage.value(),
-                dismissButtonText = dialogState.onDismissButtonText.value(),
-                confirmButtonText = dialogState.onConfirmButtonText.value()
+                    .padding(start = 24.dp, end = 24.dp, bottom = 80.dp)
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .alpha(0.8F)
+                    .height(36.dp),
+                text = toastState.massage.value()
             )
+            toastState.onDismiss()
+        }
+
+        if (isDialogVisible) {
+            if (state.isConnectionLost) {
+                OneButtonDialog(
+                    modifier = Modifier.fillMaxSize(),
+                    dialogHeaderText = dialogState.header.value(),
+                    dialogMessageText = dialogState.message.value(),
+                    dialogImage = dialogState.image,
+                    confirmButtonText = dialogState.onConfirmButtonText.value(),
+                    onConfirmation = { dialogState.onConfirm() }
+                )
+            } else {
+                FoldingScreen()
+                Dialog(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 28.dp),
+                    onDismissRequest = {
+                        dialogState.onDismiss()
+                    },
+                    onConfirmation = { dialogState.onConfirm() },
+                    dialogHeaderText = dialogState.header.value(),
+                    dialogMessageText = dialogState.message.value(),
+                    dismissButtonText = dialogState.onDismissButtonText.value(),
+                    confirmButtonText = dialogState.onConfirmButtonText.value()
+                )
+            }
         }
     }
 }
@@ -290,7 +344,7 @@ fun HomeScreenWithDiaryPreview() {
                     diaryList = listOf(
                         DiaryEntry(
                             id = 1,
-                            data = buildString {
+                            date = buildString {
                                 append("13, jul")
                             },
                             note = buildString {
@@ -299,15 +353,15 @@ fun HomeScreenWithDiaryPreview() {
                                 append("а в конце должны быть точески ")
                             },
                             moodList = listOf(
-                                Mood(name = "Bad"),
-                                Mood(name = "Loneliness"),
-                                Mood(name = "Loneliness")
+                                Mood.Loneliness,
+                                Mood.Joy,
+                                Mood.Hope
                             ),
                             isSharedWithDoctor = false
                         ),
                         DiaryEntry(
                             id = 1,
-                            data = buildString {
+                            date = buildString {
                                 append("13, jul")
                             },
                             note = buildString {
@@ -315,7 +369,7 @@ fun HomeScreenWithDiaryPreview() {
                                 append("длинный текст, который не должен поместиться на экране,")
                                 append("а в конце должны быть точески ")
                             },
-                            moodList = listOf(Mood(name = "Bad")),
+                            moodList = listOf(Mood.Fear),
                             isSharedWithDoctor = false
                         )
                     )
@@ -371,7 +425,7 @@ fun HomeScreenFullPreview() {
                 diaryList = mutableStateListOf(
                     DiaryEntry(
                         id = 1,
-                        data = buildString {
+                        date = buildString {
                             append("13, jul")
                         },
                         note = buildString {
@@ -380,27 +434,15 @@ fun HomeScreenFullPreview() {
                             append("а в конце должны быть точески ")
                         },
                         moodList = listOf(
-                            Mood(
-                                name = buildString {
-                                    append("Bad")
-                                }
-                            ),
-                            Mood(
-                                name = buildString {
-                                    append("Loneliness")
-                                }
-                            ),
-                            Mood(
-                                name = buildString {
-                                    append("Loneliness")
-                                }
-                            )
+                            Mood.Loneliness,
+                            Mood.Joy,
+                            Mood.Hope
                         ),
                         isSharedWithDoctor = false
                     ),
                     DiaryEntry(
                         id = 1,
-                        data = buildString {
+                        date = buildString {
                             append("13, jul")
                         },
                         note = buildString {
@@ -409,11 +451,9 @@ fun HomeScreenFullPreview() {
                             append("а в конце должны быть точески ")
                         },
                         moodList = listOf(
-                            Mood(
-                                name = buildString {
-                                    append("Bad")
-                                }
-                            )
+                            Mood.Loneliness,
+                            Mood.Joy,
+                            Mood.Hope
                         ),
                         isSharedWithDoctor = false
                     )

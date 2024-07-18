@@ -31,7 +31,7 @@ fun AppNavHost(
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        modifier = modifier
+        modifier = Modifier
     ) {
         composable(route = Home.route) {
             HomeScreen(

@@ -1,35 +1,35 @@
 package care.intouch.app.feature.profile.presentation.ui.profile.ui
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import care.intouch.uikit.theme.InTouchTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileDataEvent
 import care.intouch.app.feature.profile.presentation.ui.profile.models.ProfileState
 import care.intouch.uikit.R
 import care.intouch.uikit.common.StringVO
+import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.buttons.IntouchButton
 import care.intouch.uikit.ui.buttons.PrimaryButtonWhite
 import care.intouch.uikit.ui.profile.PersonalData
@@ -72,7 +72,7 @@ private fun ProfileScreen(
     val emailFocusRequester = remember { FocusRequester() }
 
     Box(
-        modifier = Modifier.background(InTouchTheme.colors.input)
+        modifier = Modifier.background(InTouchTheme.colors.input85)
     ) {
         Image(
             painter = painterResource(R.drawable.head_background_small_h165),
@@ -225,7 +225,7 @@ private fun ProfileScreen(
             },
             modifier = Modifier
                 .align(BottomCenter)
-                .padding(bottom = 40.dp)
+                .padding(bottom = 100.dp)
         )
     }
 }

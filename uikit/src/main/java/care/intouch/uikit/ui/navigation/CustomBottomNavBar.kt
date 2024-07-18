@@ -19,7 +19,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -75,7 +83,6 @@ fun NavBottomComplexElement(
     outFocusTint: Color,
     modifier: Modifier = Modifier
 ) {
-
     Column(
         modifier = modifier
             .width(75.dp)
@@ -147,14 +154,33 @@ fun CustomBottomNavBar(
     fourthItemClick: () -> Unit = {},
     onPlusItemClick: () -> Unit = {}
 ) {
-
     ConstraintLayout(
         modifier = Modifier
             .height(70.dp)
             .fillMaxWidth()
-            .background(InTouchTheme.colors.transparent)
-    ) {
+            .drawBehind {
+                val gradientBrush = Brush.linearGradient(
+                    colors = listOf(Color.Transparent, Color.Black),
+                    start = Offset(0f, 0f),
+                    end = Offset(0f, size.height)
+                )
+                val path = Path().apply {
+                    addRoundRect(
+                        roundRect = RoundRect(
+                            rect = Rect(0f, 0f, size.width, size.height),
+                            cornerRadius = CornerRadius(20.dp.toPx(), 20.dp.toPx())
+                        )
+                    )
+                }
+                clipPath(path) {
+                    drawRect(
+                        brush = gradientBrush,
+                        size = size
+                    )
+                }
+            }
 
+    ) {
         val (homeTag, progressTag, plusTag, myPlanTag, additionalTag, box) = createRefs()
 
         Box(
@@ -162,7 +188,7 @@ fun CustomBottomNavBar(
                 .fillMaxWidth()
                 .height(56.dp)
                 .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                .background(Color.White)
+                .background(InTouchTheme.colors.white)
                 .constrainAs(box) {
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)

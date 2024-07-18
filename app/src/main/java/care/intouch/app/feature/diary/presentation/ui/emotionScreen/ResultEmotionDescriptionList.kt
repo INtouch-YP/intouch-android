@@ -105,7 +105,7 @@ fun ResultEmotionDescriptionList() {
                 ),
                 EmotionDescriptionTask(
                     StringVO.Resource(R.string.disappointment_clarifying_emotional),
-                    EmotionDescriptionEnum.Disappointment
+                    EmotionDescriptionEnum.Dissapointment
                 ),
                 EmotionDescriptionTask(
                     StringVO.Resource(R.string.sadness_clarifying_emotional),

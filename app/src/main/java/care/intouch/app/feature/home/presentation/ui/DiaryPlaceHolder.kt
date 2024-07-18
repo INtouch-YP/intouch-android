@@ -27,7 +27,7 @@ fun DiaryPlaceHolder() {
             .padding(
                 start = 28.dp,
                 end = 28.dp,
-                top = 16.dp
+                top = 16.dp,
             )
     ) {
         Surface(
