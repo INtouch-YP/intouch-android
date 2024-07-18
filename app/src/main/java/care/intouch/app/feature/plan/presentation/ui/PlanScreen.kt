@@ -25,9 +25,8 @@ import care.intouch.app.feature.plan.domain.models.PlanScreenSideEffect
 import care.intouch.app.feature.plan.presentation.models.PlanScreenEvent
 import care.intouch.app.feature.plan.presentation.models.PlanScreenState
 import care.intouch.app.feature.plan.presentation.viewmodel.PlanScreenViewModel
-import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
-import care.intouch.uikit.ui.cards.ConformationDialog
+import care.intouch.uikit.ui.events.Dialog
 import care.intouch.uikit.ui.screens.my_plan.my_plan.CardHolder
 import care.intouch.uikit.ui.screens.my_plan.my_plan.ChipsRow
 import care.intouch.uikit.ui.screens.my_plan.my_plan.PlanHeader
@@ -154,7 +153,7 @@ fun PlanScreen(
 
         if (state.isDialogueVisible) {
             FoldingScreen()
-            ConformationDialog(
+            Dialog(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .padding(horizontal = 28.dp),
@@ -166,11 +165,11 @@ fun PlanScreen(
                     Toast.makeText(context, "On confirm dialogue", Toast.LENGTH_SHORT).show()
                     onEvent(PlanScreenEvent.SetDialogueVisibilityEvent(isVisible = false))
                 },
-                headerText = buildString {
+                dialogHeaderText = buildString {
                     append("Are you sure you want \n")
                     append("to delete this task?\n")
                 },
-                dialogText = buildString {
+                dialogMessageText = buildString {
                     append("All your entered data will be\n")
                     append("permanently removed.")
                 },
