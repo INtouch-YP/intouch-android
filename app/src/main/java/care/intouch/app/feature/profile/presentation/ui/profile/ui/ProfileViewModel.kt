@@ -389,22 +389,33 @@ class ProfileViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 confirmEmailChangeUseCase.invoke(id, token)
                     .onSuccess {
-                        val message = it.message!!
-                        _state.update {
-                            _state.value.copy(
-                                emailChangeDeepLinkRequestSent = true,
-                                emailChangeDeepLinkRequestSentIsSuccess = true,
-                                emailChangeDeepLinkRequestMessage = StringVO.Plain(message)
-                            )
+                        if(it.message != null) {
+                            val message = it.message
+                            _state.update {
+                                _state.value.copy(
+                                    emailChangeDeepLinkRequestSent = true,
+                                    emailChangeDeepLinkRequestSentIsSuccess = true,
+                                    emailChangeDeepLinkRequestMessage = StringVO.Plain(message)
+                                )
+                            }
+                        } else if (it.error != null) {
+                            val message = it.error
+                            _state.update {
+                                _state.value.copy(
+                                    emailChangeDeepLinkRequestSent = true,
+                                    emailChangeDeepLinkRequestSentIsSuccess = false,
+                                    emailChangeDeepLinkRequestMessage = StringVO.Plain(message)
+                                )
+                            }
                         }
+
                     }
                     .onFailure {
-                        val message = it.message!!
                         _state.update {
                             _state.value.copy(
                                 emailChangeDeepLinkRequestSent = true,
                                 emailChangeDeepLinkRequestSentIsSuccess = false,
-                                emailChangeDeepLinkRequestMessage = StringVO.Plain(message)
+                                emailChangeDeepLinkRequestMessage = StringVO.Resource(R.string.unknown_error)
                             )
                         }
                     }
