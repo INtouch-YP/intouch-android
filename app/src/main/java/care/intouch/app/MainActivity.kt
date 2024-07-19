@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -34,8 +34,6 @@ import com.google.firebase.appdistribution.FirebaseAppDistribution
 import com.google.firebase.appdistribution.FirebaseAppDistributionException
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import android.content.Intent
-import android.net.Uri
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -80,7 +78,9 @@ class MainActivity : ComponentActivity() {
 
             InTouchTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize().navigationBarsPadding(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .systemBarsPadding(),
                     color = InTouchTheme.colors.mainBlue
                 ) {
                     Column {

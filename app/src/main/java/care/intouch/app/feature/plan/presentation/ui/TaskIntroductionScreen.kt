@@ -14,6 +14,7 @@ import care.intouch.uikit.theme.InTouchTheme
 
 @Composable
 fun TaskIntroductionScreen(
+    itemId: Int?,
     onNextClick: () -> Unit
 ) {
     Box(
@@ -25,7 +26,7 @@ fun TaskIntroductionScreen(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 24.dp),
-            text = "TaskIntroductionScreen",
+            text = "TaskIntroductionScreen with itemId: $itemId",
             style = InTouchTheme.typography.titleMedium
         )
 
@@ -44,6 +45,7 @@ fun TaskIntroductionScreen(
 fun TaskIntroductionScreenPreview() {
     InTouchTheme {
         TaskIntroductionScreen(
+            itemId = null,
             onNextClick = {}
         )
     }

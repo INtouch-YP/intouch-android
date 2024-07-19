@@ -13,8 +13,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import care.intouch.app.feature.home.presentation.models.DiaryEntry
-import care.intouch.app.feature.home.presentation.models.Mood
+import care.intouch.app.feature.home.domain.models.DiaryEntry
+import care.intouch.app.feature.home.domain.models.Mood
 import care.intouch.uikit.common.StringVO
 import care.intouch.uikit.theme.InTouchTheme
 import care.intouch.uikit.ui.cards.NoteCards
@@ -27,23 +27,20 @@ fun DiaryLayout(
 ) {
     LazyColumn(
         modifier = Modifier
-            .padding(horizontal = 28.dp)
+            .padding(start = 28.dp, end = 28.dp, top = 16.dp)
             .fillMaxSize()
             .fillMaxHeight(),
     ) {
         itemsIndexed(diaryEntryList) { index, diaryEntry ->
-            var toggleState by rememberSaveable {
-                mutableStateOf(diaryEntry.isSharedWithDoctor)
-            }
             NoteCards(
-                modifier = Modifier.padding(top = 16.dp),
-                dateText = diaryEntry.data,
+                modifier = Modifier.padding(bottom = 16.dp),
+                dateText = diaryEntry.date,
+                dateTextDivider = " ",
                 noteText = diaryEntry.note,
-                moodChipsList = diaryEntry.moodList.map { StringVO.Plain(it.name) },
-                toggleIsChecked = toggleState,
+                moodChipsList = diaryEntry.moodList.map { StringVO.Resource(it.nameId) },
+                toggleIsChecked = diaryEntry.isSharedWithDoctor,
                 onClickToggle = {
-                    toggleState = !toggleState
-                    onSwitcherChange(diaryEntry.id, index, toggleState)
+                    onSwitcherChange(diaryEntry.id, index, !diaryEntry.isSharedWithDoctor)
                 },
                 onClickTrash = { onDeleteButtonClicked(diaryEntry.id, index) })
         }
@@ -59,45 +56,31 @@ fun DiaryLayoutPreview() {
     val diaryEntryList = listOf(
         DiaryEntry(
             id = 1,
-            data = buildString {
+            date = buildString {
                 append("13, jul")
             },
             note = buildString {
                 append("Lorem Ipsum dolor sit amet Lorem Ipsum... ")
             },
             moodList = listOf(
-                Mood(
-                    name = buildString {
-                        append("Bad")
-                    }
-                ),
-                Mood(
-                    name = buildString {
-                        append("Loneliness")
-                    }
-                ),
-                Mood(
-                    name = buildString {
-                        append("Loneliness")
-                    }
-                )
+                Mood.Loneliness,
+                Mood.Joy,
+                Mood.Hope
             ),
             isSharedWithDoctor = false
         ),
         DiaryEntry(
             id = 1,
-            data = buildString {
+            date = buildString {
                 append("13, jul")
             },
             note = buildString {
                 append("Lorem Ipsum dolor sit amet Lorem Ipsum... ")
             },
             moodList = listOf(
-                Mood(
-                    name = buildString {
-                        append("Bad")
-                    }
-                )
+                Mood.Loneliness,
+                Mood.Joy,
+                Mood.Hope
             ),
             isSharedWithDoctor = false
         )

@@ -60,10 +60,11 @@ fun CardsSample() {
                 chipTextColor = InTouchTheme.colors.input,
                 dateText = "May, 15  2023",
                 dropdownMenuItemsList = menuItems,
-                isSettingsClicked = onClickSetting
-            ) {
-                isSelectedPlanCard = !isSelectedPlanCard
-            }
+                isSettingsClicked = onClickSetting,
+                onClickToggle = {
+                    isSelectedPlanCard = !isSelectedPlanCard
+                }
+            )
             Spacer(modifier = Modifier.height(8.dp))
             CardLine(
                 dateText = "May, 15  2023",

@@ -1,5 +1,6 @@
 package care.intouch.app.feature.diary
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -85,7 +86,9 @@ private fun DiaryNoteScreen(
     dialogState: DialogState = DialogState()
 ) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(InTouchTheme.colors.input85),
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -101,7 +104,12 @@ private fun DiaryNoteScreen(
                 modifier = Modifier.fillMaxSize(),
                 isLoading = state.isLoading
             ) {
-                Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 60.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     PrimaryButtonGreen(
                         onClick = { onMakeNoteClick.invoke() },
                         modifier = Modifier
@@ -147,14 +155,14 @@ private fun DiaryNoteScreen(
 @Composable
 @Preview(showBackground = true)
 fun DiaryNoteScreenLoadingPreview() {
-        DiaryNoteScreen(
-            onMakeNoteClick = { },
-            onBackButtonClick = { },
-            onEvent = {},
-            state = DiaryUiState().copy(isLoading = true),
-            isDialogVisible = false,
-            dialogState = DialogState()
-        )
+    DiaryNoteScreen(
+        onMakeNoteClick = { },
+        onBackButtonClick = { },
+        onEvent = {},
+        state = DiaryUiState().copy(isLoading = true),
+        isDialogVisible = false,
+        dialogState = DialogState()
+    )
 }
 
 @Composable
@@ -171,7 +179,6 @@ fun DiaryNoteScreenEmpty() {
         )
     }
 }
-
 
 @Composable
 @Preview(showBackground = true)

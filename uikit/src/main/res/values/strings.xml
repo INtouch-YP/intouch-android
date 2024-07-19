@@ -4,8 +4,11 @@
     <string name="mood">Mood:</string>
     <string name="note">Note:</string>
     <string name="bottom_nav_home">Home</string>
-    <string name="bottom_nav_my_plan">My plan</string>
+    <string name="my_plan">My plan</string>
     <string name="bottom_nav_my_diary">My diary</string>
     <string name="bottom_nav_profile">Profile</string>
-
+    <string name="show_all">Show all</string>
+    <string name="to_do">To do</string>
+    <string name="in_progress">In progress</string>
+    <string name="done">Done</string>
 </resources>
